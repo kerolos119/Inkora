@@ -1,0 +1,7 @@
+{
+  "name": "Inkora",
+  "description": "An editorial modern digital bookstore and e-commerce platform with catalog, reader community, shopping cart, multi-step checkout, and executive admin management dashboard.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
