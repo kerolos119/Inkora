@@ -25,7 +25,7 @@ public interface OrderMapper extends BaseMapper<OrderDto, Order> {
     @Mapping(target = "orderItems",  source = "items")
     @Mapping(target = "paymentMethod",
             expression = "java(dto.getPaymentMethod() == null ? null :" +
-                    "com.programmershub.medad.model.PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()))")
+                    "com.kerolos119.inkora.model.PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()))")
     @Mapping(target = "version",   ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)

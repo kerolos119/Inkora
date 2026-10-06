@@ -14,7 +14,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI(){
         return new OpenAPI().info(new Info()
-                .title("Medad Al Olaya API").description("API documentation for Medad Al Olaya application")
+                .title("Inkora API").description("API documentation for Inkora application")
                 .version("1.0.0"))
                 .addSecurityItem(new SecurityRequirement()
                         .addList("Bearer Authentication"))
