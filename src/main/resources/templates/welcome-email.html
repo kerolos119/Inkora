@@ -1,0 +1,204 @@
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${subject}">مداد العليا</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f1eb;
+            color: #2c2c2c;
+            direction: rtl;
+        }
+
+        .wrapper {
+            max-width: 620px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 50px 30px 40px;
+            text-align: center;
+        }
+
+        .hero-icon {
+            font-size: 52px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .hero h1 {
+            color: #c9a84c;
+            font-size: 30px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            color: #a0a8b8;
+            font-size: 14px;
+        }
+
+        .divider {
+            height: 4px;
+            background: linear-gradient(to right, #c9a84c, #f0d080, #c9a84c);
+        }
+
+        /* ── Body ── */
+        .body { padding: 40px 35px; }
+
+        .greeting {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+
+        .message {
+            font-size: 15px;
+            line-height: 1.9;
+            color: #555;
+            margin-bottom: 32px;
+        }
+
+        /* ── Feature cards ── */
+        .features {
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 36px;
+        }
+
+        .feature {
+            display: table-cell;
+            width: 33.33%;
+            background-color: #fdf8ee;
+            border: 1px solid #ece9e0;
+            border-radius: 10px;
+            padding: 20px 14px;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .feature + .feature { margin-right: 12px; }
+
+        .feature-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+        .feature-title { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+        .feature-desc  { font-size: 12px; color: #777; line-height: 1.6; }
+
+        /* ── CTA ── */
+        .cta-wrap { text-align: center; margin-bottom: 32px; }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: #c9a84c !important;
+            text-decoration: none;
+            padding: 15px 42px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            background-color: #f9f7f2;
+            padding: 28px 35px;
+            text-align: center;
+            border-top: 1px solid #ece9e0;
+        }
+
+        .footer p  { font-size: 12px; color: #888; line-height: 1.8; }
+        .footer a  { color: #c9a84c; text-decoration: none; }
+
+        .social-links { margin: 14px 0; }
+        .social-links a {
+            display: inline-block;
+            margin: 0 6px;
+            color: #555;
+            font-size: 12px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+    <!-- Hero -->
+    <div class="hero">
+        <span class="hero-icon">📚</span>
+        <h1 th:text="${storeName}">مداد العليا</h1>
+        <p th:text="${storeTagline}">متجرك المتخصص في الكتب والمراجع العلمية</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Body -->
+    <div class="body">
+
+        <p class="greeting"
+           th:if="${userName}"
+           th:text="'مرحباً، ' + ${userName} + ' 👋'">
+        </p>
+
+        <p class="message" th:text="${message}"></p>
+
+        <!-- Feature highlights -->
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">🔍</span>
+                <div class="feature-title">تصفح سهل</div>
+                <div class="feature-desc">ابحث عن كتبك المفضلة بكل سهولة ويسر</div>
+            </div>
+            <div class="feature" style="margin-right: 12px;">
+                <span class="feature-icon">🚚</span>
+                <div class="feature-title">توصيل سريع</div>
+                <div class="feature-desc">نوصّل طلباتك إلى باب منزلك في أسرع وقت</div>
+            </div>
+            <div class="feature" style="margin-right: 12px;">
+                <span class="feature-icon">⭐</span>
+                <div class="feature-title">جودة مضمونة</div>
+                <div class="feature-desc">نختار لك أفضل الكتب والمراجع العلمية</div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-wrap"
+             th:if="${actionUrl != null and !#strings.isEmpty(actionUrl)}">
+            <a th:href="${actionUrl}"
+               class="btn"
+               th:text="${actionText ?: 'تصفح الكتب'}">
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="social-links"
+             th:if="${instagramUrl != null or twitterUrl != null or whatsappUrl != null}">
+            <a th:if="${instagramUrl}" th:href="${instagramUrl}">Instagram</a>
+            <span th:if="${instagramUrl and twitterUrl}"> | </span>
+            <a th:if="${twitterUrl}"   th:href="${twitterUrl}">Twitter</a>
+            <span th:if="${twitterUrl and whatsappUrl}"> | </span>
+            <a th:if="${whatsappUrl}"  th:href="${whatsappUrl}">WhatsApp</a>
+        </div>
+        <p>
+            <span th:text="${footerCopyright}"></span>
+        </p>
+    </div>
+
+</div>
+</body>
+</html>
