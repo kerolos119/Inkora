@@ -1,0 +1,81 @@
+import { extra2En, extra2Ar } from './i18n.extra2';
+import { extraEn, extraAr } from './i18n.extra';
+export type Lang = 'en' | 'ar';
+const dict: Record<Lang, Record<string, string>> = {
+  en: {
+    ...extraEn,
+    ...extra2En,
+    'lang.other': 'العربية',
+    'auth.signIn': 'Sign in', 'auth.signingIn': 'Signing in…',
+    'auth.create': 'Create account', 'auth.creating': 'Creating account…',
+    'auth.loginFail': "That email and password don't match. Check them and try again, or reset your password.",
+    'auth.welcome': 'Welcome back, {name}',
+    'auth.registered': 'Welcome to Inkora. Your account is ready.',
+    'auth.signedOut': 'Signed out of Inkora',
+    'cart.added': 'Added "{title}" to your bag', 'cart.removed': 'Item removed from your bag',
+    'cart.empty': 'Your bag is empty', 'cart.emptyHint': 'Browse the catalog and add a book to get started.',
+    'cart.explore': 'Browse the catalog', 'cart.checkout': 'Proceed to checkout',
+    'cart.add': 'Add to bag', 'cart.soldOut': 'Sold out',
+    'cart.couponOk': 'Code {code} applied: 10% off',
+    'cart.couponBad': "That code isn't valid or has expired. Check the spelling and try again.",
+    'wish.saved': 'Saved "{title}" to your wishlist', 'wish.removed': 'Removed "{title}" from your wishlist',
+    'checkout.place': 'Place order', 'checkout.placing': 'Placing order…',
+    'checkout.ok': "Order placed. We've emailed your confirmation.",
+    'checkout.needContact': 'Enter your name and a valid email so we can send your receipt.',
+    'checkout.needAddress': 'Enter your street address, city, and postal code.',
+    'checkout.fail': 'Something went wrong placing your order. Please try again.',
+    'acct.cancelOk': 'Order cancelled.',
+    'acct.cancelFail': "This order can't be cancelled right now. Contact support if you need help.",
+    'acct.passOk': 'Password updated', 'acct.addrOk': 'Delivery address saved',
+    'book.notFound': "We can't find that book", 'book.reviewOk': 'Thanks, your review was submitted.',
+    'book.linkCopied': 'Link copied',
+    'news.ok': "You're subscribed to the Inkora Literary Gazette.",
+    'admin.deleteTitle': 'Delete this book?',
+    'admin.deleteBody': "This removes the book from the catalog. This can't be undone.",
+    'admin.keep': 'Keep book', 'admin.delete': 'Delete book',
+    'admin.saveFail': "Couldn't save your changes. Check your connection and try again.",
+    'admin.deleteFail': "Couldn't delete. Try again.",
+  },
+  ar: {
+    ...extraAr,
+    ...extra2Ar,
+    'lang.other': 'English',
+    'auth.signIn': 'تسجيل الدخول', 'auth.signingIn': 'جارٍ تسجيل الدخول…',
+    'auth.create': 'إنشاء حساب', 'auth.creating': 'جارٍ إنشاء الحساب…',
+    'auth.loginFail': 'البريد الإلكتروني أو كلمة المرور غير صحيحة. راجعهما وحاول مرة أخرى، أو أعد تعيين كلمة المرور.',
+    'auth.welcome': 'أهلًا بعودتك، {name}',
+    'auth.registered': 'أهلًا بك في إنكورا. حسابك جاهز.',
+    'auth.signedOut': 'تم تسجيل الخروج',
+    'cart.added': 'تمت إضافة "{title}" إلى حقيبتك', 'cart.removed': 'تم حذف العنصر من حقيبتك',
+    'cart.empty': 'حقيبتك فارغة', 'cart.emptyHint': 'تصفّح الكتالوج وأضف كتابًا لتبدأ.',
+    'cart.explore': 'تصفّح الكتالوج', 'cart.checkout': 'إتمام الشراء',
+    'cart.add': 'أضف إلى الحقيبة', 'cart.soldOut': 'نفدت الكمية',
+    'cart.couponOk': 'تم تطبيق الكود {code}: خصم 10%',
+    'cart.couponBad': 'هذا الكود غير صالح أو منتهي. راجع الإملاء وحاول مرة أخرى.',
+    'wish.saved': 'تمت إضافة "{title}" إلى قائمة رغباتك', 'wish.removed': 'تم حذف "{title}" من قائمة رغباتك',
+    'checkout.place': 'تأكيد الطلب', 'checkout.placing': 'جارٍ تأكيد الطلب…',
+    'checkout.ok': 'تم تأكيد طلبك. أرسلنا لك رسالة تأكيد على بريدك.',
+    'checkout.needContact': 'اكتب اسمك وبريدًا إلكترونيًا صحيحًا لنرسل لك الإيصال.',
+    'checkout.needAddress': 'اكتب عنوان الشارع والمدينة والرمز البريدي.',
+    'checkout.fail': 'حدث خطأ أثناء تأكيد طلبك. حاول مرة أخرى.',
+    'acct.cancelOk': 'تم إلغاء الطلب.',
+    'acct.cancelFail': 'لا يمكن إلغاء هذا الطلب حاليًا. تواصل مع الدعم إن احتجت مساعدة.',
+    'acct.passOk': 'تم تحديث كلمة المرور', 'acct.addrOk': 'تم حفظ عنوان التوصيل',
+    'book.notFound': 'لم نجد هذا الكتاب', 'book.reviewOk': 'شكرًا، تم إرسال تقييمك.',
+    'book.linkCopied': 'تم نسخ الرابط',
+    'news.ok': 'تم اشتراكك في نشرة إنكورا الأدبية.',
+    'admin.deleteTitle': 'حذف هذا الكتاب؟',
+    'admin.deleteBody': 'سيتم حذف الكتاب من الكتالوج ولا يمكن التراجع عن ذلك.',
+    'admin.keep': 'إبقاء الكتاب', 'admin.delete': 'حذف الكتاب',
+    'admin.saveFail': 'تعذّر حفظ التغييرات. تحقق من اتصالك وحاول مرة أخرى.',
+    'admin.deleteFail': 'تعذّر الحذف. حاول مرة أخرى.',
+  },
+};
+export const getLang = (): Lang => { try { return localStorage.getItem('inkora_lang') === 'ar' ? 'ar' : 'en'; } catch { return 'en'; } };
+const apply = (l: Lang) => { document.documentElement.lang = l; document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr'; };
+export const setLang = (l: Lang) => { try { localStorage.setItem('inkora_lang', l); } catch {} apply(l); };
+export function t(key: string, vars?: Record<string, string | number>): string {
+  const s = dict[getLang()][key] ?? dict.en[key] ?? key;
+  return vars ? s.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? '')) : s;
+}
+if (typeof document !== 'undefined') apply(getLang());

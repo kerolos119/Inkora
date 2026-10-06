@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${subject}">مداد العليا</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f1eb;
+            color: #2c2c2c;
+            direction: rtl;
+        }
+
+        .wrapper {
+            max-width: 620px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 { color: #c9a84c; font-size: 28px; letter-spacing: 1px; margin-bottom: 5px; }
+        .header p  { color: #a0a8b8; font-size: 13px; }
+
+        .divider {
+            height: 4px;
+            background: linear-gradient(to right, #c9a84c, #f0d080, #c9a84c);
+        }
+
+        .body { padding: 40px 35px; }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            font-size: 15px;
+            line-height: 1.9;
+            color: #444;
+            margin-bottom: 28px;
+        }
+
+        .highlight-box {
+            background-color: #fdf8ee;
+            border-right: 4px solid #c9a84c;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 28px;
+            font-size: 15px;
+            color: #2c2c2c;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: #c9a84c !important;
+            text-decoration: none;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin: 10px 0 28px;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 28px;
+            font-size: 14px;
+        }
+
+        .order-table th {
+            background-color: #1a1a2e;
+            color: #c9a84c;
+            padding: 12px 15px;
+            text-align: right;
+        }
+
+        .order-table td {
+            padding: 11px 15px;
+            border-bottom: 1px solid #ece9e0;
+            color: #444;
+        }
+
+        .order-table tr:last-child td { border-bottom: none; }
+
+        .order-table .total td {
+            font-weight: 700;
+            color: #1a1a2e;
+            border-top: 2px solid #c9a84c;
+        }
+
+        .footer {
+            background-color: #f9f7f2;
+            padding: 28px 35px;
+            text-align: center;
+            border-top: 1px solid #ece9e0;
+        }
+
+        .footer p  { font-size: 12px; color: #888; line-height: 1.8; }
+        .footer a  { color: #c9a84c; text-decoration: none; }
+
+        .social-links { margin: 14px 0; }
+        .social-links a { display: inline-block; margin: 0 6px; color: #555; font-size: 12px; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+    <div class="header">
+        <h1 th:text="${storeName}">مداد العليا</h1>
+        <p th:text="${storeTagline}">متجرك المتخصص في الكتب والمراجع العلمية</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="body">
+
+        <p class="greeting"
+           th:if="${userName}"
+           th:text="'مرحباً، ' + ${userName} + ' 👋'">
+        </p>
+
+        <p class="message" th:text="${message}"></p>
+
+        <div class="highlight-box"
+             th:if="${highlightText != null and !#strings.isEmpty(highlightText)}"
+             th:text="${highlightText}">
+        </div>
+
+        <table class="order-table"
+               th:if="${orderItems != null and !#lists.isEmpty(orderItems)}">
+            <thead>
+            <tr>
+                <th>الكتاب</th>
+                <th>الكمية</th>
+                <th>السعر</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${orderItems}">
+                <td th:text="${item.bookTitle}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${#numbers.formatDecimal(item.price, 1, 2)} + ' ر.س'"></td>
+            </tr>
+            <tr class="total" th:if="${totalPrice != null}">
+                <td colspan="2">الإجمالي</td>
+                <td th:text="${#numbers.formatDecimal(totalPrice, 1, 2)} + ' ر.س'"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- CTA Button: only shown if actionUrl is provided -->
+        <div th:if="${actionUrl != null and !#strings.isEmpty(actionUrl)}">
+            <a th:href="${actionUrl}"
+               class="btn"
+               th:text="${actionText}">
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="social-links"
+             th:if="${instagramUrl != null or twitterUrl != null or whatsappUrl != null}">
+            <a th:if="${instagramUrl}" th:href="${instagramUrl}">Instagram</a>
+            <span th:if="${instagramUrl and twitterUrl}"> | </span>
+            <a th:if="${twitterUrl}"   th:href="${twitterUrl}">Twitter</a>
+            <span th:if="${twitterUrl and whatsappUrl}"> | </span>
+            <a th:if="${whatsappUrl}"  th:href="${whatsappUrl}">WhatsApp</a>
+        </div>
+
+        <p>
+            <span th:text="${footerCopyright ?: '© 2025 مداد العليا — جميع الحقوق محفوظة'}"></span>
+            <br/>
+            <span th:if="${unsubscribeUrl}">
+                <a th:href="${unsubscribeUrl}">إلغاء الاشتراك</a>
+            </span>
+        </p>
+    </div>
+
+</div>
+</body>
+</html>

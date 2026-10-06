@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: local
+
+  application:
+    name: Inkora
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      uri: mongodb://localhost:27017/Inkora
+      authentication-database: Inkora
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    swagger-ui:
+      path: /swagger-ui/index.html
+      enable: false
