@@ -1,204 +1,74 @@
- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${subject}">مداد العليا</title>
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
+    <title th:text="${subject}">Inkora</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f1eb;
-            color: #2c2c2c;
-            direction: rtl;
-        }
-
-        .wrapper {
-            max-width: 620px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        /* ── Hero ── */
-        .hero {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            padding: 50px 30px 40px;
-            text-align: center;
-        }
-
-        .hero-icon {
-            font-size: 52px;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .hero h1 {
-            color: #c9a84c;
-            font-size: 30px;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .hero p {
-            color: #a0a8b8;
-            font-size: 14px;
-        }
-
-        .divider {
-            height: 4px;
-            background: linear-gradient(to right, #c9a84c, #f0d080, #c9a84c);
-        }
-
-        /* ── Body ── */
-        .body { padding: 40px 35px; }
-
-        .greeting {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 12px;
-        }
-
-        .message {
-            font-size: 15px;
-            line-height: 1.9;
-            color: #555;
-            margin-bottom: 32px;
-        }
-
-        /* ── Feature cards ── */
-        .features {
-            display: table;
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-bottom: 36px;
-        }
-
-        .feature {
-            display: table-cell;
-            width: 33.33%;
-            background-color: #fdf8ee;
-            border: 1px solid #ece9e0;
-            border-radius: 10px;
-            padding: 20px 14px;
-            text-align: center;
-            vertical-align: top;
-        }
-
-        .feature + .feature { margin-right: 12px; }
-
-        .feature-icon { font-size: 28px; margin-bottom: 10px; display: block; }
-        .feature-title { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
-        .feature-desc  { font-size: 12px; color: #777; line-height: 1.6; }
-
-        /* ── CTA ── */
-        .cta-wrap { text-align: center; margin-bottom: 32px; }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #1a1a2e, #0f3460);
-            color: #c9a84c !important;
-            text-decoration: none;
-            padding: 15px 42px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── Footer ── */
-        .footer {
-            background-color: #f9f7f2;
-            padding: 28px 35px;
-            text-align: center;
-            border-top: 1px solid #ece9e0;
-        }
-
-        .footer p  { font-size: 12px; color: #888; line-height: 1.8; }
-        .footer a  { color: #c9a84c; text-decoration: none; }
-
-        .social-links { margin: 14px 0; }
-        .social-links a {
-            display: inline-block;
-            margin: 0 6px;
-            color: #555;
-            font-size: 12px;
-            text-decoration: none;
+        @media only screen and (max-width: 480px) {
+            .px { padding-left: 18px !important; padding-right: 18px !important; }
+            .feat { display: block !important; width: 100% !important; margin-bottom: 10px !important; }
+            .sp { display: none !important; }
         }
     </style>
 </head>
-<body>
-<div class="wrapper">
-
-    <!-- Hero -->
-    <div class="hero">
-        <span class="hero-icon">📚</span>
-        <h1 th:text="${storeName}">مداد العليا</h1>
-        <p th:text="${storeTagline}">متجرك المتخصص في الكتب والمراجع العلمية</p>
-    </div>
-
-    <div class="divider"></div>
-
+<body style="margin:0;padding:0;background-color:#F1E9D6;font-family:Tahoma,'Segoe UI',Arial,sans-serif;color:#3B2B1E;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F1E9D6" style="background-color:#F1E9D6;">
+<tr><td align="center" style="padding:32px 12px;">
+<table role="presentation" width="620" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="width:100%;max-width:620px;background-color:#FFFFFF;border-radius:12px;">
+    <!-- Header -->
+    <tr><td align="center" bgcolor="#3B2B1E" style="background-color:#3B2B1E;padding:44px 30px 36px;border-radius:12px 12px 0 0;">
+        <div style="font-size:48px;line-height:1;margin-bottom:14px;">📚</div>
+        <h1 style="margin:0 0 8px;color:#F2C94C;font-size:30px;font-weight:700;" th:text="${storeName}">Inkora</h1>
+        <p style="margin:0;color:#D9CDB5;font-size:14px;" th:text="${storeTagline}">Press &amp; Bookstore · دار نشر ومكتبة</p>
+    </td></tr>
+    <tr><td height="4" bgcolor="#F2C94C" style="height:4px;line-height:4px;font-size:0;background-color:#F2C94C;">&nbsp;</td></tr>
     <!-- Body -->
-    <div class="body">
-
-        <p class="greeting"
-           th:if="${userName}"
-           th:text="'مرحباً، ' + ${userName} + ' 👋'">
-        </p>
-
-        <p class="message" th:text="${message}"></p>
-
-        <!-- Feature highlights -->
-        <div class="features">
-            <div class="feature">
-                <span class="feature-icon">🔍</span>
-                <div class="feature-title">تصفح سهل</div>
-                <div class="feature-desc">ابحث عن كتبك المفضلة بكل سهولة ويسر</div>
-            </div>
-            <div class="feature" style="margin-right: 12px;">
-                <span class="feature-icon">🚚</span>
-                <div class="feature-title">توصيل سريع</div>
-                <div class="feature-desc">نوصّل طلباتك إلى باب منزلك في أسرع وقت</div>
-            </div>
-            <div class="feature" style="margin-right: 12px;">
-                <span class="feature-icon">⭐</span>
-                <div class="feature-title">جودة مضمونة</div>
-                <div class="feature-desc">نختار لك أفضل الكتب والمراجع العلمية</div>
-            </div>
-        </div>
-
-        <!-- CTA -->
-        <div class="cta-wrap"
-             th:if="${actionUrl != null and !#strings.isEmpty(actionUrl)}">
-            <a th:href="${actionUrl}"
-               class="btn"
-               th:text="${actionText ?: 'تصفح الكتب'}">
-            </a>
-        </div>
-
-    </div>
-
+    <tr><td class="px" style="padding:36px 35px;">
+        <p dir="auto" th:if="${userName}" th:text="'Hello ' + ${userName} + ' · مرحباً 👋'" style="margin:0 0 12px;font-size:20px;font-weight:700;color:#3B2B1E;"></p>
+        <p dir="auto" th:text="${message}" style="margin:0 0 28px;font-size:15px;line-height:1.9;color:#5A4635;"></p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 30px;"><tr>
+            <td class="feat" width="32%" valign="top" align="center" bgcolor="#FAF6EC" style="background-color:#FAF6EC;border:1px solid #E3D6BC;border-radius:10px;padding:18px 12px;">
+                <div style="font-size:28px;line-height:1;margin-bottom:10px;">🔍</div>
+                <div style="font-size:13px;font-weight:700;color:#3B2B1E;margin-bottom:6px;">Curated editions<br/>إصدارات مختارة</div>
+                <div style="font-size:12px;color:#7A6652;line-height:1.6;">Hardcover, clothbound and archival paperbacks.<br/>أغلفة صلبة وقماشية وورقية معمَّرة.</div>
+            </td>
+            <td class="sp" width="2%">&nbsp;</td>
+            <td class="feat" width="32%" valign="top" align="center" bgcolor="#FAF6EC" style="background-color:#FAF6EC;border:1px solid #E3D6BC;border-radius:10px;padding:18px 12px;">
+                <div style="font-size:28px;line-height:1;margin-bottom:10px;">🚚</div>
+                <div style="font-size:13px;font-weight:700;color:#3B2B1E;margin-bottom:6px;">Free delivery over $50<br/>توصيل مجاني فوق 50$</div>
+                <div style="font-size:12px;color:#7A6652;line-height:1.6;">Carefully wrapped and shipped to your door.<br/>تغليف بعناية وتوصيل لباب بيتك.</div>
+            </td>
+            <td class="sp" width="2%">&nbsp;</td>
+            <td class="feat" width="32%" valign="top" align="center" bgcolor="#FAF6EC" style="background-color:#FAF6EC;border:1px solid #E3D6BC;border-radius:10px;padding:18px 12px;">
+                <div style="font-size:28px;line-height:1;margin-bottom:10px;">⭐</div>
+                <div style="font-size:13px;font-weight:700;color:#3B2B1E;margin-bottom:6px;">Built to last<br/>جودة تدوم</div>
+                <div style="font-size:12px;color:#7A6652;line-height:1.6;">Acid-free paper and sewn bindings.<br/>ورق خالٍ من الأحماض وتجليد مخيّط.</div>
+            </td>
+        </tr></table>
+        <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" th:if="${actionUrl != null and !#strings.isEmpty(actionUrl)}" style="margin:6px auto 8px;"><tr>
+            <td align="center" bgcolor="#8A6238" style="background-color:#8A6238;border-radius:8px;">
+                <a th:href="${actionUrl}" th:text="${actionText ?: 'Browse the Catalog'}" style="display:inline-block;padding:15px 42px;color:#FFFFFF;font-size:15px;font-weight:700;text-decoration:none;font-family:Tahoma,Arial,sans-serif;">Browse the Catalog</a>
+            </td></tr></table>
+    </td></tr>
     <!-- Footer -->
-    <div class="footer">
-        <div class="social-links"
-             th:if="${instagramUrl != null or twitterUrl != null or whatsappUrl != null}">
-            <a th:if="${instagramUrl}" th:href="${instagramUrl}">Instagram</a>
+    <tr><td align="center" bgcolor="#FAF6EC" style="background-color:#FAF6EC;padding:26px 35px;border-top:1px solid #E3D6BC;border-radius:0 0 12px 12px;">
+        <div th:if="${instagramUrl != null or twitterUrl != null or whatsappUrl != null}" style="margin:0 0 12px;font-size:12px;">
+            <a th:if="${instagramUrl}" th:href="${instagramUrl}" style="color:#5A4635;text-decoration:none;">Instagram</a>
             <span th:if="${instagramUrl and twitterUrl}"> | </span>
-            <a th:if="${twitterUrl}"   th:href="${twitterUrl}">Twitter</a>
+            <a th:if="${twitterUrl}" th:href="${twitterUrl}" style="color:#5A4635;text-decoration:none;">Twitter</a>
             <span th:if="${twitterUrl and whatsappUrl}"> | </span>
-            <a th:if="${whatsappUrl}"  th:href="${whatsappUrl}">WhatsApp</a>
+            <a th:if="${whatsappUrl}" th:href="${whatsappUrl}" style="color:#5A4635;text-decoration:none;">WhatsApp</a>
         </div>
-        <p>
-            <span th:text="${footerCopyright}"></span>
+        <p style="margin:0;font-size:12px;line-height:1.8;color:#7A6652;">
+            <span th:text="${footerCopyright ?: '© ' + #dates.year(#dates.createNow()) + ' Inkora'}"></span>
+            <span th:if="${unsubscribeUrl}"><br/><a th:href="${unsubscribeUrl}" style="color:#8A6238;text-decoration:none;">Unsubscribe · إلغاء الاشتراك</a></span>
         </p>
-    </div>
-
-</div>
+    </td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>

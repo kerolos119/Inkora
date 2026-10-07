@@ -1,199 +1,73 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ar" dir="rtl">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
     <title th:text="${subject}">Inkora</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f1eb;
-            color: #2c2c2c;
-            direction: rtl;
+        @media only screen and (max-width: 480px) {
+            .px { padding-left: 18px !important; padding-right: 18px !important; }
+            .feat { display: block !important; width: 100% !important; margin-bottom: 10px !important; }
+            .sp { display: none !important; }
         }
-
-        .wrapper {
-            max-width: 620px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            padding: 40px 30px;
-            text-align: center;
-        }
-
-        .header h1 { color: #c9a84c; font-size: 28px; letter-spacing: 1px; margin-bottom: 5px; }
-        .header p  { color: #a0a8b8; font-size: 13px; }
-
-        .divider {
-            height: 4px;
-            background: linear-gradient(to right, #c9a84c, #f0d080, #c9a84c);
-        }
-
-        .body { padding: 40px 35px; }
-
-        .greeting {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 16px;
-        }
-
-        .message {
-            font-size: 15px;
-            line-height: 1.9;
-            color: #444;
-            margin-bottom: 28px;
-        }
-
-        .highlight-box {
-            background-color: #fdf8ee;
-            border-right: 4px solid #c9a84c;
-            border-radius: 8px;
-            padding: 18px 20px;
-            margin-bottom: 28px;
-            font-size: 15px;
-            color: #2c2c2c;
-        }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #1a1a2e, #0f3460);
-            color: #c9a84c !important;
-            text-decoration: none;
-            padding: 14px 36px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin: 10px 0 28px;
-        }
-
-        .order-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 28px;
-            font-size: 14px;
-        }
-
-        .order-table th {
-            background-color: #1a1a2e;
-            color: #c9a84c;
-            padding: 12px 15px;
-            text-align: right;
-        }
-
-        .order-table td {
-            padding: 11px 15px;
-            border-bottom: 1px solid #ece9e0;
-            color: #444;
-        }
-
-        .order-table tr:last-child td { border-bottom: none; }
-
-        .order-table .total td {
-            font-weight: 700;
-            color: #1a1a2e;
-            border-top: 2px solid #c9a84c;
-        }
-
-        .footer {
-            background-color: #f9f7f2;
-            padding: 28px 35px;
-            text-align: center;
-            border-top: 1px solid #ece9e0;
-        }
-
-        .footer p  { font-size: 12px; color: #888; line-height: 1.8; }
-        .footer a  { color: #c9a84c; text-decoration: none; }
-
-        .social-links { margin: 14px 0; }
-        .social-links a { display: inline-block; margin: 0 6px; color: #555; font-size: 12px; text-decoration: none; }
     </style>
 </head>
-<body>
-<div class="wrapper">
-
-    <div class="header">
-        <h1 th:text="${storeName}">مداد العليا</h1>
-        <p th:text="${storeTagline}">متجرك المتخصص في الكتب والمراجع العلمية</p>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="body">
-
-        <p class="greeting"
-           th:if="${userName}"
-           th:text="'مرحباً، ' + ${userName} + ' 👋'">
-        </p>
-
-        <p class="message" th:text="${message}"></p>
-
-        <div class="highlight-box"
-             th:if="${highlightText != null and !#strings.isEmpty(highlightText)}"
-             th:text="${highlightText}">
-        </div>
-
-        <table class="order-table"
-               th:if="${orderItems != null and !#lists.isEmpty(orderItems)}">
-            <thead>
-            <tr>
-                <th>الكتاب</th>
-                <th>الكمية</th>
-                <th>السعر</th>
-            </tr>
-            </thead>
+<body style="margin:0;padding:0;background-color:#F1E9D6;font-family:Tahoma,'Segoe UI',Arial,sans-serif;color:#3B2B1E;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F1E9D6" style="background-color:#F1E9D6;">
+<tr><td align="center" style="padding:32px 12px;">
+<table role="presentation" width="620" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="width:100%;max-width:620px;background-color:#FFFFFF;border-radius:12px;">
+    <!-- Header -->
+    <tr><td align="center" bgcolor="#3B2B1E" style="background-color:#3B2B1E;padding:38px 30px 32px;border-radius:12px 12px 0 0;">
+        <h1 style="margin:0 0 8px;color:#F2C94C;font-size:28px;font-weight:700;" th:text="${storeName}">Inkora</h1>
+        <p style="margin:0;color:#D9CDB5;font-size:14px;" th:text="${storeTagline}">Press &amp; Bookstore · دار نشر ومكتبة</p>
+    </td></tr>
+    <tr><td height="4" bgcolor="#F2C94C" style="height:4px;line-height:4px;font-size:0;background-color:#F2C94C;">&nbsp;</td></tr>
+    <!-- Body -->
+    <tr><td class="px" style="padding:36px 35px;">
+        <p dir="auto" th:if="${userName}" th:text="'Hello ' + ${userName} + ' · مرحباً 👋'" style="margin:0 0 12px;font-size:20px;font-weight:700;color:#3B2B1E;"></p>
+        <p dir="auto" th:text="${message}" style="margin:0 0 28px;font-size:15px;line-height:1.9;color:#5A4635;"></p>
+        <div dir="auto" th:if="${highlightText != null and !#strings.isEmpty(highlightText)}" th:text="${highlightText}" style="background-color:#FBEFC0;border-left:4px solid #F2C94C;border-radius:8px;padding:18px 20px;margin:0 0 28px;font-size:16px;font-weight:700;color:#3B2B1E;"></div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" th:if="${orderItems != null and !#lists.isEmpty(orderItems)}" style="margin:0 0 28px;font-size:14px;border-collapse:collapse;">
+            <thead><tr>
+                <th align="left" bgcolor="#3B2B1E" style="background-color:#3B2B1E;color:#F2C94C;padding:12px 15px;">Book · الكتاب</th>
+                <th align="left" bgcolor="#3B2B1E" style="background-color:#3B2B1E;color:#F2C94C;padding:12px 15px;">Qty · الكمية</th>
+                <th align="left" bgcolor="#3B2B1E" style="background-color:#3B2B1E;color:#F2C94C;padding:12px 15px;">Price · السعر</th>
+            </tr></thead>
             <tbody>
             <tr th:each="item : ${orderItems}">
-                <td th:text="${item.bookTitle}"></td>
-                <td th:text="${item.quantity}"></td>
-                <td th:text="${#numbers.formatDecimal(item.price, 1, 2)} + ' ر.س'"></td>
+                <td style="padding:11px 15px;border-bottom:1px solid #E3D6BC;color:#5A4635;" th:text="${item.bookTitle}"></td>
+                <td style="padding:11px 15px;border-bottom:1px solid #E3D6BC;color:#5A4635;" th:text="${item.quantity}"></td>
+                <td style="padding:11px 15px;border-bottom:1px solid #E3D6BC;color:#5A4635;" th:text="${(currency ?: '$') + #numbers.formatDecimal(item.price, 1, 2)}"></td>
             </tr>
-            <tr class="total" th:if="${totalPrice != null}">
-                <td colspan="2">الإجمالي</td>
-                <td th:text="${#numbers.formatDecimal(totalPrice, 1, 2)} + ' ر.س'"></td>
+            <tr th:if="${totalPrice != null}">
+                <td colspan="2" style="padding:12px 15px;border-top:2px solid #F2C94C;font-weight:700;color:#3B2B1E;">Total · الإجمالي</td>
+                <td style="padding:12px 15px;border-top:2px solid #F2C94C;font-weight:700;color:#3B2B1E;" th:text="${(currency ?: '$') + #numbers.formatDecimal(totalPrice, 1, 2)}"></td>
             </tr>
             </tbody>
         </table>
-
-        <!-- CTA Button: only shown if actionUrl is provided -->
-        <div th:if="${actionUrl != null and !#strings.isEmpty(actionUrl)}">
-            <a th:href="${actionUrl}"
-               class="btn"
-               th:text="${actionText}">
-            </a>
-        </div>
-
-    </div>
-
+        <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" th:if="${actionUrl != null and !#strings.isEmpty(actionUrl)}" style="margin:6px auto 8px;"><tr>
+            <td align="center" bgcolor="#8A6238" style="background-color:#8A6238;border-radius:8px;">
+                <a th:href="${actionUrl}" th:text="${actionText}" style="display:inline-block;padding:15px 42px;color:#FFFFFF;font-size:15px;font-weight:700;text-decoration:none;font-family:Tahoma,Arial,sans-serif;"></a>
+            </td></tr></table>
+    </td></tr>
     <!-- Footer -->
-    <div class="footer">
-        <div class="social-links"
-             th:if="${instagramUrl != null or twitterUrl != null or whatsappUrl != null}">
-            <a th:if="${instagramUrl}" th:href="${instagramUrl}">Instagram</a>
+    <tr><td align="center" bgcolor="#FAF6EC" style="background-color:#FAF6EC;padding:26px 35px;border-top:1px solid #E3D6BC;border-radius:0 0 12px 12px;">
+        <div th:if="${instagramUrl != null or twitterUrl != null or whatsappUrl != null}" style="margin:0 0 12px;font-size:12px;">
+            <a th:if="${instagramUrl}" th:href="${instagramUrl}" style="color:#5A4635;text-decoration:none;">Instagram</a>
             <span th:if="${instagramUrl and twitterUrl}"> | </span>
-            <a th:if="${twitterUrl}"   th:href="${twitterUrl}">Twitter</a>
+            <a th:if="${twitterUrl}" th:href="${twitterUrl}" style="color:#5A4635;text-decoration:none;">Twitter</a>
             <span th:if="${twitterUrl and whatsappUrl}"> | </span>
-            <a th:if="${whatsappUrl}"  th:href="${whatsappUrl}">WhatsApp</a>
+            <a th:if="${whatsappUrl}" th:href="${whatsappUrl}" style="color:#5A4635;text-decoration:none;">WhatsApp</a>
         </div>
-
-        <p>
-            <span th:text="${footerCopyright ?: '© 2025 مداد العليا — جميع الحقوق محفوظة'}"></span>
-            <br/>
-            <span th:if="${unsubscribeUrl}">
-                <a th:href="${unsubscribeUrl}">إلغاء الاشتراك</a>
-            </span>
+        <p style="margin:0;font-size:12px;line-height:1.8;color:#7A6652;">
+            <span th:text="${footerCopyright ?: '© ' + #dates.year(#dates.createNow()) + ' Inkora'}"></span>
+            <span th:if="${unsubscribeUrl}"><br/><a th:href="${unsubscribeUrl}" style="color:#8A6238;text-decoration:none;">Unsubscribe · إلغاء الاشتراك</a></span>
         </p>
-    </div>
-
-</div>
+    </td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>

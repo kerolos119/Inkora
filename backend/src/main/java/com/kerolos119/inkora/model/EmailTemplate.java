@@ -18,8 +18,8 @@ public record EmailTemplate(
         BigDecimal total
 ) {
 
-    public static final String STORE_NAME    = "مداد العليا";
-    public static final String STORE_TAGLINE = "متجرك المتخصص في الكتب والمراجع العلمية";
+    public static final String STORE_NAME    = "Inkora";
+    public static final String STORE_TAGLINE = "Press & Bookstore · دار نشر ومكتبة";
 
     /** Convenience constructor for emails without an order table. */
     public EmailTemplate(String templateName, String subject, String userName,
@@ -41,7 +41,8 @@ public record EmailTemplate(
         vars.put("actionText",      actionText);
         vars.put("orderItems",      orderItems);
         vars.put("totalPrice",      total);
-        vars.put("footerCopyright", "© " + Year.now().getValue() + " " + STORE_NAME + " — جميع الحقوق محفوظة");
+        vars.put("currency",        "$"); // same symbol the storefront shows (prefix, 2 decimals)
+        vars.put("footerCopyright", "© " + Year.now().getValue() + " " + STORE_NAME + " · All rights reserved · جميع الحقوق محفوظة");
         return vars;
     }
 }

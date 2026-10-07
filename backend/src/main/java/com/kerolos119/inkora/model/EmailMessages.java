@@ -25,7 +25,7 @@ public class EmailMessages {
                 "Thank you for registering at " + STORE_NAME + "! We're excited to have you join our reading community.",
                 null,
                 frontendUrl,
-                "Browse Books"
+                "Browse the Catalog"
         );
     }
 
@@ -49,7 +49,7 @@ public class EmailMessages {
                 username,
                 "Your order has been confirmed successfully. Your books will be shipped as soon as possible.",
                 "Order Number: #" + orderId,
-                frontendUrl + "/orders/" + orderId,
+                frontendUrl + "/#account:orders",
                 "Track Your Order",
                 items,
                 total
