@@ -34,7 +34,10 @@ async function call(path: string, init: RequestInit = {}, retry = true): Promise
   let data: any = text;
   try { data = text ? JSON.parse(text) : null; } catch { /* plain text */ }
   if (!res.ok) {
-    const msg = (data && typeof data === 'object' && (data.message || data.error || data.detail)) || (typeof data === 'string' && data) || res.statusText;
+    const msg =
+  (data && typeof data === 'object' && (data.message || data.error || data.detail || Object.values(data).join(', '))) ||
+  (typeof data === 'string' && data) ||
+  res.statusText;
     throw new Error(String(msg));
   }
   return data;
@@ -112,7 +115,7 @@ async function setCartQty(bookId: string, qty: number): Promise<Cart> {
   if (qty <= 0) items = items.filter((i: any) => i.bookId !== bookId);
   else if (idx > -1) items[idx].quantity = qty;
   else { const b = await call(`/book/${bookId}`); items.push({ bookId, bookTitle: b.bookTitle, quantity: qty, price: b.price }); }
-  return toCart(await call('/cart', { method: 'POST', body: JSON.stringify({ cartItems: items }) }));
+return toCart(await call('/cart', { method: 'POST', body: JSON.stringify({ cartItems: items, cartStatus: 'ACTIVE' }) }));
 }
 
 const slug = (s: string) => String(s).toLowerCase().trim().replace(/[^a-z0-9\u0600-\u06FF]+/g, '-').replace(/^-|-$/g, '');
@@ -192,7 +195,7 @@ export const realApi: any = {
       const b = await call(`/book/${it.bookId}`);
       lines.push({ bookId: it.bookId, bookTitle: b.bookTitle, quantity: it.quantity, price: b.price });
     }
-    await call('/cart', { method: 'POST', body: JSON.stringify({ cartItems: lines }) });
+    await call('/cart', { method: 'POST', body: JSON.stringify({ cartItems: lines, cartStatus: 'ACTIVE' }) });
     let dto = await call('/checkout', { method: 'POST' });
     const s = p.shippingDetails || {};
     try { // best effort: attach the shipping details to the new order
@@ -219,7 +222,7 @@ export const realApi: any = {
 
   // ── Admin: built from the endpoints that do exist ──
   getAdminDashboard: async () => {
-    const [books, orders, users] = await Promise.all([listBooks(), realApi.getAllOrders(), call('/users')]);
+    const [books, orders, users] = await Promise.all([listBooks(), realApi.getAllOrders(), call('/users/all')]);
     const active = orders.filter((o: Order) => o.status !== 'CANCELLED' && o.status !== 'REFUNDED');
     const totalRevenue = active.reduce((t: number, o: Order) => t + o.totalAmount, 0);
     const statusDistribution = orders.reduce((a: Record<string, number>, o: Order) => ({ ...a, [o.status]: (a[o.status] || 0) + 1 }), {});
@@ -228,7 +231,7 @@ export const realApi: any = {
       revenueTrends: [{ month: 'Total', revenue: totalRevenue }] };
   },
   getAdminCustomers: async () => {
-    const [users, orders] = await Promise.all([call('/users'), realApi.getAllOrders()]);
+    const [users, orders] = await Promise.all([call('/users/all'), realApi.getAllOrders()]);
     return arr(users).map((u: any) => {
       const mine = orders.filter((o: Order) => o.userId === u.id);
       return { id: u.id, username: u.username, email: u.email, role: u.role, ordersCount: mine.length, totalSpent: mine.reduce((t: number, o: Order) => t + o.totalAmount, 0) };

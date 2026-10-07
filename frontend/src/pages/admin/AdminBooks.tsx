@@ -109,7 +109,8 @@ export const AdminBooks: React.FC = () => {
       }
       setIsModalOpen(false);
     } catch (err: any) {
-      showToast(t('admin.saveFail'), 'error');
+      console.error('Save book failed:', err)
+      showToast(err?.message || t('admin.saveFail'), 'error');
     }
   };
 
