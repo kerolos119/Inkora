@@ -1,16 +1,13 @@
-# Compiled class file
+# ── Secrets ────────────────────────────────
+.env
+.env.*
+!.env.example
+application-local.yaml
+
+
+# ── Java / Maven ───────────────────────────
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -18,10 +15,25 @@
 *.zip
 *.tar.gz
 *.rar
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+target/
 hs_err_pid*
 replay_pid*
-/target/
-/.idea/
-/.vscode/
-/.claude/
+.mvn/wrapper/maven-wrapper.jar
+
+# ── Node / Frontend ────────────────────────
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+
+# ── IDE / Tools ────────────────────────────
+.idea/
+*.iml
+.vscode/
+.claude/
+.DS_Store
+Thumbs.db
+
+# ── Misc ───────────────────────────────────
+*.ctxt
+.mtj.tmp/
