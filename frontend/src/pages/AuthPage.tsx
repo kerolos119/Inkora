@@ -17,6 +17,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,8 +38,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
       username,
       email,
       password,
-      address: '742 Evergreen Terrace, Portland, OR',
-      phoneNumber: '+1 555-0192',
+      address,
+      phoneNumber,
     });
     setLoading(false);
     if (success) onNavigate('home');
@@ -211,6 +213,34 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="reader@inkora.com"
+                required
+                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                {t('f.street')}
+              </label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder={t('ph.street')}
+                required
+                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                {t('f.phone')}
+              </label>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder={t('ph.phone')}
                 required
                 className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />

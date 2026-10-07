@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+import { realApi } from "./realapi";
 import { Book, Category, Author, Cart, Order, Review, Post, User, LoginResponse, OrderStatus } from '../types/index.js';
 
 const API_BASE = '/api/v1';
@@ -33,7 +35,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   return res.json();
 }
 
-export const api = {
+const mockApi = {
   // ── Auth ─────────────────────────────────────────────────────────────
   login: async (credentials: { email?: string; username?: string; password: string }): Promise<LoginResponse> => {
     return request<LoginResponse>('/auth/login', {
@@ -270,3 +272,6 @@ export const api = {
     });
   },
 };
+
+// `npm run dev:real` runs vite with --mode real, which switches to the adapter for the Spring backend.
+export const api: typeof mockApi = import.meta.env.MODE === 'real' ? (realApi as typeof mockApi) : mockApi;
