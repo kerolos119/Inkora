@@ -32,13 +32,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
               <h2 className="font-editorial text-3xl tracking-wide text-[#3B2B1E] dark:text-[#F3ECDD]">
                 {t('x.47d20c')}
               </h2>
-              <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mt-0.5 font-mono">
+              <p className="text-xs text-[#65513F] dark:text-[#A99A82] mt-0.5 font-mono">
                 {cart.items.length} {cart.items.length === 1 ? 'selected volume' : 'selected volumes'}
               </p>
             </div>
             <button
               onClick={() => setIsCartDrawerOpen(false)}
-              className="p-2 text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] transition-colors btn-press"
+              className="p-2 text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] transition-colors btn-press"
             >
               <X className="w-5 h-5" />
             </button>
@@ -66,11 +66,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
           <div className="flex-1 overflow-y-auto p-6 space-y-5 divide-y divide-[#E3D6BC]/60 dark:divide-[#4A3E2E]/60">
             {cart.items.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-16 animate-ink-fade">
-                <ShoppingBag className="w-10 h-10 text-[#7A6652]/40 stroke-1 mb-4" />
+                <ShoppingBag className="w-10 h-10 text-[#65513F]/40 stroke-1 mb-4" />
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mb-1">
                   {t('cart.empty')}
                 </h3>
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] max-w-xs mb-6 font-body-literary">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] max-w-xs mb-6 font-body-literary">
                   {t('cart.emptyHint')}
                 </p>
                 <button
@@ -107,7 +107,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                         >
                           {book.bookTitle}
                         </h4>
-                        <p className="text-xs text-[#7A6652] dark:text-[#A99A82] truncate">
+                        <p className="text-xs text-[#65513F] dark:text-[#A99A82] truncate">
                           {book.authorName} · {book.coverType}
                         </p>
                       </div>
@@ -117,7 +117,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                         <div className="flex items-center border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B]">
                           <button
                             onClick={() => updateQuantity(book.id, quantity - 1)}
-                            className="p-1 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#7A6652] btn-press"
+                            className="p-1 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#65513F] btn-press"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
@@ -126,7 +126,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                           </span>
                           <button
                             onClick={() => updateQuantity(book.id, quantity + 1)}
-                            className="p-1 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#7A6652] btn-press"
+                            className="p-1 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#65513F] btn-press"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -138,7 +138,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                           </span>
                           <button
                             onClick={() => removeFromCart(book.id)}
-                            className="text-[#7A6652] hover:text-[#8E1F1F] transition-colors p-1 btn-press"
+                            className="text-[#65513F] hover:text-[#8E1F1F] transition-colors p-1 btn-press"
                             title={t('x.76ecba')}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -155,7 +155,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
           {/* Footer & Actions */}
           {cart.items.length > 0 && (
             <div className="p-6 border-t border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#2A231B] space-y-4">
-              <div className="space-y-1.5 text-xs text-[#7A6652] dark:text-[#A99A82] font-mono">
+              <div className="space-y-1.5 text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
                 <div className="flex justify-between">
                   <span>{t('x.97f735')}</span>
                   <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">

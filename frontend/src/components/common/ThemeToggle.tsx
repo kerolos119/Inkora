@@ -21,7 +21,7 @@ export const ThemeToggle: React.FC = () => {
         )}
       </div>
 
-      <span className="hidden sm:inline font-mono text-xs tracking-wider uppercase font-semibold text-[#7A6652] dark:text-[#A99A82]">
+      <span className="hidden sm:inline font-mono text-xs tracking-wider uppercase font-semibold text-[#65513F] dark:text-[#A99A82]">
         {isDark ? 'Obsidian' : 'Vellum'}
       </span>
     </button>

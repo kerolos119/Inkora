@@ -120,14 +120,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           <h1 className="font-editorial text-4xl sm:text-5xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
             {t('x.057186')}
           </h1>
-          <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mt-1 max-w-xl font-body-literary">
+          <p className="text-xs text-[#65513F] dark:text-[#A99A82] mt-1 max-w-xl font-body-literary">
             {t('x.19380d')}
           </p>
         </div>
 
         {/* View Toggle & Results Count */}
         <div className="flex items-center gap-4 text-xs font-mono">
-          <span className="text-[#7A6652] dark:text-[#A99A82]">
+          <span className="text-[#65513F] dark:text-[#A99A82]">
             {books.length} {books.length === 1 ? 'Volume' : 'Volumes'} Found
           </span>
 
@@ -137,7 +137,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               className={`p-2 transition-colors btn-press ${
                 viewMode === 'grid'
                   ? 'bg-[#3B2B1E] text-[#FAF6EC] dark:bg-[#D2A560] dark:text-[#FFFFFF]'
-                  : 'text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82]'
+                  : 'text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82]'
               }`}
               title={t('x.602bf1')}
             >
@@ -148,7 +148,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               className={`p-2 transition-colors btn-press ${
                 viewMode === 'list'
                   ? 'bg-[#3B2B1E] text-[#FAF6EC] dark:bg-[#D2A560] dark:text-[#FFFFFF]'
-                  : 'text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82]'
+                  : 'text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82]'
               }`}
               title={t('x.fb1bde')}
             >
@@ -189,7 +189,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
           {/* Sort Selector */}
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-[#7A6652] dark:text-[#A99A82] hidden sm:inline">{t('x.8b335a')}</span>
+            <span className="text-[#65513F] dark:text-[#A99A82] hidden sm:inline">{t('x.8b335a')}</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -209,7 +209,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       {/* Active Filter Chips */}
       {activeFiltersCount > 0 && (
         <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-mono">
-          <span className="text-[#7A6652] dark:text-[#A99A82] text-[11px] uppercase tracking-wider">
+          <span className="text-[#65513F] dark:text-[#A99A82] text-xs uppercase tracking-wider">
             {t('x.051efa')}
           </span>
 
@@ -243,7 +243,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
           <button
             onClick={handleResetFilters}
-            className="text-[11px] text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] underline cursor-pointer ms-2 flex items-center gap-1 btn-press"
+            className="text-xs text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] underline cursor-pointer ms-2 flex items-center gap-1 btn-press"
           >
             <RotateCcw className="w-3 h-3" />
             <span>{t('x.58f5fb')}</span>
@@ -261,7 +261,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             </span>
             <button
               onClick={handleResetFilters}
-              className="text-[11px] font-mono text-[#8A6238] dark:text-[#D2A560] hover:underline"
+              className="text-xs font-mono text-[#8A6238] dark:text-[#D2A560] hover:underline"
             >
               {t('x.44c57a')}
             </button>
@@ -269,10 +269,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
           {/* Category Filter */}
           <div>
-            <h4 className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] mb-2.5">
+            <h4 className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] mb-2.5">
               {t('x.3ed4ae')}
             </h4>
-            <div className="space-y-1.5 text-xs text-[#7A6652] dark:text-[#A99A82]">
+            <div className="space-y-1.5 text-xs text-[#65513F] dark:text-[#A99A82]">
               <div
                 onClick={() => setSelectedCategory('all')}
                 className={`flex items-center justify-between py-1.5 px-2 cursor-pointer transition-colors rounded-[2px] ${
@@ -303,10 +303,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
           {/* Authors Filter */}
           <div className="pt-4 border-t border-[#E3D6BC] dark:border-[#4A3E2E]">
-            <h4 className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] mb-2.5">
+            <h4 className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] mb-2.5">
               {t('x.d2a525')}
             </h4>
-            <div className="space-y-1.5 text-xs text-[#7A6652] dark:text-[#A99A82] max-h-48 overflow-y-auto pe-1">
+            <div className="space-y-1.5 text-xs text-[#65513F] dark:text-[#A99A82] max-h-48 overflow-y-auto pe-1">
               <div
                 onClick={() => setSelectedAuthor('all')}
                 className={`py-1.5 px-2 cursor-pointer transition-colors rounded-[2px] ${
@@ -335,10 +335,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
           {/* Binding Format */}
           <div className="pt-4 border-t border-[#E3D6BC] dark:border-[#4A3E2E]">
-            <h4 className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] mb-2.5">
+            <h4 className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] mb-2.5">
               {t('x.601408')}
             </h4>
-            <div className="space-y-1.5 text-xs text-[#7A6652] dark:text-[#A99A82]">
+            <div className="space-y-1.5 text-xs text-[#65513F] dark:text-[#A99A82]">
               {['all', 'Clothbound', 'Hardcover', 'Paperback', 'Special Edition'].map((type) => (
                 <div
                   key={type}
@@ -386,7 +386,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
                 {t('x.6ad200')}
               </h3>
-              <p className="text-xs text-[#7A6652] dark:text-[#A99A82] max-w-sm mx-auto mb-6 font-body-literary">
+              <p className="text-xs text-[#65513F] dark:text-[#A99A82] max-w-sm mx-auto mb-6 font-body-literary">
                 {t('x.6c44d1')}
               </p>
               <button
@@ -419,7 +419,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="mt-12 pt-6 border-t border-[#E3D6BC] dark:border-[#4A3E2E] flex items-center justify-between text-xs font-mono">
-              <span className="text-[#7A6652] dark:text-[#A99A82]">
+              <span className="text-[#65513F] dark:text-[#A99A82]">
                 Page {currentPage} of {totalPages}
               </span>
               <div className="flex items-center gap-1">
@@ -470,7 +470,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               </span>
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="p-1 text-[#7A6652] btn-press"
+                className="p-1 text-[#65513F] btn-press"
               >
                 <X className="w-5 h-5" />
               </button>

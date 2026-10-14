@@ -77,13 +77,13 @@ export const AdminOrders: React.FC = () => {
             placeholder="Search by order #, patron or email..."
             className="w-full px-3 py-2 bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden font-mono"
           />
-          <div className="px-3 py-2 text-[#7A6652] dark:text-[#A99A82]">
+          <div className="px-3 py-2 text-[#65513F] dark:text-[#A99A82]">
             <Search className="w-3.5 h-3.5" />
           </div>
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto font-mono">
-          <span className="text-[#7A6652] dark:text-[#A99A82]">Status:</span>
+          <span className="text-[#65513F] dark:text-[#A99A82]">Status:</span>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -104,7 +104,7 @@ export const AdminOrders: React.FC = () => {
       <div className="border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] overflow-x-auto shadow-xs">
         <table className="w-full text-start text-xs">
           <thead>
-            <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#7A6652] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
+            <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#65513F] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
               <th className="p-3">Order #</th>
               <th className="p-3">Patron</th>
               <th className="p-3">Volumes</th>
@@ -124,15 +124,15 @@ export const AdminOrders: React.FC = () => {
                   <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD] block">
                     {order.customerName}
                   </span>
-                  <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82]">{order.customerEmail}</span>
+                  <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{order.customerEmail}</span>
                 </td>
-                <td className="p-3 font-mono text-[11px]">
+                <td className="p-3 font-mono text-xs">
                   {order.items.reduce((acc, it) => acc + it.quantity, 0)} items
                 </td>
                 <td className="p-3 font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
                   ${order.totalAmount.toFixed(2)}
                 </td>
-                <td className="p-3 text-[#7A6652] dark:text-[#A99A82] font-mono text-[11px]">
+                <td className="p-3 text-[#65513F] dark:text-[#A99A82] font-mono text-xs">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </td>
                 <td className="p-3">
@@ -141,7 +141,7 @@ export const AdminOrders: React.FC = () => {
                     onChange={(e) =>
                       handleStatusChange(order.id, e.target.value as OrderStatus)
                     }
-                    className="px-2 py-1 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#2A231B] text-[#3B2B1E] dark:text-[#F3ECDD] text-[11px] font-mono cursor-pointer"
+                    className="px-2 py-1 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#2A231B] text-[#3B2B1E] dark:text-[#F3ECDD] text-xs font-mono cursor-pointer"
                   >
                     <option value="PENDING">PENDING</option>
                     <option value="CONFIRMED">CONFIRMED</option>
@@ -155,7 +155,7 @@ export const AdminOrders: React.FC = () => {
                 <td className="p-3 text-end">
                   <button
                     onClick={() => setSelectedOrder(order)}
-                    className="p-1.5 text-[#7A6652] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
+                    className="p-1.5 text-[#65513F] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
                     title="View dossier"
                   >
                     <Eye className="w-4 h-4" />
@@ -183,7 +183,7 @@ export const AdminOrders: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="text-xs font-semibold text-[#7A6652] hover:text-[#3B2B1E] font-mono btn-press"
+                className="text-xs font-semibold text-[#65513F] hover:text-[#3B2B1E] font-mono btn-press"
               >
                 Close
               </button>
@@ -191,16 +191,16 @@ export const AdminOrders: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block font-mono">Customer</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block font-mono">Customer</span>
                 <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {selectedOrder.customerName}
                 </span>
-                <span className="block text-[11px] text-[#7A6652] dark:text-[#A99A82]">
+                <span className="block text-xs text-[#65513F] dark:text-[#A99A82]">
                   {selectedOrder.customerEmail}
                 </span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block font-mono">Carrier Address</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block font-mono">Carrier Address</span>
                 <span className="text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {selectedOrder.shippingDetails.address}, {selectedOrder.shippingDetails.city}
                 </span>
@@ -215,7 +215,7 @@ export const AdminOrders: React.FC = () => {
                     <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
                       {it.bookTitle}
                     </span>
-                    <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82] ms-2 font-mono">Qty: {it.quantity}</span>
+                    <span className="text-xs text-[#65513F] dark:text-[#A99A82] ms-2 font-mono">Qty: {it.quantity}</span>
                   </div>
                   <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
                     ${(it.price * it.quantity).toFixed(2)}

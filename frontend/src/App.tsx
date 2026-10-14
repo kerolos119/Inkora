@@ -20,8 +20,14 @@ import { AdminCategories } from './pages/admin/AdminCategories.js';
 import { AdminAuthors } from './pages/admin/AdminAuthors.js';
 import { AdminReviews } from './pages/admin/AdminReviews.js';
 import { Book } from './types/index.js';
+import { useAuth } from './context/AuthContext.js';
+
+// Pages that need a signed-in account
+const needsLogin = (page: string) =>
+  page === 'checkout' || page === 'account' || page.startsWith('account:');
 
 export const App: React.FC = () => {
+  const { user, isAdmin, isLoading, logout } = useAuth();
   const [currentPage, setCurrentPage] = useState<string>(() => {
     const hash = window.location.hash.replace('#', '');
     return hash || 'home';
@@ -46,14 +52,38 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Each account only sees its own side of the app:
+  //  - admin accounts  -> the admin panel only
+  //  - customer / guest -> the storefront only (admin URLs send them to sign in)
+  //  - guests           -> sign in first for account and checkout pages
+  const effectivePage = isLoading
+    ? currentPage
+    : isAdmin
+      ? currentPage.startsWith('admin') ? currentPage : 'admin'
+      : currentPage.startsWith('admin') || (!user && needsLogin(currentPage))
+        ? 'auth'
+        : currentPage;
+
+  useEffect(() => {
+    if (!isLoading && effectivePage !== currentPage) {
+      setCurrentPage(effectivePage);
+      window.location.hash = effectivePage;
+    }
+  }, [isLoading, effectivePage, currentPage]);
+
   // Determine which page to render
   const renderContent = () => {
+    if (isLoading) return null;
+    const currentPage = effectivePage;
     if (currentPage.startsWith('admin')) {
       return (
         <AdminLayout
           currentTab={adminTab}
           onTabChange={setAdminTab}
-          onNavigateHome={() => handleNavigate('home')}
+          onLogout={() => {
+            logout();
+            handleNavigate('auth');
+          }}
         >
           {adminTab === 'overview' && <AdminDashboard onNavigateTab={setAdminTab} />}
           {adminTab === 'books' && <AdminBooks />}
@@ -125,13 +155,13 @@ export const App: React.FC = () => {
     }
   };
 
-  const isAdminView = currentPage.startsWith('admin');
+  const isAdminView = isAdmin && effectivePage.startsWith('admin');
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF6EC] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] transition-colors selection:bg-[#8A6238]/20 selection:text-[#8A6238]">
+    <div className="min-h-screen flex flex-col bg-[#F8F3E8] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] transition-colors selection:bg-[#8A6238]/20 selection:text-[#8A6238]">
       {!isAdminView && (
         <Navbar
-          currentPage={currentPage}
+          currentPage={effectivePage}
           onNavigate={handleNavigate}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -139,7 +169,7 @@ export const App: React.FC = () => {
       )}
 
       <main className="flex-1">
-        <div key={currentPage} className="animate-ink-fade">
+        <div key={effectivePage} className="animate-ink-fade">
           {renderContent()}
         </div>
       </main>

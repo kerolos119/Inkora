@@ -44,11 +44,11 @@ export const AccountPage: React.FC<AccountPageProps> = ({
 
   // Address edit state
   const [addressState, setAddressState] = useState({
-    street: user?.address || '742 Evergreen Terrace, Apt 4B',
-    city: 'Portland',
-    state: 'OR',
-    postalCode: '97201',
-    phone: user?.phoneNumber || '+1 (555) 234-5678',
+    street: user?.address || '',
+    city: '',
+    state: '',
+    postalCode: '',
+    phone: user?.phoneNumber || '',
   });
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
       case 'CANCELLED':
         return 'text-[#8E1F1F] bg-[#8E1F1F]/10 border-[#8E1F1F]/30';
       default:
-        return 'text-[#7A6652] dark:text-[#A99A82] bg-[#7A6652]/10 border-[#7A6652]/30';
+        return 'text-[#65513F] dark:text-[#A99A82] bg-[#65513F]/10 border-[#65513F]/30';
     }
   };
 
@@ -104,9 +104,9 @@ export const AccountPage: React.FC<AccountPageProps> = ({
             {t('ac.title')}
           </span>
           <h1 className="font-editorial text-4xl sm:text-5xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
-            Library of {user?.username || 'Eleanor Vance'}
+            {t('x.libraryOf', { name: user?.username ?? '' })}
           </h1>
-          <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mt-1 font-body-literary">
+          <p className="text-xs text-[#65513F] dark:text-[#A99A82] mt-1 font-body-literary">
             Member registered since 2023 · {orders.length} dispatched acquisitions
           </p>
         </div>
@@ -193,7 +193,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                 </h3>
 
                 {orders.length === 0 ? (
-                  <p className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+                  <p className="text-xs text-[#65513F] dark:text-[#A99A82]">
                     {t('ac.noOrders')}
                   </p>
                 ) : (
@@ -205,7 +205,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                             <span className="font-mono font-semibold text-sm text-[#3B2B1E] dark:text-[#F3ECDD]">
                               {order.orderNumber}
                             </span>
-                            <span className="text-[#7A6652] dark:text-[#A99A82] ms-2">
+                            <span className="text-[#65513F] dark:text-[#A99A82] ms-2">
                               Ordered {new Date(order.createdAt).toLocaleDateString()}
                             </span>
                           </div>
@@ -239,14 +239,14 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                               <span className="truncate max-w-40 font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
                                 {it.bookTitle}
                               </span>
-                              <span className="text-xs text-[#7A6652] dark:text-[#A99A82]">×{it.quantity}</span>
+                              <span className="text-xs text-[#65513F] dark:text-[#A99A82]">×{it.quantity}</span>
                             </div>
                           ))}
                         </div>
 
                         {/* Order Actions */}
                         <div className="flex items-center justify-between pt-2 text-xs font-mono">
-                          <span className="text-[#7A6652] dark:text-[#A99A82]">
+                          <span className="text-[#65513F] dark:text-[#A99A82]">
                             Destination: {order.shippingDetails?.city}, {order.shippingDetails?.country}
                           </span>
 
@@ -283,7 +283,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
               </h3>
 
               {wishlistBooks.length === 0 ? (
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82]">
                   {t('ac.noWish')}
                 </p>
               ) : (
@@ -303,7 +303,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                           >
                             {b.bookTitle}
                           </h4>
-                          <p className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+                          <p className="text-xs text-[#65513F] dark:text-[#A99A82]">
                             by {b.authorName} · {b.coverType}
                           </p>
                           <p className="text-xs font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-1 font-mono">
@@ -324,7 +324,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                         </button>
                         <button
                           onClick={() => toggleWishlist(b)}
-                          className="p-2 text-[#7A6652] hover:text-[#8E1F1F] transition-colors btn-press"
+                          className="p-2 text-[#65513F] hover:text-[#8E1F1F] transition-colors btn-press"
                           title={t('ac.rm')}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -346,7 +346,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
 
               <form onSubmit={handleSaveAddress} className="space-y-4 max-w-lg text-xs font-mono">
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     {t('f.street')}
                   </label>
                   <input
@@ -359,7 +359,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('f.city')}
                     </label>
                     <input
@@ -370,7 +370,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('f.zip')}
                     </label>
                     <input
@@ -383,7 +383,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     {t('f.phone')}
                   </label>
                   <input
@@ -410,7 +410,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
               <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                 {t('ac.passT')}
               </h3>
-              <p className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+              <p className="text-xs text-[#65513F] dark:text-[#A99A82]">
                 {t('ac.passH')}
               </p>
 
@@ -422,7 +422,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                 className="space-y-4 max-w-sm text-xs font-mono"
               >
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     {t('f.curPass')}
                   </label>
                   <input
@@ -433,7 +433,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     {t('f.newPass')}
                   </label>
                   <input
@@ -474,7 +474,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="text-xs uppercase tracking-wider font-semibold text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] font-mono btn-press"
+                className="text-xs uppercase tracking-wider font-semibold text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] font-mono btn-press"
               >
                 {t('ac.close')}
               </button>
@@ -482,13 +482,13 @@ export const AccountPage: React.FC<AccountPageProps> = ({
 
             <div className="grid grid-cols-2 gap-4 text-xs font-mono">
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('ac.date')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('ac.date')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {new Date(selectedOrder.createdAt).toLocaleString()}
                 </span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('f.status')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('f.status')}</span>
                 <span
                   className={`inline-block px-2 py-0.5 border text-xs font-mono uppercase font-semibold ${getStatusBadge(
                     selectedOrder.status
@@ -509,7 +509,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                       <p className="font-editorial text-base text-[#3B2B1E] dark:text-[#F3ECDD]">
                         {it.bookTitle}
                       </p>
-                      <p className="text-[11px] text-[#7A6652] dark:text-[#A99A82]">by {it.authorName} × {it.quantity}</p>
+                      <p className="text-xs text-[#65513F] dark:text-[#A99A82]">by {it.authorName} × {it.quantity}</p>
                     </div>
                   </div>
                   <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
