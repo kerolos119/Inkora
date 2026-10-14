@@ -27,8 +27,17 @@ async function call(path: string, init: RequestInit = {}, retry = true): Promise
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
   const res = await fetch(BASE + path, { ...init, headers });
-  if (res.status === 401 && retry && !path.startsWith('/auth/') && localStorage.getItem(REFRESH)) {
-    if (await refreshTokens()) return call(path, init, false);
+  if (res.status === 401 && retry && !path.startsWith('/auth/')) {
+    if (localStorage.getItem(REFRESH) && (await refreshTokens())) return call(path, init, false);
+    // The session is really over. Drop the stale credentials (a dead token makes the backend reject
+    // even public pages), tell the app to sign out, and retry once as a guest.
+    if (token) {
+      localStorage.removeItem(TOKEN);
+      localStorage.removeItem(REFRESH);
+      localStorage.removeItem('inkora_user');
+      window.dispatchEvent(new Event('inkora:session-expired'));
+      return call(path, init, false);
+    }
   }
   const text = await res.text();
   let data: any = text;

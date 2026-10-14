@@ -2,6 +2,7 @@ import { t } from '../i18n';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Book } from '../types/index.js';
 import { useToast } from './ToastContext.js';
+import { useAuth } from './AuthContext.js';
 
 interface WishlistContextValue {
   wishlistIds: string[];
@@ -12,19 +13,27 @@ interface WishlistContextValue {
 const WishlistContext = createContext<WishlistContextValue | undefined>(undefined);
 
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [wishlistIds, setWishlistIds] = useState<string[]>(() => {
+  const { user } = useAuth();
+  const storageKey = `inkora_wishlist_${user?.id ?? 'guest'}`;
+  const readList = (key: string): string[] => {
     try {
-      const saved = localStorage.getItem('inkora_wishlist');
-      return saved ? JSON.parse(saved) : ['book-1', 'book-3'];
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ['book-1', 'book-3'];
+      return [];
     }
-  });
+  };
+  const [wishlistIds, setWishlistIds] = useState<string[]>(() => readList(storageKey));
 
   const { showToast } = useToast();
 
+  // Each account keeps its own wishlist in this browser
   useEffect(() => {
-    localStorage.setItem('inkora_wishlist', JSON.stringify(wishlistIds));
+    setWishlistIds(readList(storageKey));
+  }, [storageKey]);
+
+  useEffect(() => {
+    try { localStorage.setItem(storageKey, JSON.stringify(wishlistIds)); } catch { /* storage unavailable */ }
   }, [wishlistIds]);
 
   const toggleWishlist = (book: Book) => {

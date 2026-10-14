@@ -38,7 +38,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
       email,
       password,
       address,
-      phoneNumber,
+      // the backend accepts digits with an optional leading +, so drop spaces, dashes and brackets
+      phoneNumber: phoneNumber.replace(/[\s\-().]/g, ''),
     });
     setLoading(false);
     if (created) onNavigate('home');
@@ -224,8 +225,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('x.ec8514')}
                 required
+                minLength={8}
                 className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
+              <p className="mt-1 text-xs text-[#65513F] dark:text-[#A99A82]">{t('auth.pwHint')}</p>
             </div>
 
             <button

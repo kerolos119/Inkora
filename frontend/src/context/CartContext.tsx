@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Cart, CartItem, Book } from '../types/index.js';
 import { api } from '../services/api.js';
 import { useToast } from './ToastContext.js';
+import { useAuth } from './AuthContext.js';
 
 interface CartContextValue {
   cart: Cart;
@@ -32,6 +33,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const { showToast } = useToast();
+  const { user } = useAuth();
 
   const refreshCart = async () => {
     try {
@@ -44,11 +46,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // The cart belongs to the signed-in account: reload on sign-in, empty it on sign-out.
   useEffect(() => {
+    if (!user) {
+      setCart(defaultCart);
+      setIsLoading(false);
+      return;
+    }
     refreshCart();
-  }, []);
+  }, [user?.id]);
 
   const addToCart = async (book: Book, quantity = 1) => {
+    if (!user) {
+      showToast(t('cart.signInFirst'), 'info');
+      return;
+    }
     try {
       const updated = await api.addToCart(book.id, quantity);
       setCart(updated);
@@ -59,6 +71,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateQuantity = async (bookId: string, quantity: number) => {
+    if (!user) return;
     try {
       const updated = await api.addToCart(bookId, quantity);
       setCart(updated);

@@ -37,6 +37,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    const onExpired = () => {
+      setUser(null);
+      setToken(null);
+      showToast(t('auth.sessionExpired'), 'info');
+    };
+    window.addEventListener('inkora:session-expired', onExpired);
+    return () => window.removeEventListener('inkora:session-expired', onExpired);
+  }, []);
+
   const login = async (email: string, password: string): Promise<User | null> => {
     try {
       const res = await api.login({ email, password });

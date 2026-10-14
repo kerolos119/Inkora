@@ -151,6 +151,20 @@ There are two ways to run it:
 | `npm run dev` | Starts the **mock API** (Express, in-memory data) together with Vite on `http://localhost:3000`. No backend or database needed. |
 | `npm run dev:real` | Starts Vite only on `http://localhost:3000` and proxies `/api/v1` to the real backend at `http://localhost:8080`. Start the backend first. |
 
+> **Use `npm run dev:real` to talk to the real backend.** Plain `npm run dev` uses the in-memory mock API and never calls Spring.
+
+#### Accounts (admin and customers)
+
+Every account signs in on its own: there is no role switcher. Registering in the app always creates a `USER`. The API has no way to create an admin, so promote an account in MongoDB after it has registered:
+
+```js
+// mongosh
+use Inkora
+db.users.updateOne({ email: "you@example.com" }, { $set: { role: "ADMIN" } })
+```
+
+Sign out and sign in again so the new token carries the `ADMIN` role. Admins land on the admin panel; customers only see the storefront.
+
 Other scripts:
 
 ```bash
