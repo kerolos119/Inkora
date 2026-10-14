@@ -30,28 +30,28 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
 
   // Form State
   const [customerInfo, setCustomerInfo] = useState({
-    fullName: user?.username ? 'Eleanor Vance' : '',
-    email: user?.email || 'user@inkora.com',
-    phone: user?.phoneNumber || '+1 (555) 234-5678',
+    fullName: user?.username ?? '',
+    email: user?.email ?? '',
+    phone: user?.phoneNumber ?? '',
   });
 
   const [shippingDetails, setShippingDetails] = useState<ShippingDetails>({
-    fullName: user?.username ? 'Eleanor Vance' : '',
-    email: user?.email || 'user@inkora.com',
-    phone: user?.phoneNumber || '+1 (555) 234-5678',
-    address: user?.address || '742 Evergreen Terrace, Apt 4B',
-    city: 'Portland',
-    postalCode: '97201',
-    country: 'United States',
-    notes: 'Please leave in the reception library box.',
+    fullName: user?.username ?? '',
+    email: user?.email ?? '',
+    phone: user?.phoneNumber ?? '',
+    address: user?.address ?? '',
+    city: '',
+    postalCode: '',
+    country: '',
+    notes: '',
   });
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('ONLINE');
   const [cardInfo, setCardInfo] = useState({
-    cardNumber: '4242 •••• •••• 4242',
-    cardExp: '12/28',
-    cardCvc: '884',
-    cardName: 'Eleanor Vance',
+    cardNumber: '',
+    cardExp: '',
+    cardCvc: '',
+    cardName: '',
   });
 
   if (cart.items.length === 0 && step !== 5) {
@@ -60,7 +60,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
         <h2 className="font-editorial text-3xl text-[#3B2B1E] dark:text-[#F3ECDD]">
           {t('co.emptyT')}
         </h2>
-        <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+        <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
           {t('co.emptyB')}
         </p>
         <button
@@ -147,7 +147,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                       ? 'border border-[#8A6238] dark:border-[#D2A560] text-[#8A6238] dark:text-[#D2A560] font-semibold bg-[#F6EBD3] dark:bg-[#33281A]'
                       : step > s.num
                       ? 'text-[#2A674A]'
-                      : 'text-[#7A6652] dark:text-[#A99A82] opacity-60'
+                      : 'text-[#65513F] dark:text-[#A99A82] opacity-60'
                   }`}
                 >
                   <span>{s.num}.</span>
@@ -182,7 +182,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
             <h2 className="font-editorial text-3xl sm:text-4xl text-[#3B2B1E] dark:text-[#F3ECDD]">
               {t('co.thanks')}
             </h2>
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed font-body-literary">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed font-body-literary">
               {t('co.ref')}
             </p>
             <div className="font-mono text-base font-semibold text-[#8A6238] dark:text-[#D2A560] bg-[#F1E9D6] dark:bg-[#342B21] py-2 px-4 inline-block border border-[#E3D6BC] dark:border-[#4A3E2E] rounded-[2px]">
@@ -195,10 +195,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-[#E3D6BC] dark:border-[#4A3E2E] text-xs font-mono">
             <div>
-              <h4 className="font-semibold uppercase tracking-wider text-[11px] text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
+              <h4 className="font-semibold uppercase tracking-wider text-xs text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
                 {t('co.shipTo')}
               </h4>
-              <p className="text-[#7A6652] dark:text-[#A99A82]">
+              <p className="text-[#65513F] dark:text-[#A99A82]">
                 {createdOrder.shippingDetails.fullName}<br />
                 {createdOrder.shippingDetails.address}<br />
                 {createdOrder.shippingDetails.city}, {createdOrder.shippingDetails.postalCode}<br />
@@ -207,10 +207,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
             </div>
 
             <div>
-              <h4 className="font-semibold uppercase tracking-wider text-[11px] text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
+              <h4 className="font-semibold uppercase tracking-wider text-xs text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
                 {t('co.fin')}
               </h4>
-              <div className="space-y-1 text-[#7A6652] dark:text-[#A99A82]">
+              <div className="space-y-1 text-[#65513F] dark:text-[#A99A82]">
                 <div className="flex justify-between">
                   <span>{t('co.method')}</span>
                   <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{createdOrder.paymentMethod}</span>
@@ -229,7 +229,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
 
           {/* Items Summary in Receipt */}
           <div className="pt-6 border-t border-[#E3D6BC] dark:border-[#4A3E2E] space-y-3 font-mono">
-            <h4 className="font-semibold uppercase tracking-wider text-[11px] text-[#3B2B1E] dark:text-[#F3ECDD]">
+            <h4 className="font-semibold uppercase tracking-wider text-xs text-[#3B2B1E] dark:text-[#F3ECDD]">
               {t('co.items')}
             </h4>
             <div className="divide-y divide-[#E3D6BC]/60 dark:divide-[#4A3E2E]/60">
@@ -239,7 +239,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                     <span className="font-editorial text-base font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
                       {item.bookTitle}
                     </span>
-                    <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82] ms-2">
+                    <span className="text-xs text-[#65513F] dark:text-[#A99A82] ms-2">
                       by {item.authorName} × {item.quantity}
                     </span>
                   </div>
@@ -276,13 +276,13 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                   1. Patron Contact Details
                 </h3>
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
                   {t('co.h1')}
                 </p>
 
                 <div className="space-y-3 pt-2">
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('f.name')}
                     </label>
                     <input
@@ -297,7 +297,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   </div>
 
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('f.email')}
                     </label>
                     <input
@@ -312,7 +312,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   </div>
 
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('f.phoneC')}
                     </label>
                     <input
@@ -335,13 +335,13 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                   2. Archival Delivery Destination
                 </h3>
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
                   {t('co.h2')}
                 </p>
 
                 <div className="space-y-3 pt-2">
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('x.262d3c')}
                     </label>
                     <input
@@ -357,7 +357,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                      <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                         {t('f.city')}
                       </label>
                       <input
@@ -371,7 +371,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                      <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                         {t('f.zip')}
                       </label>
                       <input
@@ -387,7 +387,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   </div>
 
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('f.country')}
                     </label>
                     <input
@@ -402,7 +402,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   </div>
 
                   <div>
-                    <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                    <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                       {t('f.notes')}
                     </label>
                     <textarea
@@ -425,7 +425,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                   3. Settlement Method
                 </h3>
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
                   {t('co.h3')}
                 </p>
 
@@ -442,7 +442,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                     <span className="font-semibold text-xs text-[#3B2B1E] dark:text-[#F3ECDD] block font-mono">
                       {t('x.0c04a4')}
                     </span>
-                    <span className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+                    <span className="text-xs text-[#65513F] dark:text-[#A99A82]">
                       {t('co.card')}
                     </span>
                   </div>
@@ -459,7 +459,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                     <span className="font-semibold text-xs text-[#3B2B1E] dark:text-[#F3ECDD] block font-mono">
                       {t('co.cod')}
                     </span>
-                    <span className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+                    <span className="text-xs text-[#65513F] dark:text-[#A99A82]">
                       {t('co.codS')}
                     </span>
                   </div>
@@ -467,12 +467,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
 
                 {paymentMethod === 'ONLINE' && (
                   <div className="space-y-3 pt-3 p-4 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] rounded-[2px]">
-                    <div className="flex items-center justify-between text-[11px] text-[#7A6652] dark:text-[#A99A82] font-mono">
+                    <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
                       <span>{t('co.demo')}</span>
                       <ShieldCheck className="w-3.5 h-3.5 text-[#2A674A]" />
                     </div>
                     <div>
-                      <label className="text-xs uppercase font-mono text-[#7A6652] dark:text-[#A99A82] block mb-1">
+                      <label className="text-xs uppercase font-mono text-[#65513F] dark:text-[#A99A82] block mb-1">
                         {t('f.card')}
                       </label>
                       <input
@@ -484,7 +484,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-xs uppercase font-mono text-[#7A6652] dark:text-[#A99A82] block mb-1">
+                        <label className="text-xs uppercase font-mono text-[#65513F] dark:text-[#A99A82] block mb-1">
                           {t('x.ec67f2')}
                         </label>
                         <input
@@ -495,7 +495,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                         />
                       </div>
                       <div>
-                        <label className="text-xs uppercase font-mono text-[#7A6652] dark:text-[#A99A82] block mb-1">
+                        <label className="text-xs uppercase font-mono text-[#65513F] dark:text-[#A99A82] block mb-1">
                           {t('x.9dbe75')}
                         </label>
                         <input
@@ -517,23 +517,23 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                   4. Review & Authorize Dispatch
                 </h3>
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
                   {t('co.h4')}
                 </p>
 
                 <div className="p-4 border border-[#E3D6BC] dark:border-[#4A3E2E] space-y-3 text-xs font-mono rounded-[2px]">
                   <div className="flex justify-between border-b border-[#E3D6BC] dark:border-[#4A3E2E] pb-2">
-                    <span className="text-[#7A6652] dark:text-[#A99A82]">{t('co.rcpt')}</span>
+                    <span className="text-[#65513F] dark:text-[#A99A82]">{t('co.rcpt')}</span>
                     <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{shippingDetails.fullName}</span>
                   </div>
                   <div className="flex justify-between border-b border-[#E3D6BC] dark:border-[#4A3E2E] pb-2">
-                    <span className="text-[#7A6652] dark:text-[#A99A82]">{t('co.shipTo')}</span>
+                    <span className="text-[#65513F] dark:text-[#A99A82]">{t('co.shipTo')}</span>
                     <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
                       {shippingDetails.address}, {shippingDetails.city}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#7A6652] dark:text-[#A99A82]">{t('co.s3')}</span>
+                    <span className="text-[#65513F] dark:text-[#A99A82]">{t('co.s3')}</span>
                     <span className="font-medium text-[#8A6238] dark:text-[#D2A560]">{paymentMethod}</span>
                   </div>
                 </div>
@@ -546,7 +546,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => setStep((step - 1) as any)}
-                  className="flex items-center gap-1.5 text-xs text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] btn-press"
+                  className="flex items-center gap-1.5 text-xs text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] btn-press"
                 >
                   <ArrowLeft className="rtl:-scale-x-100 w-3.5 h-3.5" />
                   <span>{t('co.prev')}</span>
@@ -555,7 +555,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('cart')}
-                  className="text-xs text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] btn-press"
+                  className="text-xs text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] btn-press"
                 >
                   ← Back to Bag
                 </button>
@@ -602,7 +602,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                     <p className="font-editorial text-base font-medium text-[#3B2B1E] dark:text-[#F3ECDD] truncate">
                       {book.bookTitle}
                     </p>
-                    <p className="text-[11px] text-[#7A6652] dark:text-[#A99A82]">
+                    <p className="text-xs text-[#65513F] dark:text-[#A99A82]">
                       Qty: {quantity} · ${book.price.toFixed(2)}
                     </p>
                   </div>
@@ -610,7 +610,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
               ))}
             </div>
 
-            <div className="border-t border-[#E3D6BC] dark:border-[#4A3E2E] pt-3 space-y-1.5 text-xs text-[#7A6652] dark:text-[#A99A82]">
+            <div className="border-t border-[#E3D6BC] dark:border-[#4A3E2E] pt-3 space-y-1.5 text-xs text-[#65513F] dark:text-[#A99A82]">
               <div className="flex justify-between">
                 <span>{t('co.sub')}</span>
                 <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">

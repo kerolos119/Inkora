@@ -2,30 +2,47 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Type scale: the smallest size is ~18.05px (0.95rem x 19px). Nothing renders below 18px. */
+@theme {
+  --text-xs: 0.95rem;
+  --text-xs--line-height: 1.6;
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.6;
+  --text-base: 1.06rem;
+  --text-base--line-height: 1.7;
+  --tracking-widest: 0.04em;
+  --tracking-wider: 0.025em;
+  --tracking-wide: 0.015em;
+}
+
 @layer base {
   :root {
     /* ===== TYPOGRAPHY SETTINGS: change fonts, size and weight here ===== */
-    --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    --font-heading: 'EB Garamond', 'Newsreader', Georgia, serif;
-    --font-title: 'Fraunces', 'EB Garamond', Georgia, serif;
-    --font-literary: 'Spectral', Georgia, serif;
-    --font-hand: 'Caveat', cursive;
-    --font-arabic: 'Amiri', 'Noto Naskh Arabic', serif;
-    --font-weight-arabic: 700;      /* Arabic weight: 400 normal, 700 bold */
-    --font-size-arabic: 115%;       /* Arabic base size (Naskh looks smaller) */
-    --font-size-base: 106.25%;      /* 100% = 16px. Scales the whole site. */
-    --font-weight-body: 400;        /* 400 normal, 500 medium, 700 bold */
-    --font-weight-heading: 600;
+    /* English: Times New Roman everywhere. */
+    --font-en: 'Times New Roman', Times, 'Liberation Serif', serif;
+    --font-body: var(--font-en);
+    --font-heading: var(--font-en);
+    --font-title: var(--font-en);
+    --font-literary: var(--font-en);
+    --font-hand: var(--font-en);
+    /* Arabic: Ruqah-style (Aref Ruqaa), with Naskh as a fallback for clarity. */
+    --font-arabic: 'Aref Ruqaa', 'Noto Naskh Arabic', 'Amiri', serif;
+    --font-weight-arabic: 400;
+    --font-weight-arabic-heading: 700;
+    --font-size-arabic: 125%;       /* 20px: Arabic root size */
+    --font-size-base: 118.75%;      /* 19px: English root size. Smallest text is still above 18px. */
+    --font-weight-body: 400;
+    --font-weight-heading: 700;
     --font-size-literary: 1.05rem;
     /* ================================================================= */
-    --bg-main: #FAF6EC;
+    --bg-main: #F8F3E8;
     --bg-surface: #FFFFFF;
     --bg-subtle: #F1E9D6;
     --border-main: #E3D6BC;
     --border-ink: #E3D6BC;
     --text-primary: #3B2B1E;
     --text-secondary: #5A4635;
-    --text-muted: #7A6652;
+    --text-muted: #65513F;
     --ink-black: #3B2B1E;
     --ink-blue: #8A6238;
     --ink-blue-hover: #6F4D2B;
@@ -68,16 +85,26 @@
     font-weight: var(--font-weight-body);
     background-color: var(--bg-main);
     color: var(--text-primary);
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* No monospace / wide-tracked caps: everything uses the same readable font */
+  .font-mono, code, kbd, samp, pre { font-family: var(--font-body) !important; }
+  .uppercase { text-transform: none; }
+  p, li { max-width: 75ch; }
+  button, input, select, textarea { font-family: inherit; font-size: inherit; }
+  input, select, textarea { min-height: 2.75rem; }
+  button { min-height: 2.5rem; }
 
   /* Ink typography classes with ligatures */
   h1, h2, h3, .font-editorial {
     font-family: var(--font-heading);
     font-weight: var(--font-weight-heading);
-    font-feature-settings: "liga" 1, "dlig" 1, "kern" 1;
-    letter-spacing: -0.01em;
+    font-feature-settings: "liga" 1, "kern" 1;
+    letter-spacing: 0;
+    line-height: 1.25;
   }
 
   .font-ink-title {
@@ -130,7 +157,7 @@
 .ink-seal {
   border: 1.5px solid var(--ink-seal);
   color: var(--ink-seal);
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: var(--font-body);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   display: inline-flex;
@@ -330,14 +357,16 @@
 
 /* Legibility, focus and Arabic/RTL support */
 html { font-size: var(--font-size-base); }
-:focus-visible { outline: 2px solid #D2A560; outline-offset: 2px; }
+:focus-visible { outline: 3px solid #B07A2E; outline-offset: 2px; }
 html[dir="rtl"] { font-size: var(--font-size-arabic); }
 html[dir="rtl"] body,
 html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3,
 html[dir="rtl"] .font-editorial, html[dir="rtl"] .font-ink-title,
 html[dir="rtl"] .font-body-literary, html[dir="rtl"] .font-quill,
 html[dir="rtl"] .font-mono, html[dir="rtl"] input, html[dir="rtl"] textarea,
-html[dir="rtl"] button, html[dir="rtl"] select { font-family: var(--font-arabic); }
-html[dir="rtl"] * { font-weight: var(--font-weight-arabic); }
+html[dir="rtl"] button, html[dir="rtl"] select { font-family: var(--font-arabic) !important; }
+html[dir="rtl"] body, html[dir="rtl"] p, html[dir="rtl"] li { font-weight: var(--font-weight-arabic); line-height: 1.9; }
+html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3,
+html[dir="rtl"] .font-semibold, html[dir="rtl"] .font-bold { font-weight: var(--font-weight-arabic-heading); }
 html[dir="rtl"] * { letter-spacing: 0 !important; text-transform: none !important; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

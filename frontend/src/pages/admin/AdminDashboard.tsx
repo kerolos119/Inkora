@@ -84,7 +84,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
       {/* KPI Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] shadow-xs">
-          <span className="text-[11px] font-mono text-[#7A6652] dark:text-[#A99A82] uppercase block">
+          <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82] uppercase block">
             Net Revenue
           </span>
           <div className="font-editorial text-3xl font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
@@ -96,19 +96,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
         </div>
 
         <div className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] shadow-xs">
-          <span className="text-[11px] font-mono text-[#7A6652] dark:text-[#A99A82] uppercase block">
+          <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82] uppercase block">
             Total Orders
           </span>
           <div className="font-editorial text-3xl font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
             {data.totalOrders}
           </div>
-          <span className="text-xs text-[#7A6652] dark:text-[#A99A82] font-mono mt-2 block">
+          <span className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono mt-2 block">
             Across 14 jurisdictions
           </span>
         </div>
 
         <div className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] shadow-xs">
-          <span className="text-[11px] font-mono text-[#7A6652] dark:text-[#A99A82] uppercase block">
+          <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82] uppercase block">
             Registered Patrons
           </span>
           <div className="font-editorial text-3xl font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
@@ -120,7 +120,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
         </div>
 
         <div className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] shadow-xs">
-          <span className="text-[11px] font-mono text-[#7A6652] dark:text-[#A99A82] uppercase block">
+          <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82] uppercase block">
             Inscribed Editions
           </span>
           <div className="font-editorial text-3xl font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
@@ -141,7 +141,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
               <h4 className="font-semibold text-xs text-[#8E1F1F] dark:text-[#E25858] uppercase tracking-wider font-mono">
                 Low Inventory Notice ({data.lowStockBooks.length} Editions)
               </h4>
-              <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mt-0.5 font-body-literary">
+              <p className="text-xs text-[#65513F] dark:text-[#A99A82] mt-0.5 font-body-literary">
                 {data.lowStockBooks.map((b: Book) => `${b.bookTitle} (${b.stock} left)`).join(' · ')}
               </p>
             </div>
@@ -163,7 +163,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
             <h3 className="font-editorial text-xl text-[#3B2B1E] dark:text-[#F3ECDD]">
               Monthly Revenue Performance
             </h3>
-            <span className="text-[11px] font-mono text-[#7A6652] dark:text-[#A99A82]">
+            <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82]">
               Past 6 Months
             </span>
           </div>
@@ -174,7 +174,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
               const heightPercent = Math.round((t.revenue / maxRevenue) * 100);
               return (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                  <span className="text-xs font-mono text-[#7A6652] dark:text-[#A99A82]">
+                  <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82]">
                     ${t.revenue}
                   </span>
                   <div
@@ -202,7 +202,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
           <div className="space-y-3 text-xs">
             {Object.entries(data.statusDistribution || {}).map(([st, count]: any) => (
               <div key={st} className="flex items-center justify-between">
-                <span className="font-mono uppercase text-[11px] text-[#7A6652] dark:text-[#A99A82]">
+                <span className="font-mono uppercase text-xs text-[#65513F] dark:text-[#A99A82]">
                   {st}
                 </span>
                 <span className="font-mono font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
@@ -231,7 +231,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
         <div className="overflow-x-auto">
           <table className="w-full text-start text-xs">
             <thead>
-              <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#7A6652] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
+              <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#65513F] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
                 <th className="py-2.5">Order #</th>
                 <th className="py-2.5">Patron</th>
                 <th className="py-2.5">Total</th>
@@ -249,7 +249,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
                     <span className="block font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
                       {order.customerName}
                     </span>
-                    <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82]">{order.customerEmail}</span>
+                    <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{order.customerEmail}</span>
                   </td>
                   <td className="py-3 font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
                     ${order.totalAmount.toFixed(2)}
@@ -265,7 +265,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
                       onChange={(e) =>
                         handleUpdateStatus(order.id, e.target.value as OrderStatus)
                       }
-                      className="px-2 py-1 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#2A231B] text-[#3B2B1E] dark:text-[#F3ECDD] text-[11px] font-mono cursor-pointer"
+                      className="px-2 py-1 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#2A231B] text-[#3B2B1E] dark:text-[#F3ECDD] text-xs font-mono cursor-pointer"
                     >
                       <option value="CONFIRMED">CONFIRMED</option>
                       <option value="PROCESSING">PROCESSING</option>

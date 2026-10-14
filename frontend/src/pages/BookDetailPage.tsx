@@ -128,7 +128,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
       {/* Back button */}
       <button
         onClick={() => onNavigate('catalog')}
-        className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] transition-colors font-mono btn-press"
+        className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] transition-colors font-mono btn-press"
       >
         <ArrowLeft className="rtl:-scale-x-100 w-3.5 h-3.5" />
         <span>{t('x.d599e2')}</span>
@@ -173,7 +173,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
           </div>
 
           {/* Quick Security & Craft Badges */}
-          <div className="max-w-md mx-auto p-4 bg-[#FFFFFF] dark:bg-[#2A231B] border border-[#E3D6BC] dark:border-[#4A3E2E] grid grid-cols-3 gap-2 text-center text-xs text-[#7A6652] dark:text-[#A99A82] rounded-[2px] shadow-2xs font-mono">
+          <div className="max-w-md mx-auto p-4 bg-[#FFFFFF] dark:bg-[#2A231B] border border-[#E3D6BC] dark:border-[#4A3E2E] grid grid-cols-3 gap-2 text-center text-xs text-[#65513F] dark:text-[#A99A82] rounded-[2px] shadow-2xs font-mono">
             <div>
               <Package className="w-4 h-4 mx-auto mb-1 text-[#8A6238] dark:text-[#D2A560]" />
               <span className="font-semibold block text-[#3B2B1E] dark:text-[#F3ECDD]">{t('x.231dab')}</span>
@@ -195,8 +195,8 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
         {/* Right Literary Monograph Details */}
         <div className="lg:col-span-7 space-y-6">
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs text-[#7A6652] dark:text-[#A99A82] font-mono">
-              <span className="text-[11px] tracking-wider uppercase text-[#8A6238] dark:text-[#D2A560] font-semibold">
+            <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
+              <span className="text-xs tracking-wider uppercase text-[#8A6238] dark:text-[#D2A560] font-semibold">
                 {book.categoryNames?.join(' · ') || 'Literary Monograph'}
               </span>
               <div className="flex items-center gap-1.5">
@@ -204,7 +204,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
                 <span className="font-semibold text-xs text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {book.rating.toFixed(1)}
                 </span>
-                <span className="text-[11px]">({book.reviewCount} patron reviews)</span>
+                <span className="text-xs">({book.reviewCount} patron reviews)</span>
               </div>
             </div>
 
@@ -212,7 +212,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
               {book.bookTitle}
             </h1>
 
-            <p className="text-sm font-medium text-[#7A6652] dark:text-[#A99A82]">
+            <p className="text-sm font-medium text-[#65513F] dark:text-[#A99A82]">
               Authored by <span className="text-[#3B2B1E] dark:text-[#F3ECDD] underline underline-offset-4">{book.authorName}</span>
             </p>
           </div>
@@ -223,7 +223,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
               ${discountedPrice.toFixed(2)}
             </span>
             {book.discount && (
-              <span className="text-base text-[#7A6652] dark:text-[#A99A82] line-through">
+              <span className="text-base text-[#65513F] dark:text-[#A99A82] line-through">
                 ${book.price.toFixed(2)}
               </span>
             )}
@@ -247,37 +247,37 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
             <h3 className="font-editorial text-lg font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mb-3">
               {t('x.102c3e')}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-[11px]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('x.7f0043')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('x.7f0043')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.coverType}</span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('x.053d3b')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('x.053d3b')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.paperType}</span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('x.9f4ca9')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('x.9f4ca9')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.bookSize}</span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('x.600584')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('x.600584')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.numberOfPages} pp</span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">ISBN</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">ISBN</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.isbn}</span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('x.89b86a')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('x.89b86a')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.language}</span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('x.61d70d')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('x.61d70d')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.publisher}</span>
               </div>
               <div>
-                <span className="text-[#7A6652] dark:text-[#A99A82] block">{t('x.483bf2')}</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block">{t('x.483bf2')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{book.publicationYear}</span>
               </div>
             </div>
@@ -290,7 +290,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
               <div className="flex items-center border border-[#3B2B1E] dark:border-[#F3ECDD] h-12 rounded-[2px] overflow-hidden">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3 h-full hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#7A6652] btn-press"
+                  className="px-3 h-full hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#65513F] btn-press"
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
@@ -299,7 +299,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
                 </span>
                 <button
                   onClick={() => setQuantity(Math.min(book.stock, quantity + 1))}
-                  className="px-3 h-full hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#7A6652] btn-press"
+                  className="px-3 h-full hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#65513F] btn-press"
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
@@ -321,7 +321,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
                 className={`h-12 w-12 flex items-center justify-center border border-[#E3D6BC] dark:border-[#4A3E2E] transition-colors rounded-[2px] btn-press ${
                   isFavorited
                     ? 'text-[#8E1F1F] border-[#8E1F1F]'
-                    : 'text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD]'
+                    : 'text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD]'
                 }`}
                 title={t('x.6ff331')}
               >
@@ -331,7 +331,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
               {/* Share */}
               <button
                 onClick={handleCopyLink}
-                className="h-12 w-12 flex items-center justify-center border border-[#E3D6BC] dark:border-[#4A3E2E] text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] transition-colors rounded-[2px] btn-press"
+                className="h-12 w-12 flex items-center justify-center border border-[#E3D6BC] dark:border-[#4A3E2E] text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] transition-colors rounded-[2px] btn-press"
                 title={t('x.3c1362')}
               >
                 <Share2 className="w-4 h-4" />
@@ -354,7 +354,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
               {t('x.bfb970')}
             </h2>
           </div>
-          <span className="text-xs font-mono text-[#7A6652] dark:text-[#A99A82]">
+          <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82]">
             {reviews.length} Verified Entries
           </span>
         </div>
@@ -364,7 +364,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
           <div className="lg:col-span-7 space-y-4">
             {reviews.length === 0 ? (
               <div className="p-8 border border-[#E3D6BC] dark:border-[#4A3E2E] text-center bg-[#FFFFFF] dark:bg-[#2A231B] rounded-[2px]">
-                <MessageSquare className="w-8 h-8 text-[#7A6652]/40 mx-auto mb-2" />
+                <MessageSquare className="w-8 h-8 text-[#65513F]/40 mx-auto mb-2" />
                 <p className="font-editorial text-xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {t('x.fe01c3')}
                 </p>
@@ -379,7 +379,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
                     <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
                       {rev.userName}
                     </span>
-                    <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82] font-mono">
+                    <span className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
                       {rev.date}
                     </span>
                   </div>
@@ -397,7 +397,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
                     ))}
                   </div>
 
-                  <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed pt-1 font-body-literary">
+                  <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed pt-1 font-body-literary">
                     {rev.comment}
                   </p>
                 </div>
@@ -410,13 +410,13 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
             <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
               {t('x.504244')}
             </h3>
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mb-4">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] mb-4">
               {t('x.a301f9')}
             </p>
 
             <form onSubmit={handleReviewSubmit} className="space-y-4">
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                   {t('x.6437b7')}
                 </label>
                 <div className="flex items-center gap-1.5">
@@ -436,14 +436,14 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
                       />
                     </button>
                   ))}
-                  <span className="text-xs font-mono ms-2 text-[#7A6652] dark:text-[#A99A82]">
+                  <span className="text-xs font-mono ms-2 text-[#65513F] dark:text-[#A99A82]">
                     {reviewRating} of 5 Stars
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                   {t('x.6cfd44')}
                 </label>
                 <input
@@ -456,7 +456,7 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                   {t('x.fdce7b')}
                 </label>
                 <textarea

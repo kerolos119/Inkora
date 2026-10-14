@@ -6,9 +6,9 @@ import {
   ShoppingBag,
   Heart,
   User as UserIcon,
+  LogIn,
   Menu,
   X,
-  ShieldCheck,
   LogOut,
   ChevronDown,
 } from 'lucide-react';
@@ -30,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchQuery = '',
   onSearchChange,
 }) => {
-  const { user, logout, switchDemoRole, isAdmin } = useAuth();
+  const { user, logout } = useAuth();
   const { itemCount, setIsCartDrawerOpen } = useCart();
   const { wishlistIds } = useWishlist();
 
@@ -49,12 +49,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-[#FAF6EC]/95 dark:bg-[#120F0B]/95 backdrop-blur-md border-b border-[#E3D6BC] dark:border-[#4A3E2E]">
-      {/* Editorial Announcement & Demo Switcher Bar */}
-      <div className="bg-[#3B2B1E] text-[#F3ECDD] text-[11px] py-1.5 px-4 tracking-wider border-b border-[#33291C]">
+      {/* Editorial Announcement Bar */}
+      <div className="bg-[#3B2B1E] text-[#F3ECDD] text-xs py-1.5 px-4 tracking-wider border-b border-[#33291C]">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="hidden sm:flex items-center gap-2 text-[#DFD6CA]/80">
             <span className="flex items-center gap-1.5">
-              <svg className="w-3 h-3 text-[#D9AE6B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-4 h-4 text-[#D9AE6B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m12 2 4 7-4 13-4-13 4-7z"/>
                 <circle cx="12" cy="11" r="1.5" fill="currentColor"/>
               </svg>
@@ -62,26 +62,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
             <span className="text-[#D9AE6B]">·</span>
             <span className="italic font-editorial text-xs text-[#F3ECDD]">{t('x.30c8b4')}</span>
-          </div>
-          <div className="flex items-center gap-3 ms-auto text-xs">
-            <span className="text-[#DFD6CA]/60">{t('x.61e4c2')}</span>
-            <button
-              onClick={() => switchDemoRole(user?.role === 'ADMIN' ? 'USER' : 'ADMIN')}
-              className="flex items-center gap-1.5 px-2.5 py-0.5 bg-[#8A6238] dark:bg-[#604626] text-[#F3ECDD] hover:bg-[#654A2A] transition-colors font-medium text-xs uppercase tracking-widest cursor-pointer border border-[#84653F]/40"
-              title={t('x.ad34bc')}
-            >
-              {user?.role === 'ADMIN' ? (
-                <>
-                  <ShieldCheck className="w-3 h-3 text-[#F3ECDD]" />
-                  <span>{t('x.50d16c')}</span>
-                </>
-              ) : (
-                <>
-                  <UserIcon className="w-3 h-3 text-[#F3ECDD]" />
-                  <span>{t('x.5876b3')}</span>
-                </>
-              )}
-            </button>
           </div>
         </div>
       </div>
@@ -116,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="font-editorial text-3xl font-semibold tracking-widest uppercase text-[#3B2B1E] dark:text-[#F3ECDD] group-hover:text-[#8A6238] dark:group-hover:text-[#D9AE6B] transition-colors">
                 INKORA
               </span>
-              <span className="text-xs uppercase tracking-[0.28em] text-[#7A6652] dark:text-[#A99A82] -mt-1 font-mono">
+              <span className="text-xs uppercase tracking-[0.28em] text-[#65513F] dark:text-[#A99A82] -mt-1 font-mono">
                 {t('x.589be7')}
               </span>
             </div>
@@ -154,15 +134,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               {t('x.dd3622')}
             </button>
-            {isAdmin && (
-              <button
-                onClick={() => onNavigate('admin')}
-                className="flex items-center gap-1.5 text-[#8A6238] dark:text-[#D9AE6B] font-semibold py-1 hover:text-[#6F4D2B] transition-colors"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>{t('x.036adc')}</span>
-              </button>
-            )}
           </nav>
 
           {/* Right Action Icons: Search, Wishlist, Cart, Account, Theme */}
@@ -171,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="relative">
               {isSearchExpanded ? (
                 <div className="flex items-center border border-[#8A6238] dark:border-[#D9AE6B] bg-[#FFFFFF] dark:bg-[#2A231B] px-2.5 py-1 shadow-xs">
-                  <Search className="w-3.5 h-3.5 text-[#8A6238] dark:text-[#D9AE6B] me-2 shrink-0" />
+                  <Search className="w-4 h-4 text-[#8A6238] dark:text-[#D9AE6B] me-2 shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
@@ -185,13 +156,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                       }
                     }}
                     autoFocus
-                    className="w-48 sm:w-64 text-xs bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden"
+                    className="w-48 sm:w-64 text-sm bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden"
                   />
                   <button
                     onClick={() => setIsSearchExpanded(false)}
-                    className="p-1 text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82]"
+                    className="p-1 text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82]"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
@@ -213,7 +184,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Heart className="w-4 h-4" />
               {wishlistIds.length > 0 && (
-                <span className="absolute top-1 end-1 w-3.5 h-3.5 bg-[#8E1F1F] text-[#F3ECDD] text-xs font-bold flex items-center justify-center font-mono">
+                <span className="absolute top-1 end-1 w-4 h-4 bg-[#8E1F1F] text-[#F3ECDD] text-xs font-bold flex items-center justify-center font-mono">
                   {wishlistIds.length}
                 </span>
               )}
@@ -240,32 +211,41 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Theme Toggle */}
             <LanguageToggle /><ThemeToggle />
 
-            {/* Account Dropdown */}
+            {/* Account: guests get a Sign in button, signed-in readers get their menu */}
+            {!user ? (
+              <button
+                onClick={() => onNavigate('auth')}
+                className="flex items-center gap-2 px-4 py-2 bg-[#8A6238] text-[#FAF6EC] hover:bg-[#6F4D2B] transition-colors font-semibold btn-press"
+              >
+                <LogIn className="w-4 h-4 rtl:-scale-x-100" />
+                <span>{t('auth.signIn')}</span>
+              </button>
+            ) : (
             <div className="relative">
               <button
                 onClick={() => setAccountMenuOpen(!accountMenuOpen)}
                 className="flex items-center gap-1.5 p-1.5 text-[#3B2B1E] dark:text-[#F3ECDD] hover:text-[#8A6238] transition-colors border border-transparent hover:border-[#E3D6BC] dark:hover:border-[#4A3E2E]"
               >
-                <div className="w-6 h-6 bg-[#EBE5D8] dark:bg-[#342A1D] flex items-center justify-center text-xs font-bold text-[#3B2B1E] dark:text-[#F3ECDD]">
-                  {user?.username ? user.username.charAt(0).toUpperCase() : 'U'}
+                <div className="w-9 h-9 bg-[#EBE5D8] dark:bg-[#342A1D] flex items-center justify-center text-xs font-bold text-[#3B2B1E] dark:text-[#F3ECDD]">
+                  {user?.username ? user.username.charAt(0).toUpperCase() : ''}
                 </div>
-                <ChevronDown className="w-3 h-3 text-[#7A6652]" />
+                <ChevronDown className="w-4 h-4 text-[#65513F]" />
               </button>
 
               {accountMenuOpen && (
                 <div
-                  className="absolute end-0 mt-2 w-56 bg-[#FAF6EC] dark:bg-[#2A231B] border border-[#E3D6BC] dark:border-[#4A3E2E] shadow-xl py-2 z-50 text-xs animate-in fade-in slide-in-from-top-1"
+                  className="absolute end-0 mt-2 w-64 bg-[#FAF6EC] dark:bg-[#2A231B] border border-[#E3D6BC] dark:border-[#4A3E2E] shadow-xl py-2 z-50 text-xs animate-in fade-in slide-in-from-top-1"
                   onClick={() => setAccountMenuOpen(false)}
                 >
                   <div className="px-4 py-2 border-b border-[#E3D6BC] dark:border-[#4A3E2E]">
                     <p className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] truncate">
-                      {user?.username || 'Guest Reader'}
+                      {user?.username}
                     </p>
-                    <p className="text-[11px] text-[#7A6652] dark:text-[#A99A82] truncate">
-                      {user?.email || 'reader@inkora.com'}
+                    <p className="text-xs text-[#65513F] dark:text-[#A99A82] truncate">
+                      {user?.email}
                     </p>
                     <span className="inline-block mt-1 px-1.5 py-0.2 bg-[#F6EBD3] dark:bg-[#342718] text-[#8A6238] dark:text-[#D9AE6B] text-xs font-mono tracking-wider uppercase">
-                      {user?.role || 'PATRON'}
+                      {user?.role}
                     </span>
                   </div>
 
@@ -289,35 +269,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                       {t('x.bdd2fa')}
                     </button>
 
-                    {isAdmin && (
-                      <button
-                        onClick={() => onNavigate('admin')}
-                        className="w-full text-start px-4 py-2 font-medium text-[#8A6238] dark:text-[#D9AE6B] hover:bg-[#F1E9D6] dark:hover:bg-[#2F261B] flex items-center justify-between"
-                      >
-                        <span>{t('x.12b0d3')}</span>
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                      </button>
-                    )}
                   </div>
 
                   <div className="border-t border-[#E3D6BC] dark:border-[#4A3E2E] pt-1">
                     <button
-                      onClick={() => onNavigate('auth')}
-                      className="w-full text-start px-4 py-2 hover:bg-[#F1E9D6] dark:hover:bg-[#2F261B] text-[#7A6652] dark:text-[#A99A82]"
-                    >
-                      {t('x.c21eea')}
-                    </button>
-                    <button
-                      onClick={logout}
+                      onClick={() => { logout(); onNavigate('home'); }}
                       className="w-full text-start px-4 py-2 hover:bg-[#F1E9D6] dark:hover:bg-[#2F261B] text-[#8E1F1F] flex items-center gap-1.5"
                     >
-                      <LogOut className="w-3 h-3" />
+                      <LogOut className="w-4 h-4" />
                       <span>{t('x.61fd08')}</span>
                     </button>
                   </div>
                 </div>
               )}
             </div>
+            )}
           </div>
         </div>
       </div>
@@ -362,17 +328,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               {t('x.b51b2b')}
             </button>
-            {isAdmin && (
-              <button
-                onClick={() => {
-                  onNavigate('admin');
-                  setMobileMenuOpen(false);
-                }}
-                className="block w-full text-start py-1 text-[#8A6238] dark:text-[#D9AE6B] font-semibold"
-              >
-                {t('x.036adc')}
-              </button>
-            )}
           </div>
         </div>
       )}

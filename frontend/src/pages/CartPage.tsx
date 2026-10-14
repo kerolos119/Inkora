@@ -64,7 +64,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
         {cart.items.length > 0 && (
           <button
             onClick={clearCart}
-            className="text-xs text-[#7A6652] hover:text-[#8E1F1F] dark:text-[#A99A82] underline font-mono btn-press"
+            className="text-xs text-[#65513F] hover:text-[#8E1F1F] dark:text-[#A99A82] underline font-mono btn-press"
           >
             {t('x.3a88a6')}
           </button>
@@ -73,11 +73,11 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
 
       {cart.items.length === 0 ? (
         <div className="border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] p-16 text-center space-y-4 rounded-[2px] shadow-2xs">
-          <ShoppingBag className="w-12 h-12 text-[#7A6652]/40 stroke-1 mx-auto" />
+          <ShoppingBag className="w-12 h-12 text-[#65513F]/40 stroke-1 mx-auto" />
           <h2 className="font-editorial text-3xl text-[#3B2B1E] dark:text-[#F3ECDD]">
             {t('cart.empty')}
           </h2>
-          <p className="text-xs text-[#7A6652] dark:text-[#A99A82] max-w-md mx-auto font-body-literary">
+          <p className="text-xs text-[#65513F] dark:text-[#A99A82] max-w-md mx-auto font-body-literary">
             {t('x.ae5ebe')}
           </p>
           <button
@@ -115,7 +115,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
                       >
                         {book.bookTitle}
                       </h3>
-                      <p className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+                      <p className="text-xs text-[#65513F] dark:text-[#A99A82]">
                         by {book.authorName}
                       </p>
                       <p className="text-xs font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-2 font-mono">
@@ -127,7 +127,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
                     <div className="flex items-center border border-[#3B2B1E] dark:border-[#F3ECDD] rounded-[2px] overflow-hidden">
                       <button
                         onClick={() => updateQuantity(book.id, quantity - 1)}
-                        className="p-1.5 hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#7A6652] btn-press"
+                        className="p-1.5 hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#65513F] btn-press"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
@@ -136,7 +136,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
                       </span>
                       <button
                         onClick={() => updateQuantity(book.id, quantity + 1)}
-                        className="p-1.5 hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#7A6652] btn-press"
+                        className="p-1.5 hover:bg-[#F1E9D6] dark:hover:bg-[#342B21] text-[#65513F] btn-press"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -149,7 +149,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
                       </span>
                       <button
                         onClick={() => removeFromCart(book.id)}
-                        className="text-[#7A6652] hover:text-[#8E1F1F] p-1 transition-colors btn-press"
+                        className="text-[#65513F] hover:text-[#8E1F1F] p-1 transition-colors btn-press"
                         title={t('x.0cde9d')}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -179,7 +179,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
 
             {/* Coupon Code Input */}
             <form onSubmit={handleApplyCoupon} className="space-y-2">
-              <label className="text-[11px] uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block">
+              <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block">
                 {t('x.6f87ed')}
               </label>
               <div className="flex border border-[#E3D6BC] dark:border-[#4A3E2E] rounded-[2px] overflow-hidden">
@@ -197,13 +197,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
                   {t('x.cfea41')}
                 </button>
               </div>
-              <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-mono">
+              <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
                 Use code <span className="text-[#8A6238] dark:text-[#D2A560] font-semibold">INKORA10</span> for 10% patron discount.
               </p>
             </form>
 
             {/* Price Calculations */}
-            <div className="space-y-2.5 text-xs text-[#7A6652] dark:text-[#A99A82] pt-3 border-t border-[#E3D6BC] dark:border-[#4A3E2E] font-mono">
+            <div className="space-y-2.5 text-xs text-[#65513F] dark:text-[#A99A82] pt-3 border-t border-[#E3D6BC] dark:border-[#4A3E2E] font-mono">
               <div className="flex justify-between">
                 <span>{t('x.30d246')}</span>
                 <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
@@ -240,7 +240,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
               <ArrowRight className="rtl:-scale-x-100 w-4 h-4" />
             </button>
 
-            <div className="p-3 bg-[#F1E9D6]/50 dark:bg-[#342B21]/60 text-[11px] text-[#7A6652] dark:text-[#A99A82] space-y-1 rounded-[2px]">
+            <div className="p-3 bg-[#F1E9D6]/50 dark:bg-[#342B21]/60 text-xs text-[#65513F] dark:text-[#A99A82] space-y-1 rounded-[2px]">
               <div className="flex items-center gap-1.5 text-[#3B2B1E] dark:text-[#F3ECDD] font-medium">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#2A674A]" />
                 <span>{t('x.d87dbd')}</span>

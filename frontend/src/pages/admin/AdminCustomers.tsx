@@ -40,7 +40,7 @@ export const AdminCustomers: React.FC = () => {
           placeholder="Search patrons by handle or email..."
           className="w-full px-3 py-2 bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden font-mono"
         />
-        <div className="px-3 py-2 text-[#7A6652] dark:text-[#A99A82]">
+        <div className="px-3 py-2 text-[#65513F] dark:text-[#A99A82]">
           <Search className="w-3.5 h-3.5" />
         </div>
       </div>
@@ -48,7 +48,7 @@ export const AdminCustomers: React.FC = () => {
       <div className="border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] overflow-x-auto shadow-xs">
         <table className="w-full text-start text-xs">
           <thead>
-            <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#7A6652] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
+            <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#65513F] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
               <th className="p-3">Patron Handle</th>
               <th className="p-3">Email Address</th>
               <th className="p-3">Role</th>
@@ -63,7 +63,7 @@ export const AdminCustomers: React.FC = () => {
                 <td className="p-3 font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {c.username}
                 </td>
-                <td className="p-3 font-mono text-[11px] text-[#7A6652] dark:text-[#A99A82]">
+                <td className="p-3 font-mono text-xs text-[#65513F] dark:text-[#A99A82]">
                   {c.email}
                 </td>
                 <td className="p-3 font-mono text-xs">
