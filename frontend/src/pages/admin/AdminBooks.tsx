@@ -173,7 +173,7 @@ export const AdminBooks: React.FC = () => {
           placeholder="Filter by title, author, or ISBN..."
           className="w-full px-3 py-2 text-xs bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden font-mono"
         />
-        <div className="px-3 py-2 text-[#7A6652] dark:text-[#A99A82]">
+        <div className="px-3 py-2 text-[#65513F] dark:text-[#A99A82]">
           <Search className="w-3.5 h-3.5" />
         </div>
       </div>
@@ -182,7 +182,7 @@ export const AdminBooks: React.FC = () => {
       <div className="border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] overflow-x-auto shadow-xs">
         <table className="w-full text-start text-xs">
           <thead>
-            <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#7A6652] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
+            <tr className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] text-[#65513F] dark:text-[#A99A82] uppercase tracking-wider font-mono text-xs">
               <th className="p-3">Cover</th>
               <th className="p-3">Title & ISBN</th>
               <th className="p-3">Author</th>
@@ -206,7 +206,7 @@ export const AdminBooks: React.FC = () => {
                   <span className="font-editorial text-base font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block">
                     {b.bookTitle}
                   </span>
-                  <span className="font-mono text-xs text-[#7A6652] dark:text-[#A99A82]">
+                  <span className="font-mono text-xs text-[#65513F] dark:text-[#A99A82]">
                     ISBN: {b.isbn}
                   </span>
                 </td>
@@ -244,14 +244,14 @@ export const AdminBooks: React.FC = () => {
                   <div className="flex items-center justify-end gap-2">
                     <button
                       onClick={() => openEditModal(b)}
-                      className="p-1.5 text-[#7A6652] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
+                      className="p-1.5 text-[#65513F] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
                       title="Edit book"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => setDeleteConfirmId(b.id)}
-                      className="p-1.5 text-[#7A6652] hover:text-[#8E1F1F] transition-colors btn-press"
+                      className="p-1.5 text-[#65513F] hover:text-[#8E1F1F] transition-colors btn-press"
                       title="Delete book"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -273,7 +273,7 @@ export const AdminBooks: React.FC = () => {
               <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                 {editingBook ? 'Edit Book Edition' : 'Inscribe New Edition'}
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="p-1 text-[#7A6652] hover:text-[#3B2B1E] btn-press">
+              <button onClick={() => setIsModalOpen(false)} className="p-1 text-[#65513F] hover:text-[#3B2B1E] btn-press">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -281,7 +281,7 @@ export const AdminBooks: React.FC = () => {
             <form onSubmit={handleSave} className="space-y-4 text-xs font-mono">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     Book Title
                   </label>
                   <input
@@ -295,7 +295,7 @@ export const AdminBooks: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     Author
                   </label>
                   <input
@@ -310,7 +310,7 @@ export const AdminBooks: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                   Description & Critical Notes
                 </label>
                 <textarea
@@ -324,7 +324,7 @@ export const AdminBooks: React.FC = () => {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     Price ($)
                   </label>
                   <input
@@ -338,7 +338,7 @@ export const AdminBooks: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     Discount (%)
                   </label>
                   <input
@@ -350,7 +350,7 @@ export const AdminBooks: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     Stock Quantity
                   </label>
                   <input
@@ -365,7 +365,7 @@ export const AdminBooks: React.FC = () => {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     Binding Style
                   </label>
                   <select
@@ -381,7 +381,7 @@ export const AdminBooks: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     ISBN
                   </label>
                   <input
@@ -394,7 +394,7 @@ export const AdminBooks: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                  <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     Pages
                   </label>
                   <input
@@ -407,7 +407,7 @@ export const AdminBooks: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                   Cover Image URL
                 </label>
                 <input
@@ -446,7 +446,7 @@ export const AdminBooks: React.FC = () => {
           <div className="fixed inset-0 bg-black/60" onClick={() => setDeleteConfirmId(null)} />
           <div className="relative bg-[#FFFFFF] dark:bg-[#2A231B] border border-[#8E1F1F]/40 p-6 max-w-sm w-full space-y-4 z-10 animate-in fade-in shadow-xl">
             <h4 className="font-editorial text-xl text-[#8E1F1F] dark:text-[#E25858]">{t('admin.deleteTitle')}</h4>
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
               {t('admin.deleteBody')}
             </p>
             <div className="flex justify-end gap-2 pt-2">

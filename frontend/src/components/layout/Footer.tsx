@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <p className="text-xs font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mb-2 uppercase tracking-wider font-mono">
               {t('x.1fa94b')}
             </p>
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mb-3">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] mb-3">
               {t('x.28d467')}
             </p>
             {subscribed ? (
@@ -70,10 +70,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Links Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 text-xs">
           <div>
-            <h4 className="font-semibold uppercase tracking-widest text-[11px] mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
+            <h4 className="font-semibold uppercase tracking-widest text-xs mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
               {t('x.9930f2')}
             </h4>
-            <ul className="space-y-2.5 text-[#7A6652] dark:text-[#A99A82]">
+            <ul className="space-y-2.5 text-[#65513F] dark:text-[#A99A82]">
               <li>
                 <button onClick={() => onNavigate('catalog')} className="hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors ink-underline-hover">
                   {t('x.12897e')}
@@ -103,10 +103,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <h4 className="font-semibold uppercase tracking-widest text-[11px] mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
+            <h4 className="font-semibold uppercase tracking-widest text-xs mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
               {t('x.0dbb6a')}
             </h4>
-            <ul className="space-y-2.5 text-[#7A6652] dark:text-[#A99A82]">
+            <ul className="space-y-2.5 text-[#65513F] dark:text-[#A99A82]">
               <li>
                 <button onClick={() => onNavigate('editorial')} className="hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors ink-underline-hover">
                   {t('x.ae00a7')}
@@ -131,10 +131,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <h4 className="font-semibold uppercase tracking-widest text-[11px] mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
+            <h4 className="font-semibold uppercase tracking-widest text-xs mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
               {t('x.eace17')}
             </h4>
-            <ul className="space-y-2.5 text-[#7A6652] dark:text-[#A99A82]">
+            <ul className="space-y-2.5 text-[#65513F] dark:text-[#A99A82]">
               <li>
                 <button onClick={() => onNavigate('account:orders')} className="hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors ink-underline-hover">
                   {t('x.b4ae6a')}
@@ -159,10 +159,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <h4 className="font-semibold uppercase tracking-widest text-[11px] mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
+            <h4 className="font-semibold uppercase tracking-widest text-xs mb-4 text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
               {t('x.c84bc3')}
             </h4>
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed mb-3">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed mb-3">
               {t('x.fd7220')}
             </p>
             <div className="flex items-center gap-2 text-xs uppercase font-mono tracking-wider text-[#8A6238] dark:text-[#D9AE6B]">
@@ -172,7 +172,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Copyright & Internationalization Bottom Line */}
-        <div className="pt-8 border-t border-[#E3D6BC] dark:border-[#4A3E2E] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#7A6652] dark:text-[#A99A82] gap-4">
+        <div className="pt-8 border-t border-[#E3D6BC] dark:border-[#4A3E2E] flex flex-col sm:flex-row items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] gap-4">
           <div className="flex items-center gap-2">
             <span className="font-editorial font-bold text-base text-[#3B2B1E] dark:text-[#F3ECDD]">INKORA</span>
             <span>© {new Date().getFullYear()} Inkora Bookstore & Editions. All rights reserved.</span>

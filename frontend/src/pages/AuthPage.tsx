@@ -1,6 +1,5 @@
 import { t } from '../i18n';
 import React, { useState } from 'react';
-import { ShieldCheck, User, ArrowRight, KeyRound, Mail, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { useToast } from '../context/ToastContext.js';
 import { api } from '../services/api.js';
@@ -10,7 +9,7 @@ interface AuthPageProps {
 }
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
-  const { login, register, switchDemoRole } = useAuth();
+  const { login, register } = useAuth();
   const { showToast } = useToast();
 
   const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'reset'>('login');
@@ -26,15 +25,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const success = await login(email, password);
+    const signedIn = await login(email, password);
     setLoading(false);
-    if (success) onNavigate('home');
+    if (signedIn) onNavigate(signedIn.role === 'ADMIN' ? 'admin' : 'home');
   };
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const success = await register({
+    const created = await register({
       username,
       email,
       password,
@@ -42,7 +41,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
       phoneNumber,
     });
     setLoading(false);
-    if (success) onNavigate('home');
+    if (created) onNavigate('home');
   };
 
   const handleForgotSubmit = async (e: React.FormEvent) => {
@@ -85,45 +84,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
           </svg>
         </div>
         <h1 className="font-editorial text-4xl text-[#3B2B1E] dark:text-[#F3ECDD]">
-          {mode === 'login' && 'Patron Sign In'}
-          {mode === 'register' && 'Register Patron Account'}
-          {mode === 'forgot' && 'Account Recovery'}
-          {mode === 'reset' && 'Reset Master Key'}
+          {mode === 'login' && t('auth.signIn')}
+          {mode === 'register' && t('auth.titleRegister')}
+          {mode === 'forgot' && t('auth.titleForgot')}
+          {mode === 'reset' && t('auth.titleReset')}
         </h1>
-        <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+        <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
           {t('x.5eb056')}
         </p>
-      </div>
-
-      {/* Demo Credentials Quick Switcher Banner */}
-      <div className="p-4 border border-[#8A6238]/30 dark:border-[#D9AE6B]/30 bg-[#F6EBD3]/80 dark:bg-[#342718]/80 space-y-2 text-xs">
-        <span className="font-semibold uppercase tracking-wider text-xs text-[#8A6238] dark:text-[#D9AE6B] block font-mono">
-          {t('x.f69cab')}
-        </span>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={async () => {
-              await switchDemoRole('USER');
-              onNavigate('home');
-            }}
-            className="p-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] text-start hover:border-[#8A6238] dark:hover:border-[#D9AE6B] transition-colors btn-press shadow-2xs cursor-pointer"
-          >
-            <div className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">{t('x.0e8574')}</div>
-            <div className="text-xs text-[#7A6652] dark:text-[#A99A82]">user@inkora.com</div>
-          </button>
-          <button
-            type="button"
-            onClick={async () => {
-              await switchDemoRole('ADMIN');
-              onNavigate('admin');
-            }}
-            className="p-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] text-start hover:border-[#8A6238] dark:hover:border-[#D9AE6B] transition-colors btn-press shadow-2xs cursor-pointer"
-          >
-            <div className="font-semibold text-[#8A6238] dark:text-[#D9AE6B] font-mono">{t('x.1eda23')}</div>
-            <div className="text-xs text-[#7A6652] dark:text-[#A99A82]">admin@inkora.com</div>
-          </button>
-        </div>
       </div>
 
       {/* Main Authentication Card */}
@@ -131,7 +99,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
         {mode === 'login' && (
           <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs font-mono">
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('x.7b6b86')}
               </label>
               <input
@@ -140,13 +108,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden"
               />
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {t('x.8be3c9')}
                 </label>
                 <button
@@ -163,7 +131,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden"
               />
             </div>
 
@@ -175,8 +143,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
               {loading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
 
-            <div className="text-center pt-2 text-[#7A6652] dark:text-[#A99A82]">
-              New reader?{' '}
+            <div className="text-center pt-2 text-[#65513F] dark:text-[#A99A82]">
+              {t('auth.newHere')}{' '}
               <button
                 type="button"
                 onClick={() => setMode('register')}
@@ -191,7 +159,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
         {mode === 'register' && (
           <form onSubmit={handleRegisterSubmit} className="space-y-4 text-xs font-mono">
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('x.af2d86')}
               </label>
               <input
@@ -200,12 +168,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={t('x.29c6cc')}
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('x.09ba55')}
               </label>
               <input
@@ -214,12 +182,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="reader@inkora.com"
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('f.street')}
               </label>
               <input
@@ -228,12 +196,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder={t('ph.street')}
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('f.phone')}
               </label>
               <input
@@ -242,12 +210,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder={t('ph.phone')}
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('x.8be3c9')}
               </label>
               <input
@@ -256,7 +224,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('x.ec8514')}
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 
@@ -268,8 +236,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
               {loading ? t('auth.creating') : t('auth.create')}
             </button>
 
-            <div className="text-center pt-2 text-[#7A6652] dark:text-[#A99A82]">
-              Already inscribed?{' '}
+            <div className="text-center pt-2 text-[#65513F] dark:text-[#A99A82]">
+              {t('auth.haveAccount')}{' '}
               <button
                 type="button"
                 onClick={() => setMode('login')}
@@ -283,11 +251,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
 
         {mode === 'forgot' && (
           <form onSubmit={handleForgotSubmit} className="space-y-4 text-xs font-mono">
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] font-body-literary">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
               {t('x.1f84ff')}
             </p>
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('x.09ba55')}
               </label>
               <input
@@ -296,7 +264,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="user@inkora.com"
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 
@@ -310,7 +278,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
             <button
               type="button"
               onClick={() => setMode('login')}
-              className="w-full text-center text-xs text-[#7A6652] hover:text-[#3B2B1E] underline"
+              className="w-full text-center text-xs text-[#65513F] hover:text-[#3B2B1E] underline"
             >
               {t('x.c65048')}
             </button>
@@ -320,21 +288,21 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
         {mode === 'reset' && (
           <form onSubmit={handleResetSubmit} className="space-y-4 text-xs font-mono">
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
-                6-Digit Verification Code (Demo: 849201)
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+                {t('auth.code')}
               </label>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                placeholder="849201"
+                placeholder="••••••"
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-xs font-mono text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-xs font-mono text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
+              <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                 {t('x.df53e6')}
               </label>
               <input
@@ -343,7 +311,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder={t('x.091ed6')}
                 required
-                className="w-full px-3 py-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                className="w-full px-4 py-3 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
               />
             </div>
 

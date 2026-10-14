@@ -1,6 +1,6 @@
 import { t } from '../i18n';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, Role } from '../types/index.js';
+import { User } from '../types/index.js';
 import { api } from '../services/api.js';
 import { useToast } from './ToastContext.js';
 
@@ -8,10 +8,9 @@ interface AuthContextValue {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (data: { username: string; email: string; password: string; address?: string; phoneNumber?: string }) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<User | null>;
+  register: (data: { username: string; email: string; password: string; address?: string; phoneNumber?: string }) => Promise<User | null>;
   logout: () => void;
-  switchDemoRole: (role: Role) => Promise<void>;
   isAdmin: boolean;
 }
 
@@ -34,22 +33,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem('inkora_token');
         localStorage.removeItem('inkora_user');
       }
-    } else {
-      // Default initial session as customer Eleanor Vance for delightful immediate experience
-      const defaultUser: User = {
-        id: 'usr-demo-user',
-        username: 'eleanor_vance',
-        email: 'user@inkora.com',
-        role: 'USER',
-        address: '742 Evergreen Terrace, Apt 4B, Portland, OR 97201',
-        phoneNumber: '+1 (555) 234-5678',
-      };
-      setUser(defaultUser);
     }
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<User | null> => {
     try {
       const res = await api.login({ email, password });
       setUser(res.user);
@@ -57,14 +45,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('inkora_token', res.accessToken);
       localStorage.setItem('inkora_user', JSON.stringify(res.user));
       showToast(t('auth.welcome', { name: res.user.username }));
-      return true;
+      return res.user;
     } catch (err: any) {
       showToast(t('auth.loginFail'), 'error');
-      return false;
+      return null;
     }
   };
 
-  const register = async (data: { username: string; email: string; password: string; address?: string; phoneNumber?: string }): Promise<boolean> => {
+  const register = async (data: { username: string; email: string; password: string; address?: string; phoneNumber?: string }): Promise<User | null> => {
     try {
       const res = await api.register(data);
       setUser(res.user);
@@ -72,10 +60,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('inkora_token', res.accessToken);
       localStorage.setItem('inkora_user', JSON.stringify(res.user));
       showToast(t('auth.registered'));
-      return true;
+      return res.user;
     } catch (err: any) {
       showToast(err.message || 'Registration failed', 'error');
-      return false;
+      return null;
     }
   };
 
@@ -86,11 +74,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('inkora_user');
     api.logout().catch(() => {});
     showToast(t('auth.signedOut'), 'info');
-  };
-
-  const switchDemoRole = async (role: Role) => {
-    const email = role === 'ADMIN' ? 'admin@inkora.com' : role === 'AGENT' ? 'agent@inkora.com' : 'user@inkora.com';
-    await login(email, 'Pass123!');
   };
 
   const isAdmin = user?.role === 'ADMIN';
@@ -104,7 +87,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         register,
         logout,
-        switchDemoRole,
         isAdmin,
       }}
     >

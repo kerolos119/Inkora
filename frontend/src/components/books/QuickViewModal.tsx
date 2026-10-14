@@ -43,7 +43,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
       <div className="relative w-full max-w-3xl bg-[#FAF6EC] dark:bg-[#2A231B] border border-[#E3D6BC] dark:border-[#4A3E2E] shadow-2xl p-6 sm:p-8 z-10 animate-in fade-in zoom-in-95">
         <button
           onClick={onClose}
-          className="absolute top-4 end-4 p-2 text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] transition-colors"
+          className="absolute top-4 end-4 p-2 text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD] transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -61,12 +61,12 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
           {/* Details */}
           <div className="flex flex-col">
-            <div className="flex items-center justify-between text-xs text-[#7A6652] dark:text-[#A99A82] mb-1 font-mono">
+            <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] mb-1 font-mono">
               <span className="uppercase text-xs tracking-wider text-[#8A6238] dark:text-[#D9AE6B] font-semibold">{book.coverType}</span>
               <div className="flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 fill-[#C27835] text-[#C27835]" />
                 <span className="font-semibold text-xs text-[#3B2B1E] dark:text-[#F3ECDD]">{book.rating.toFixed(1)}</span>
-                <span className="text-[11px]">({book.reviewCount} reviews)</span>
+                <span className="text-xs">({book.reviewCount} reviews)</span>
               </div>
             </div>
 
@@ -74,7 +74,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               {book.bookTitle}
             </h2>
 
-            <p className="text-xs font-medium text-[#7A6652] dark:text-[#A99A82] mt-1">
+            <p className="text-xs font-medium text-[#65513F] dark:text-[#A99A82] mt-1">
               by <span className="text-[#3B2B1E] dark:text-[#F3ECDD]">{book.authorName}</span>
             </p>
 
@@ -83,7 +83,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 ${discountedPrice.toFixed(2)}
               </span>
               {book.discount && (
-                <span className="text-sm text-[#7A6652] line-through">
+                <span className="text-sm text-[#65513F] line-through">
                   ${book.price.toFixed(2)}
                 </span>
               )}
@@ -92,12 +92,12 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               </span>
             </div>
 
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed line-clamp-4 mb-4 font-body-literary">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed line-clamp-4 mb-4 font-body-literary">
               {book.bookDescription}
             </p>
 
             {/* Quick Specs */}
-            <div className="grid grid-cols-2 gap-2 text-[11px] text-[#7A6652] dark:text-[#A99A82] mb-6 p-3 bg-[#F1E9D6]/60 dark:bg-[#2E251A]/60 border border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60 font-mono">
+            <div className="grid grid-cols-2 gap-2 text-xs text-[#65513F] dark:text-[#A99A82] mb-6 p-3 bg-[#F1E9D6]/60 dark:bg-[#2E251A]/60 border border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60 font-mono">
               <div>
                 <span className="text-[#3B2B1E] dark:text-[#F3ECDD] font-medium">{t('x.912765')}</span> {book.numberOfPages}
               </div>
@@ -119,7 +119,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <div className="flex items-center border border-[#3B2B1E] dark:border-[#F3ECDD]">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-2 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#7A6652]"
+                    className="p-2 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#65513F]"
                   >
                     <Minus className="w-3 h-3" />
                   </button>
@@ -128,7 +128,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   </span>
                   <button
                     onClick={() => setQuantity(Math.min(book.stock, quantity + 1))}
-                    className="p-2 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#7A6652]"
+                    className="p-2 hover:bg-[#F1E9D6] dark:hover:bg-[#362C1F] text-[#65513F]"
                   >
                     <Plus className="w-3 h-3" />
                   </button>
@@ -150,7 +150,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   className={`p-2.5 border border-[#E3D6BC] dark:border-[#4A3E2E] transition-colors ${
                     isFavorited
                       ? 'text-[#8E1F1F] border-[#8E1F1F]'
-                      : 'text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD]'
+                      : 'text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD]'
                   }`}
                 >
                   <Heart className={`w-4 h-4 ${isFavorited ? 'fill-[#8E1F1F]' : ''}`} />

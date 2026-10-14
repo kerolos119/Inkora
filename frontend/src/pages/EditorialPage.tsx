@@ -44,7 +44,7 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
         <h1 className="font-editorial text-4xl sm:text-5xl text-[#3B2B1E] dark:text-[#F3ECDD]">
           {t('x.1fa94b')}
         </h1>
-        <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mt-1 max-w-xl font-body-literary">
+        <p className="text-xs text-[#65513F] dark:text-[#A99A82] mt-1 max-w-xl font-body-literary">
           {t('x.ec95a8')}
         </p>
       </div>
@@ -65,7 +65,7 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
               </div>
 
               <div className="p-6 space-y-3">
-                <div className="flex items-center justify-between text-[11px] text-[#7A6652] dark:text-[#A99A82]">
+                <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82]">
                   <span className="font-mono text-[#8A6238] dark:text-[#D9AE6B] uppercase font-semibold">{post.authorRole}</span>
                   <div className="flex items-center gap-1 font-mono">
                     <Calendar className="w-3 h-3" />
@@ -77,7 +77,7 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
                   {post.title}
                 </h2>
 
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed font-body-literary">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed font-body-literary">
                   {post.content}
                 </p>
 
@@ -96,7 +96,7 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
             </div>
 
             <div className="p-6 pt-0 border-t border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60 flex items-center justify-between text-xs mt-4">
-              <span className="text-[#7A6652] dark:text-[#A99A82]">
+              <span className="text-[#65513F] dark:text-[#A99A82]">
                 By <strong className="text-[#3B2B1E] dark:text-[#F3ECDD] font-medium">{post.authorName}</strong>
               </span>
 
@@ -104,16 +104,16 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
                 <button
                   onClick={() => handleLike(post.id)}
                   className={`flex items-center gap-1.5 transition-colors btn-press ${
-                    post.isLiked ? 'text-[#8E1F1F]' : 'text-[#7A6652] hover:text-[#8E1F1F] dark:hover:text-[#E25858]'
+                    post.isLiked ? 'text-[#8E1F1F]' : 'text-[#65513F] hover:text-[#8E1F1F] dark:hover:text-[#E25858]'
                   }`}
                 >
                   <Heart className={`w-3.5 h-3.5 ${post.isLiked ? 'fill-[#8E1F1F]' : ''}`} />
-                  <span className="font-mono text-[11px]">{post.likesCount}</span>
+                  <span className="font-mono text-xs">{post.likesCount}</span>
                 </button>
 
-                <div className="flex items-center gap-1 text-[#7A6652] dark:text-[#A99A82]">
+                <div className="flex items-center gap-1 text-[#65513F] dark:text-[#A99A82]">
                   <MessageSquare className="w-3.5 h-3.5" />
-                  <span className="font-mono text-[11px]">{post.commentsCount}</span>
+                  <span className="font-mono text-xs">{post.commentsCount}</span>
                 </div>
               </div>
             </div>

@@ -107,11 +107,11 @@ export const AdminAuthors: React.FC = () => {
               <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-0.5 mb-2">
                 {a.name}
               </h3>
-              <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed line-clamp-3 mb-2 font-body-literary">
+              <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed line-clamp-3 mb-2 font-body-literary">
                 {a.bio}
               </p>
               {a.notableWork && (
-                <p className="text-[11px] text-[#3B2B1E] dark:text-[#F3ECDD] font-editorial italic">
+                <p className="text-xs text-[#3B2B1E] dark:text-[#F3ECDD] font-editorial italic">
                   “{a.notableWork}”
                 </p>
               )}
@@ -120,13 +120,13 @@ export const AdminAuthors: React.FC = () => {
             <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60">
               <button
                 onClick={() => openEdit(a)}
-                className="p-1.5 text-[#7A6652] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
+                className="p-1.5 text-[#65513F] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
               >
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => handleDelete(a.id)}
-                className="p-1.5 text-[#7A6652] hover:text-[#8E1F1F] transition-colors btn-press"
+                className="p-1.5 text-[#65513F] hover:text-[#8E1F1F] transition-colors btn-press"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -143,14 +143,14 @@ export const AdminAuthors: React.FC = () => {
               <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                 {editingAuthor ? 'Edit Author' : 'Inscribe Author'}
               </h3>
-              <button onClick={() => setModalOpen(false)} className="p-1 text-[#7A6652] hover:text-[#3B2B1E]">
+              <button onClick={() => setModalOpen(false)} className="p-1 text-[#65513F] hover:text-[#3B2B1E]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSave} className="space-y-4 text-xs font-mono">
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Author Name
                 </label>
                 <input
@@ -164,7 +164,7 @@ export const AdminAuthors: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Nationality / Origin
                 </label>
                 <input
@@ -177,7 +177,7 @@ export const AdminAuthors: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Notable Masterwork
                 </label>
                 <input
@@ -190,7 +190,7 @@ export const AdminAuthors: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Biography & Literary Style
                 </label>
                 <textarea

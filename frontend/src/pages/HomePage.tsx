@@ -112,14 +112,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                 {t('x.737986')}
               </h1>
 
-              <p className="text-sm sm:text-base text-[#7A6652] dark:text-[#A99A82] max-w-xl font-body-literary leading-relaxed">
+              <p className="text-sm sm:text-base text-[#65513F] dark:text-[#A99A82] max-w-xl font-body-literary leading-relaxed">
                 {t('x.ecd929')}
               </p>
 
               {/* Interactive Press Inks Swatch Bar */}
               <div className="pt-2 border-t border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs uppercase font-mono tracking-widest text-[#7A6652] dark:text-[#A99A82]">
+                  <span className="text-xs uppercase font-mono tracking-widest text-[#65513F] dark:text-[#A99A82]">
                     {t('x.2ac973')}
                   </span>
                   <span className="font-quill text-sm text-[#8A6238] dark:text-[#D9AE6B]">
@@ -142,7 +142,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                         className="w-3 h-3 rounded-full shrink-0 border border-black/20 shadow-2xs group-hover:scale-110 transition-transform"
                         style={{ backgroundColor: ink.hex }}
                       />
-                      <span className="text-[11px] font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
+                      <span className="text-xs font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
                         {ink.name}
                       </span>
                     </button>
@@ -154,7 +154,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                     className="w-2.5 h-2.5 mt-0.5 rounded-full shrink-0"
                     style={{ backgroundColor: selectedInk.hex }}
                   />
-                  <p className="text-[11px] text-[#7A6652] dark:text-[#A99A82] leading-tight font-body-literary italic">
+                  <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-tight font-body-literary italic">
                     {selectedInk.note}
                   </p>
                 </div>
@@ -183,15 +183,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
               <div className="pt-6 border-t border-[#E3D6BC] dark:border-[#4A3E2E] grid grid-cols-3 gap-4 text-xs font-mono">
                 <div>
                   <span className="block font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">{t('x.501289')}</span>
-                  <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82]">{t('x.58771a')}</span>
+                  <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{t('x.58771a')}</span>
                 </div>
                 <div>
                   <span className="block font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">{t('x.707e90')}</span>
-                  <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82]">{t('x.38eedd')}</span>
+                  <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{t('x.38eedd')}</span>
                 </div>
                 <div>
                   <span className="block font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">Munken 115gsm</span>
-                  <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82]">{t('x.599505')}</span>
+                  <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{t('x.599505')}</span>
                 </div>
               </div>
             </div>
@@ -212,9 +212,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
 
                   {/* Red Ink Seal Stamp in Top Right */}
                   <div className="absolute -top-3 -end-3 z-20 animate-seal-pulse pointer-events-none">
-                    <div className="w-14 h-14 rounded-full bg-[#8E1F1F] text-[#FAF6EC] border-2 border-[#FFFFFF] dark:border-[#2A231B] shadow-md flex flex-col items-center justify-center p-1 font-editorial text-xs tracking-wider uppercase text-center leading-tight">
+                    <div className="w-16 h-16 rounded-full bg-[#8E1F1F] text-[#FAF6EC] border-2 border-[#FFFFFF] dark:border-[#2A231B] shadow-md flex flex-col items-center justify-center p-1 font-editorial text-xs tracking-wider uppercase text-center leading-tight">
                       <span className="font-bold">INKORA</span>
-                      <span className="text-[6px] font-mono">SEAL 2026</span>
                     </div>
                   </div>
 
@@ -236,7 +235,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                         <h3 className="font-editorial text-lg text-[#3B2B1E] dark:text-[#F3ECDD]">
                           {leadBook.bookTitle}
                         </h3>
-                        <p className="text-xs text-[#7A6652] dark:text-[#A99A82]">
+                        <p className="text-xs text-[#65513F] dark:text-[#A99A82]">
                           by {leadBook.authorName}
                         </p>
                       </div>
@@ -283,7 +282,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
               className={`pb-2 border-b-2 transition-colors ${
                 activeTab === 'featured'
                   ? 'border-[#8A6238] dark:border-[#D9AE6B] text-[#8A6238] dark:text-[#D9AE6B]'
-                  : 'border-transparent text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD]'
+                  : 'border-transparent text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD]'
               }`}
             >
               {t('x.776e19')}
@@ -293,7 +292,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
               className={`pb-2 border-b-2 transition-colors ${
                 activeTab === 'bestsellers'
                   ? 'border-[#8A6238] dark:border-[#D9AE6B] text-[#8A6238] dark:text-[#D9AE6B]'
-                  : 'border-transparent text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD]'
+                  : 'border-transparent text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD]'
               }`}
             >
               {t('x.978d45')}
@@ -303,7 +302,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
               className={`pb-2 border-b-2 transition-colors ${
                 activeTab === 'newArrivals'
                   ? 'border-[#8A6238] dark:border-[#D9AE6B] text-[#8A6238] dark:text-[#D9AE6B]'
-                  : 'border-transparent text-[#7A6652] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD]'
+                  : 'border-transparent text-[#65513F] hover:text-[#3B2B1E] dark:text-[#A99A82] dark:hover:text-[#F3ECDD]'
               }`}
             >
               {t('x.dc3ec0')}
@@ -347,7 +346,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
               <h2 className="font-editorial text-3xl sm:text-4xl text-[#3B2B1E] dark:text-[#F3ECDD] leading-tight">
                 {t('x.7d599d')}
               </h2>
-              <p className="text-xs sm:text-sm text-[#7A6652] dark:text-[#A99A82] font-body-literary leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#65513F] dark:text-[#A99A82] font-body-literary leading-relaxed">
                 In an era of fleeting pixel flickers, deep pigment ink on cotton paper represents an indelible pledge. Carbon black does not fade under sunlight; iron gall ink binds into the very cellulose fibers of the page. It is a commitment that a sentence was worth printing permanently.
               </p>
               <div className="pt-2">
@@ -367,7 +366,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                 <p className="font-editorial text-lg italic text-[#3B2B1E] dark:text-[#F3ECDD] leading-relaxed mb-4">
                   “Inkora’s letterpress pages carry the crisp, uncompromised blackness that made the early printing workshops of Mainz and Venice legendary.”
                 </p>
-                <span className="text-xs font-mono uppercase tracking-wider text-[#7A6652] dark:text-[#A99A82]">
+                <span className="text-xs font-mono uppercase tracking-wider text-[#65513F] dark:text-[#A99A82]">
                   — Typographica & Bibliophile Gazette
                 </span>
               </div>
@@ -377,7 +376,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                 <p className="font-editorial text-lg italic text-[#3B2B1E] dark:text-[#F3ECDD] leading-relaxed mb-4">
                   “Holding an Inkora volume feels like handling an original archival folio. The typography has weight, breath, and stillness.”
                 </p>
-                <span className="text-xs font-mono uppercase tracking-wider text-[#7A6652] dark:text-[#A99A82]">
+                <span className="text-xs font-mono uppercase tracking-wider text-[#65513F] dark:text-[#A99A82]">
                   — European Literary Review
                 </span>
               </div>
@@ -409,14 +408,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
               className="group border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] p-6 hover:border-[#8A6238] dark:hover:border-[#D9AE6B] cursor-pointer transition-all flex flex-col justify-between shadow-xs"
             >
               <div>
-                <div className="flex items-center justify-between text-[11px] text-[#7A6652] dark:text-[#A99A82] mb-2 font-mono">
+                <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] mb-2 font-mono">
                   <span>DISCIPLINE {cat.id.toUpperCase()}</span>
                   <span>{cat.bookCount} VOLUMES</span>
                 </div>
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] group-hover:text-[#8A6238] dark:group-hover:text-[#D9AE6B] transition-colors mb-2">
                   {cat.name}
                 </h3>
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed">
                   {cat.description}
                 </p>
               </div>
@@ -463,13 +462,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-1 mb-2">
                   {author.name}
                 </h3>
-                <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed line-clamp-3 mb-4">
+                <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed line-clamp-3 mb-4">
                   {author.bio}
                 </p>
               </div>
 
               <div className="pt-4 border-t border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60">
-                <span className="text-xs uppercase font-mono text-[#7A6652] dark:text-[#A99A82] block">
+                <span className="text-xs uppercase font-mono text-[#65513F] dark:text-[#A99A82] block">
                   {t('x.a73914')}
                 </span>
                 <span className="font-editorial text-sm italic text-[#3B2B1E] dark:text-[#F3ECDD]">

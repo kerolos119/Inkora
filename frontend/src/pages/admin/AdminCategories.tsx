@@ -88,14 +88,14 @@ export const AdminCategories: React.FC = () => {
             className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] flex flex-col justify-between shadow-xs book-lift"
           >
             <div>
-              <div className="flex items-center justify-between text-[11px] font-mono text-[#7A6652] dark:text-[#A99A82] mb-2">
+              <div className="flex items-center justify-between text-xs font-mono text-[#65513F] dark:text-[#A99A82] mb-2">
                 <span>{c.slug}</span>
                 <span>{c.bookCount} Editions</span>
               </div>
               <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
                 {c.name}
               </h3>
-              <p className="text-xs text-[#7A6652] dark:text-[#A99A82] leading-relaxed font-body-literary">
+              <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed font-body-literary">
                 {c.description}
               </p>
             </div>
@@ -103,14 +103,14 @@ export const AdminCategories: React.FC = () => {
             <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60">
               <button
                 onClick={() => openEdit(c)}
-                className="p-1.5 text-[#7A6652] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
+                className="p-1.5 text-[#65513F] hover:text-[#8A6238] dark:hover:text-[#D9AE6B] transition-colors btn-press"
                 title="Edit discipline"
               >
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => handleDelete(c.id)}
-                className="p-1.5 text-[#7A6652] hover:text-[#8E1F1F] transition-colors btn-press"
+                className="p-1.5 text-[#65513F] hover:text-[#8E1F1F] transition-colors btn-press"
                 title="Delete discipline"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -128,14 +128,14 @@ export const AdminCategories: React.FC = () => {
               <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                 {editingCat ? 'Edit Category' : 'Create Category'}
               </h3>
-              <button onClick={() => setModalOpen(false)} className="p-1 text-[#7A6652] hover:text-[#3B2B1E]">
+              <button onClick={() => setModalOpen(false)} className="p-1 text-[#65513F] hover:text-[#3B2B1E]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSave} className="space-y-4 text-xs font-mono">
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Discipline Title
                 </label>
                 <input
@@ -149,7 +149,7 @@ export const AdminCategories: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Scope & Description
                 </label>
                 <textarea

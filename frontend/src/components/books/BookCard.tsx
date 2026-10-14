@@ -66,12 +66,12 @@ export const BookCard: React.FC<BookCardProps> = ({
         {/* Content */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between text-xs text-[#7A6652] dark:text-[#A99A82] mb-1 font-mono">
+            <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] mb-1 font-mono">
               <span>{book.coverType} · {book.publisher}</span>
               <div className="flex items-center gap-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
                 <Star className="w-3 h-3 fill-[#C27835] text-[#C27835]" />
                 <span className="font-semibold text-xs">{book.rating.toFixed(1)}</span>
-                <span className="text-[11px] text-[#7A6652]">({book.reviewCount})</span>
+                <span className="text-xs text-[#65513F]">({book.reviewCount})</span>
               </div>
             </div>
 
@@ -82,11 +82,11 @@ export const BookCard: React.FC<BookCardProps> = ({
               {book.bookTitle}
             </h3>
 
-            <p className="text-xs font-medium text-[#7A6652] dark:text-[#A99A82] mt-0.5">
+            <p className="text-xs font-medium text-[#65513F] dark:text-[#A99A82] mt-0.5">
               by <span className="text-[#3B2B1E] dark:text-[#F3ECDD]">{book.authorName}</span>
             </p>
 
-            <p className="text-xs text-[#7A6652] dark:text-[#A99A82] line-clamp-2 mt-2 leading-relaxed font-body-literary">
+            <p className="text-xs text-[#65513F] dark:text-[#A99A82] line-clamp-2 mt-2 leading-relaxed font-body-literary">
               {book.bookDescription}
             </p>
           </div>
@@ -97,7 +97,7 @@ export const BookCard: React.FC<BookCardProps> = ({
                 ${discountedPrice.toFixed(2)}
               </span>
               {book.discount && (
-                <span className="text-xs text-[#7A6652] line-through">
+                <span className="text-xs text-[#65513F] line-through">
                   ${book.price.toFixed(2)}
                 </span>
               )}
@@ -109,7 +109,7 @@ export const BookCard: React.FC<BookCardProps> = ({
                 className={`p-2 border border-[#E3D6BC] dark:border-[#4A3E2E] btn-press transition-colors ${
                   isFavorited
                     ? 'text-[#8E1F1F] border-[#8E1F1F]'
-                    : 'text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD]'
+                    : 'text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD]'
                 } ${isPopping ? 'animate-heart-pop' : ''}`}
                 title={t('x.44a330')}
               >
@@ -117,7 +117,7 @@ export const BookCard: React.FC<BookCardProps> = ({
               </button>
               <button
                 onClick={() => onQuickView(book)}
-                className="p-2 border border-[#E3D6BC] dark:border-[#4A3E2E] text-[#7A6652] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] btn-press transition-colors"
+                className="p-2 border border-[#E3D6BC] dark:border-[#4A3E2E] text-[#65513F] hover:text-[#3B2B1E] dark:hover:text-[#F3ECDD] btn-press transition-colors"
                 title={t('x.26aced')}
               >
                 <Eye className="w-4 h-4" />
@@ -233,7 +233,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
       {/* Book Metadata & Ink Typography */}
       <div className="flex flex-col flex-1 px-1">
-        <div className="flex items-center justify-between text-[11px] text-[#7A6652] dark:text-[#A99A82] mb-1">
+        <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] mb-1">
           <span className="uppercase tracking-wider font-mono text-xs">{book.coverType}</span>
           <div className="flex items-center gap-1">
             <Star className="w-3 h-3 fill-[#C27835] text-[#C27835]" />
@@ -248,7 +248,7 @@ export const BookCard: React.FC<BookCardProps> = ({
           {book.bookTitle}
         </h3>
 
-        <p className="text-xs text-[#7A6652] dark:text-[#A99A82] mt-0.5 truncate">
+        <p className="text-xs text-[#65513F] dark:text-[#A99A82] mt-0.5 truncate">
           {book.authorName}
         </p>
 
@@ -257,11 +257,11 @@ export const BookCard: React.FC<BookCardProps> = ({
             ${discountedPrice.toFixed(2)}
           </span>
           {book.discount && (
-            <span className="text-[11px] text-[#7A6652] dark:text-[#A99A82] line-through">
+            <span className="text-xs text-[#65513F] dark:text-[#A99A82] line-through">
               ${book.price.toFixed(2)}
             </span>
           )}
-          <span className="ms-auto text-xs text-[#7A6652] dark:text-[#A99A82]">
+          <span className="ms-auto text-xs text-[#65513F] dark:text-[#A99A82]">
             {book.stock > 0 ? `${book.stock} in stock` : 'Awaiting press'}
           </span>
         </div>
