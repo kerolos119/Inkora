@@ -7,12 +7,14 @@ import com.kerolos119.inkora.model.OrderStatus;
 import com.kerolos119.inkora.services.OrderServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
 
     private final OrderServices services;
@@ -32,6 +34,7 @@ public class OrderController {
     @GetMapping("/my")
     @PreAuthorize("hasRole('USER')")
     public PageResult<OrderDto> getMyOrders(@ModelAttribute Filter filter) {
+        log.info("Order history controller reached");
         return services.getMyOrders(filter);
     }
 

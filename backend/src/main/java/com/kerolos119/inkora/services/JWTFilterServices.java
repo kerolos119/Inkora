@@ -47,6 +47,7 @@ public class JWTFilterServices extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        boolean orderHistoryRequest = "/api/v1/order/my".equals(request.getServletPath());
         try {
             final String authorization = request.getHeader("Authorization");
 
@@ -70,10 +71,20 @@ public class JWTFilterServices extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(tokenInfo.getUserId(), null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if (orderHistoryRequest) {
+                    log.info("Order history JWT accepted; role={}, authorities={}, authenticated={}",
+                            tokenInfo.getRole(), authenticationToken.getAuthorities(), authenticationToken.isAuthenticated());
+                }
+            } else if (orderHistoryRequest) {
+                log.warn("Order history request has no Bearer access token; authorizationHeaderPresent={}",
+                        authorization != null);
             }
             filterChain.doFilter(request, response);
 
         }catch (CustomException ex){
+            if (orderHistoryRequest) {
+                log.warn("Order history JWT rejected before controller; status={}", ex.getStatus().value());
+            }
             log.warn("Authentication error: {}" + ex.getMessage());
             writeErrorResponse(response, ex.getStatus().value(), "Authentication failed");
         } catch (RuntimeException ex) {

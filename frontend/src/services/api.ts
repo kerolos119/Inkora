@@ -273,5 +273,5 @@ const mockApi = {
   },
 };
 
-// `npm run dev:real` runs vite with --mode real, which switches to the adapter for the Spring backend.
-export const api: typeof mockApi = import.meta.env.MODE === 'real' ? (realApi as typeof mockApi) : mockApi;
+// Mock-compatible requests are selected only by the dedicated mock development server.
+export const api: typeof mockApi = import.meta.env.MODE === 'mock' ? mockApi : (realApi as typeof mockApi);

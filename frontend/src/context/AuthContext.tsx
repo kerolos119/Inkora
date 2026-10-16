@@ -2,6 +2,7 @@ import { t } from '../i18n';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types/index.js';
 import { api } from '../services/api.js';
+import { ACCESS_TOKEN_REFRESHED_EVENT, SESSION_EXPIRED_EVENT } from '../services/realapi.js';
 import { useToast } from './ToastContext.js';
 
 interface AuthContextValue {
@@ -23,6 +24,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { showToast } = useToast();
 
   useEffect(() => {
+    const handleSessionExpired = () => {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem('inkora_token');
+      localStorage.removeItem('inkora_refresh');
+      localStorage.removeItem('inkora_user');
+      showToast(t('auth.sessionExpired'), 'error');
+    };
+    const handleAccessTokenRefreshed = (event: Event) => {
+      const accessToken = (event as CustomEvent<string>).detail;
+      if (accessToken) setToken(accessToken);
+    };
+
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    window.addEventListener(ACCESS_TOKEN_REFRESHED_EVENT, handleAccessTokenRefreshed);
+
     const savedToken = localStorage.getItem('inkora_token');
     const savedUser = localStorage.getItem('inkora_user');
     if (savedToken && savedUser) {
@@ -35,7 +52,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
     setIsLoading(false);
-  }, []);
+
+    return () => {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+      window.removeEventListener(ACCESS_TOKEN_REFRESHED_EVENT, handleAccessTokenRefreshed);
+    };
+  }, [showToast]);
 
   const login = async (email: string, password: string): Promise<User | null> => {
     try {
@@ -68,11 +90,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    const logoutRequest = api.logout();
     setUser(null);
     setToken(null);
     localStorage.removeItem('inkora_token');
+    localStorage.removeItem('inkora_refresh');
     localStorage.removeItem('inkora_user');
-    api.logout().catch(() => {});
+    logoutRequest.catch(() => {});
     showToast(t('auth.signedOut'), 'info');
   };
 

@@ -8,7 +8,7 @@ interface CartDrawerProps {
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
-  const { cart, isCartDrawerOpen, setIsCartDrawerOpen, updateQuantity, removeFromCart } = useCart();
+  const { cart, isLoading, error, isCartDrawerOpen, setIsCartDrawerOpen, updateQuantity, removeFromCart } = useCart();
 
   if (!isCartDrawerOpen) return null;
 
@@ -64,7 +64,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
 
           {/* Items List */}
           <div className="flex-1 overflow-y-auto p-6 space-y-5 divide-y divide-[#E3D6BC]/60 dark:divide-[#4A3E2E]/60">
-            {cart.items.length === 0 ? (
+            {isLoading ? (
+              <p className="text-center text-xs text-[#65513F] dark:text-[#A99A82] py-16">
+                {t('cart.loading')}
+              </p>
+            ) : error ? (
+              <p role="alert" className="text-center text-xs text-[#8E1F1F] py-16">
+                {t('cart.loadFail')}
+              </p>
+            ) : cart.items.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-16 animate-ink-fade">
                 <ShoppingBag className="w-10 h-10 text-[#65513F]/40 stroke-1 mb-4" />
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mb-1">

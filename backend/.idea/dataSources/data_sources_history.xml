@@ -27,7 +27,7 @@
       <driver-ref>mongo.4</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
-      <remarks>D:/Inkora/src/main/resources/application.yaml</remarks>
+      <remarks>D:/Inkora/backend/src/main/resources/application.yaml</remarks>
       <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
       <jdbc-url>mongodb://localhost:27017</jdbc-url>
       <jdbc-additional-properties>
@@ -45,7 +45,7 @@
       <driver-ref>mongo.4</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
-      <remarks>D:/Inkora/src/main/resources/application-local.yaml</remarks>
+      <remarks>D:/Inkora/backend/src/main/resources/application-local.yaml</remarks>
       <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
       <jdbc-url>mongodb://localhost:27017/wedad_book_store_db</jdbc-url>
       <jdbc-additional-properties>

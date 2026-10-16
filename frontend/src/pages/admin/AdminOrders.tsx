@@ -3,6 +3,7 @@ import { Search, Filter, Eye, CheckCircle, Package, Truck, XCircle } from 'lucid
 import { Order, OrderStatus } from '../../types/index.js';
 import { api } from '../../services/api.js';
 import { useToast } from '../../context/ToastContext.js';
+import { t } from '../../i18n.js';
 
 export const AdminOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -53,10 +54,10 @@ export const AdminOrders: React.FC = () => {
       <div className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <span className="text-xs uppercase font-mono tracking-widest text-[#8A6238] dark:text-[#D9AE6B] font-semibold">
-            Fulfillment & Carrier Operations
+            Order Administration
           </span>
           <h1 className="font-editorial text-3xl sm:text-4xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
-            Dispatch Management & Orders
+            Order Management
           </h1>
         </div>
         <button
@@ -96,6 +97,8 @@ export const AdminOrders: React.FC = () => {
             <option value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</option>
             <option value="DELIVERED">DELIVERED</option>
             <option value="CANCELLED">CANCELLED</option>
+            <option value="REFUNDED">REFUNDED</option>
+            <option value="RETURNED">RETURNED</option>
           </select>
         </div>
       </div>
@@ -122,9 +125,9 @@ export const AdminOrders: React.FC = () => {
                 </td>
                 <td className="p-3">
                   <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD] block">
-                    {order.customerName}
+                    {order.customerName || t('co.notRecorded')}
                   </span>
-                  <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{order.customerEmail}</span>
+                  <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{order.customerEmail || t('co.notRecorded')}</span>
                 </td>
                 <td className="p-3 font-mono text-xs">
                   {order.items.reduce((acc, it) => acc + it.quantity, 0)} items
@@ -133,7 +136,7 @@ export const AdminOrders: React.FC = () => {
                   ${order.totalAmount.toFixed(2)}
                 </td>
                 <td className="p-3 text-[#65513F] dark:text-[#A99A82] font-mono text-xs">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : t('co.notRecorded')}
                 </td>
                 <td className="p-3">
                   <select
@@ -150,6 +153,8 @@ export const AdminOrders: React.FC = () => {
                     <option value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</option>
                     <option value="DELIVERED">DELIVERED</option>
                     <option value="CANCELLED">CANCELLED</option>
+                    <option value="REFUNDED">REFUNDED</option>
+                    <option value="RETURNED">RETURNED</option>
                   </select>
                 </td>
                 <td className="p-3 text-end">
@@ -175,7 +180,7 @@ export const AdminOrders: React.FC = () => {
             <div className="flex items-center justify-between border-b border-[#E3D6BC] dark:border-[#4A3E2E] pb-3">
               <div>
                 <span className="text-xs font-mono text-[#8A6238] dark:text-[#D9AE6B] uppercase tracking-wider font-semibold">
-                  DISPATCH DOSSIER
+                  ORDER DETAILS
                 </span>
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {selectedOrder.orderNumber}
@@ -193,16 +198,16 @@ export const AdminOrders: React.FC = () => {
               <div>
                 <span className="text-[#65513F] dark:text-[#A99A82] block font-mono">Customer</span>
                 <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
-                  {selectedOrder.customerName}
+                  {selectedOrder.customerName || t('co.notRecorded')}
                 </span>
                 <span className="block text-xs text-[#65513F] dark:text-[#A99A82]">
-                  {selectedOrder.customerEmail}
+                  {selectedOrder.customerEmail || t('co.notRecorded')}
                 </span>
               </div>
               <div>
-                <span className="text-[#65513F] dark:text-[#A99A82] block font-mono">Carrier Address</span>
+                <span className="text-[#65513F] dark:text-[#A99A82] block font-mono">Delivery address</span>
                 <span className="text-[#3B2B1E] dark:text-[#F3ECDD]">
-                  {selectedOrder.shippingDetails.address}, {selectedOrder.shippingDetails.city}
+                  {selectedOrder.shippingDetails.address || t('co.notRecorded')}
                 </span>
               </div>
             </div>

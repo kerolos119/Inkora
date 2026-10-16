@@ -50,21 +50,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#FAF6EC]/95 dark:bg-[#120F0B]/95 backdrop-blur-md border-b border-[#E3D6BC] dark:border-[#4A3E2E]">
       {/* Editorial Announcement Bar */}
-      <div className="bg-[#3B2B1E] text-[#F3ECDD] text-xs py-1.5 px-4 tracking-wider border-b border-[#33291C]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="hidden sm:flex items-center gap-2 text-[#DFD6CA]/80">
-            <span className="flex items-center gap-1.5">
+
+        {/* <div className="max-w-7xl mx-auto flex items-center justify-between"> */}
+          {/* <div className="hidden sm:flex items-center gap-2 text-[#DFD6CA]/80"> */}
+            {/* <span className="flex items-center gap-1.5">
               <svg className="w-4 h-4 text-[#D9AE6B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m12 2 4 7-4 13-4-13 4-7z"/>
                 <circle cx="12" cy="11" r="1.5" fill="currentColor"/>
               </svg>
-              <span>{t('x.1c0149')}</span>
-            </span>
-            <span className="text-[#D9AE6B]">·</span>
-            <span className="italic font-editorial text-xs text-[#F3ECDD]">{t('x.30c8b4')}</span>
-          </div>
-        </div>
-      </div>
+            </span> */}
+          {/* </div> */}
+        {/* </div> */}
+      {/* </div> */}
 
       {/* Main Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

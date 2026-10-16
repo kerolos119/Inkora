@@ -78,7 +78,8 @@ export type OrderStatus =
   | 'OUT_FOR_DELIVERY'
   | 'DELIVERED'
   | 'CANCELLED'
-  | 'REFUNDED';
+  | 'REFUNDED'
+  | 'RETURNED';
 
 export type PaymentMethod = 'ONLINE' | 'CASH';
 
@@ -115,11 +116,11 @@ export interface Order {
   shippingFee: number;
   totalAmount: number;
   status: OrderStatus;
-  paymentMethod: PaymentMethod;
-  paymentStatus: 'PAID' | 'PENDING' | 'REFUNDED';
+  paymentMethod: PaymentMethod | null;
+  paymentStatus: 'PAID' | 'PENDING' | 'REFUNDED' | 'UNKNOWN';
   shippingDetails: ShippingDetails;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export interface Review {

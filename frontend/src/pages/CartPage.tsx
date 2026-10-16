@@ -20,7 +20,7 @@ interface CartPageProps {
 }
 
 export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) => {
-  const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { cart, isLoading, error, updateQuantity, removeFromCart, clearCart } = useCart();
   const { showToast } = useToast();
 
   const [couponCode, setCouponCode] = useState('');
@@ -71,7 +71,15 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
         )}
       </div>
 
-      {cart.items.length === 0 ? (
+      {isLoading ? (
+        <p className="border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] p-16 text-center text-xs text-[#65513F] dark:text-[#A99A82]">
+          {t('cart.loading')}
+        </p>
+      ) : error ? (
+        <p role="alert" className="border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] p-16 text-center text-xs text-[#8E1F1F]">
+          {t('cart.loadFail')}
+        </p>
+      ) : cart.items.length === 0 ? (
         <div className="border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] p-16 text-center space-y-4 rounded-[2px] shadow-2xs">
           <ShoppingBag className="w-12 h-12 text-[#65513F]/40 stroke-1 mx-auto" />
           <h2 className="font-editorial text-3xl text-[#3B2B1E] dark:text-[#F3ECDD]">
@@ -199,6 +207,9 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
               </div>
               <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
                 Use code <span className="text-[#8A6238] dark:text-[#D2A560] font-semibold">INKORA10</span> for 10% patron discount.
+              </p>
+              <p className="text-xs text-[#8E1F1F] dark:text-[#D65454] font-mono">
+                {t('cart.estimateNote')}
               </p>
             </form>
 

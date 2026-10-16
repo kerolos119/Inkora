@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -72,7 +75,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex){
+    public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ("/api/v1/order/my".equals(request.getServletPath())) {
+            log.warn("Order history authorization denied; authenticated={}, authorities={}",
+                    authentication != null && authentication.isAuthenticated(),
+                    authentication == null ? java.util.List.of() : authentication.getAuthorities());
+        }
         return buildResponse("Access denied", HttpStatus.FORBIDDEN);
     }
 

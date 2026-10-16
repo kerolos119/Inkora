@@ -1,22 +1,80 @@
 /// <reference types="vite/client" />
-// Adapter: talks to the real Spring Boot backend and converts its DTOs into the
-// shapes the UI expects. Used only when running `npm run dev:real` (vite --mode real).
+// Adapter: talks to the Spring Boot backend and converts its DTOs into the shapes the UI expects.
 import type { Book, Category, Author, Cart, Order, OrderStatus, Review, Post, User, LoginResponse } from '../types/index.js';
 
-const BASE = '/api/v1';
+const BASE = (import.meta.env.VITE_API_URL || '/api/v1').replace(/\/+$/, '');
 const TOKEN = 'inkora_token';
 const REFRESH = 'inkora_refresh';
+const USER = 'inkora_user';
+export const SESSION_EXPIRED_EVENT = 'inkora:session-expired';
+export const ACCESS_TOKEN_REFRESHED_EVENT = 'inkora:access-token-refreshed';
 
-async function refreshTokens(): Promise<boolean> {
-  try {
-    const rt = localStorage.getItem(REFRESH) || '';
-    const r = await fetch(`${BASE}/auth/refresh?refreshToken=${encodeURIComponent(rt)}`, { method: 'POST' });
-    if (!r.ok) return false;
-    const d = await r.json();
-    localStorage.setItem(TOKEN, d.accessToken);
-    if (d.refreshToken) localStorage.setItem(REFRESH, d.refreshToken);
-    return true;
-  } catch { return false; }
+type RefreshResult = 'refreshed' | 'rejected' | 'unavailable';
+
+let refreshInFlight: Promise<RefreshResult> | null = null;
+let sessionGeneration = 0;
+
+function clearStoredSession(notify = true): void {
+  const hadSession = Boolean(
+    localStorage.getItem(TOKEN) ||
+    localStorage.getItem(REFRESH) ||
+    localStorage.getItem(USER)
+  );
+  sessionGeneration += 1;
+  refreshInFlight = null;
+  localStorage.removeItem(TOKEN);
+  localStorage.removeItem(REFRESH);
+  localStorage.removeItem(USER);
+  if (notify && hadSession) window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
+}
+
+function refreshTokens(): Promise<RefreshResult> {
+  if (refreshInFlight) return refreshInFlight;
+
+  const refreshToken = localStorage.getItem(REFRESH);
+  if (!refreshToken) {
+    clearStoredSession();
+    return Promise.resolve('rejected');
+  }
+
+  const generation = sessionGeneration;
+  const pendingRefresh = (async (): Promise<RefreshResult> => {
+    let response: Response;
+    try {
+      response = await fetch(
+        `${BASE}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`,
+        { method: 'POST' }
+      );
+    } catch {
+      // A network failure is ambiguous: preserve credentials and do not replay the request.
+      return 'unavailable';
+    }
+
+    if (response.status === 401) {
+      if (generation === sessionGeneration) clearStoredSession();
+      return 'rejected';
+    }
+    if (!response.ok) return 'unavailable';
+
+    try {
+      const data: { accessToken?: string; refreshToken?: string } = await response.json();
+      if (!data.accessToken || !data.refreshToken) return 'unavailable';
+      if (generation !== sessionGeneration) return 'unavailable';
+
+      localStorage.setItem(TOKEN, data.accessToken);
+      localStorage.setItem(REFRESH, data.refreshToken);
+      window.dispatchEvent(new CustomEvent(ACCESS_TOKEN_REFRESHED_EVENT, { detail: data.accessToken }));
+      return 'refreshed';
+    } catch {
+      return 'unavailable';
+    }
+  })();
+
+  refreshInFlight = pendingRefresh;
+  void pendingRefresh.finally(() => {
+    if (refreshInFlight === pendingRefresh) refreshInFlight = null;
+  });
+  return pendingRefresh;
 }
 
 // The backend sometimes answers with plain text ("Registration successful") or an empty body.
@@ -27,8 +85,9 @@ async function call(path: string, init: RequestInit = {}, retry = true): Promise
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
   const res = await fetch(BASE + path, { ...init, headers });
-  if (res.status === 401 && retry && !path.startsWith('/auth/') && localStorage.getItem(REFRESH)) {
-    if (await refreshTokens()) return call(path, init, false);
+  if (res.status === 401 && retry && !path.startsWith('/auth/')) {
+    const refreshResult = await refreshTokens();
+    if (refreshResult === 'refreshed') return call(path, init, false);
   }
   const text = await res.text();
   let data: any = text;
@@ -79,21 +138,22 @@ async function listBooks(): Promise<Book[]> {
   return books.map((b, i) => ({ ...b, featured: i < 4, bestseller: i % 3 === 0, newArrival: i < 6 }));
 }
 
-const mapOrder = (o: any, s: any = {}): Order => {
+const mapOrder = (o: any): Order => {
   const items = (o.items || []).map((i: any) => ({
     bookId: i.bookId, bookTitle: i.bookTitle, coverImage: cover(i.bookTitle), authorName: '',
     price: Number(i.price) || 0, quantity: i.quantity,
   }));
   const subtotal = items.reduce((t: number, i: any) => t + i.price * i.quantity, 0);
-  const status = (o.orderStatus || 'PENDING') as OrderStatus;
-  const pm = (o.paymentMethod || 'CASH') as Order['paymentMethod'];
-  const when = o.createdAt || o.orderedAt || new Date().toISOString(); // OrderDto has no date yet
+  const status = o.orderStatus as OrderStatus;
+  const pm = o.paymentMethod ? o.paymentMethod as Order['paymentMethod'] : null;
+  const when = o.createdAt || o.orderedAt || null;
   return {
     id: o.id, orderNumber: 'INK-' + String(o.id).slice(-6).toUpperCase(), userId: o.usersId || '',
-    customerName: s.fullName || '', customerEmail: s.email || '', customerPhone: o.shippingPhone,
-    items, subtotal, discountAmount: 0, shippingFee: 0, totalAmount: subtotal, status, paymentMethod: pm,
-    paymentStatus: status === 'REFUNDED' ? 'REFUNDED' : pm === 'ONLINE' ? 'PAID' : 'PENDING',
-    shippingDetails: { fullName: s.fullName || '', email: s.email || '', phone: o.shippingPhone || '', address: o.shippingAddress || '', city: s.city || '', postalCode: s.postalCode || '', country: s.country || '', notes: o.note },
+    customerName: '', customerEmail: '', customerPhone: o.shippingPhone || '',
+    items, subtotal, discountAmount: 0, shippingFee: 0,
+    totalAmount: o.totalAmount == null ? subtotal : Number(o.totalAmount), status, paymentMethod: pm,
+    paymentStatus: 'UNKNOWN',
+    shippingDetails: { fullName: '', email: '', phone: o.shippingPhone || '', address: o.shippingAddress || '', city: '', postalCode: '', country: '', notes: o.note || '' },
     createdAt: when, updatedAt: when,
   };
 };
@@ -136,9 +196,13 @@ export const realApi: any = {
   forgotPassword: async (email: string) => ({ message: String(await call('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) })) }),
   resetPassword: async (d: any) => ({ message: String(await call('/auth/reset-password', { method: 'POST', body: JSON.stringify(d) })) }),
   logout: async () => {
-    const rt = localStorage.getItem(REFRESH);
-    localStorage.removeItem(REFRESH);
-    if (rt) { try { await call(`/auth/logout?refreshToken=${encodeURIComponent(rt)}`, { method: 'POST' }, false); } catch { /* ignore */ } }
+    const refreshToken = localStorage.getItem(REFRESH);
+    clearStoredSession(false);
+    if (refreshToken) {
+      try {
+        await fetch(`${BASE}/auth/logout?refreshToken=${encodeURIComponent(refreshToken)}`, { method: 'POST' });
+      } catch { /* Local logout remains complete if the backend is unavailable. */ }
+    }
     return { message: 'Logged out' };
   },
 
@@ -189,19 +253,12 @@ export const realApi: any = {
 
   // ── Checkout & orders ──
   // The backend's /checkout takes no body: it turns the server-side cart into an order.
-  checkout: async (p: any): Promise<Order> => {
-    const lines = [];
-    for (const it of p.items || []) {
-      const b = await call(`/book/${it.bookId}`);
-      lines.push({ bookId: it.bookId, bookTitle: b.bookTitle, quantity: it.quantity, price: b.price });
+  checkout: async (_payload: any): Promise<Order> => {
+    const dto = await call('/checkout', { method: 'POST' });
+    if (!dto?.id || !Array.isArray(dto.items) || !dto.orderStatus) {
+      throw new Error('Checkout response did not contain a valid order.');
     }
-    await call('/cart', { method: 'POST', body: JSON.stringify({ cartItems: lines, cartStatus: 'ACTIVE' }) });
-    let dto = await call('/checkout', { method: 'POST' });
-    const s = p.shippingDetails || {};
-    try { // best effort: attach the shipping details to the new order
-      dto = await call(`/order/${dto.id}`, { method: 'PUT', body: JSON.stringify({ ...dto, shippingAddress: [s.address, s.city, s.postalCode, s.country].filter(Boolean).join(', '), shippingPhone: s.phone, note: s.notes, paymentMethod: p.paymentMethod }) });
-    } catch { /* keep the order as created */ }
-    return mapOrder(dto, s);
+    return mapOrder(dto);
   },
   getMyOrders: async (): Promise<Order[]> => arr(await call('/order/my?size=100')).map((o) => mapOrder(o)),
   getAllOrders: async (): Promise<Order[]> => arr(await call('/order?size=100')).map((o) => mapOrder(o)),
@@ -223,7 +280,7 @@ export const realApi: any = {
   // ── Admin: built from the endpoints that do exist ──
   getAdminDashboard: async () => {
     const [books, orders, users] = await Promise.all([listBooks(), realApi.getAllOrders(), call('/users/all')]);
-    const active = orders.filter((o: Order) => o.status !== 'CANCELLED' && o.status !== 'REFUNDED');
+    const active = orders.filter((o: Order) => !['CANCELLED', 'REFUNDED', 'RETURNED'].includes(o.status));
     const totalRevenue = active.reduce((t: number, o: Order) => t + o.totalAmount, 0);
     const statusDistribution = orders.reduce((a: Record<string, number>, o: Order) => ({ ...a, [o.status]: (a[o.status] || 0) + 1 }), {});
     return { totalBooks: books.length, totalCustomers: arr(users).length, totalOrders: orders.length, totalRevenue,

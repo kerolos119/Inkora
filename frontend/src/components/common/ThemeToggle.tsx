@@ -9,7 +9,7 @@ export const ThemeToggle: React.FC = () => {
     <button
       onClick={toggleTheme}
       type="button"
-      title={isDark ? 'Switch to Vellum Light Mode' : 'Switch to Obsidian Dark Mode'}
+      title={isDark ? 'Switch to Light Light Mode' : 'Switch to Dark Dark Mode'}
       className="group relative flex items-center gap-1.5 px-2.5 py-1.5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] text-[#3B2B1E] dark:text-[#F3ECDD] hover:border-[#8A6238] dark:hover:border-[#D2A560] transition-all btn-press shadow-2xs cursor-pointer rounded-[2px]"
       aria-label="Toggle theme mode"
     >
@@ -22,7 +22,7 @@ export const ThemeToggle: React.FC = () => {
       </div>
 
       <span className="hidden sm:inline font-mono text-xs tracking-wider uppercase font-semibold text-[#65513F] dark:text-[#A99A82]">
-        {isDark ? 'Obsidian' : 'Vellum'}
+        {isDark ? 'Dark' : 'Light'}
       </span>
     </button>
   );

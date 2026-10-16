@@ -6,7 +6,6 @@ import {
   Truck,
   ArrowRight,
   ArrowLeft,
-  ShieldCheck,
   CheckCircle2,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext.js';
@@ -47,12 +46,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
   });
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('ONLINE');
-  const [cardInfo, setCardInfo] = useState({
-    cardNumber: '',
-    cardExp: '',
-    cardCvc: '',
-    cardName: '',
-  });
 
   if (cart.items.length === 0 && step !== 5) {
     return (
@@ -134,7 +127,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
         </span>
         <div className="flex items-center justify-between">
           <h1 className="font-editorial text-3xl sm:text-4xl text-[#3B2B1E] dark:text-[#F3ECDD]">
-            {step === 5 ? 'Order Dispatch Confirmed' : 'Checkout & Dispatch'}
+            {step === 5 ? t('co.orderCreated') : t('co.title')}
           </h1>
 
           {/* Stepper Dots/Numbers */}
@@ -173,7 +166,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
             <div className="absolute -top-3 end-0 sm:end-6 w-20 h-20 rounded-full border-2 border-dashed border-[#8E1F1F]/60 dark:border-[#D65454]/60 bg-[#8E1F1F]/5 dark:bg-[#D65454]/10 flex flex-col items-center justify-center rotate-12 pointer-events-none select-none seal-pulse shadow-xs">
               <span className="font-mono text-xs uppercase tracking-widest text-[#8E1F1F] dark:text-[#D65454] font-bold">INKORA</span>
               <span className="font-quill text-base text-[#8E1F1F] dark:text-[#D65454] -my-1">Sealed</span>
-              <span className="font-mono text-xs tracking-wider text-[#8E1F1F] dark:text-[#D65454]">VERIFIED</span>
+              <span className="font-mono text-xs tracking-wider text-[#8E1F1F] dark:text-[#D65454]">CREATED</span>
             </div>
 
             <div className="w-12 h-12 bg-[#2A674A]/10 text-[#2A674A] border border-[#2A674A]/30 flex items-center justify-center mx-auto rounded-[2px]">
@@ -189,7 +182,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
               {createdOrder.orderNumber}
             </div>
             <p className="font-quill text-base text-[#8A6238] dark:text-[#D2A560] pt-1 italic">
-              ~ Inscribed &amp; parcelled with acid-free archival care ~
+              {t('co.createdFromCart')}
             </p>
           </div>
 
@@ -198,12 +191,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
               <h4 className="font-semibold uppercase tracking-wider text-xs text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
                 {t('co.shipTo')}
               </h4>
-              <p className="text-[#65513F] dark:text-[#A99A82]">
-                {createdOrder.shippingDetails.fullName}<br />
-                {createdOrder.shippingDetails.address}<br />
-                {createdOrder.shippingDetails.city}, {createdOrder.shippingDetails.postalCode}<br />
-                {createdOrder.shippingDetails.country}
-              </p>
+              <p className="text-[#65513F] dark:text-[#A99A82]">{t('co.orderLimit')}</p>
             </div>
 
             <div>
@@ -213,7 +201,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
               <div className="space-y-1 text-[#65513F] dark:text-[#A99A82]">
                 <div className="flex justify-between">
                   <span>{t('co.method')}</span>
-                  <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{createdOrder.paymentMethod}</span>
+                  <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">{createdOrder.paymentMethod || t('co.notRecorded')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{t('co.statusC')}</span>
@@ -278,6 +266,9 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                 </h3>
                 <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
                   {t('co.h1')}
+                </p>
+                <p role="note" className="border border-[#D9AE6B]/50 bg-[#F6EBD3]/50 dark:bg-[#33281A] p-3 text-xs text-[#65513F] dark:text-[#A99A82]">
+                  {t('co.orderLimit')}
                 </p>
 
                 <div className="space-y-3 pt-2">
@@ -426,7 +417,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   3. Settlement Method
                 </h3>
                 <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
-                  {t('co.h3')}
+                  {t('co.paymentDemo')}
                 </p>
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
@@ -465,49 +456,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   </div>
                 </div>
 
-                {paymentMethod === 'ONLINE' && (
-                  <div className="space-y-3 pt-3 p-4 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] rounded-[2px]">
-                    <div className="flex items-center justify-between text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
-                      <span>{t('co.demo')}</span>
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#2A674A]" />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase font-mono text-[#65513F] dark:text-[#A99A82] block mb-1">
-                        {t('f.card')}
-                      </label>
-                      <input
-                        type="text"
-                        value={cardInfo.cardNumber}
-                        onChange={(e) => setCardInfo({ ...cardInfo, cardNumber: e.target.value })}
-                        className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-xs font-mono text-[#3B2B1E] dark:text-[#F3ECDD] rounded-[2px]"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-xs uppercase font-mono text-[#65513F] dark:text-[#A99A82] block mb-1">
-                          {t('x.ec67f2')}
-                        </label>
-                        <input
-                          type="text"
-                          value={cardInfo.cardExp}
-                          onChange={(e) => setCardInfo({ ...cardInfo, cardExp: e.target.value })}
-                          className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-xs font-mono text-[#3B2B1E] dark:text-[#F3ECDD] rounded-[2px]"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs uppercase font-mono text-[#65513F] dark:text-[#A99A82] block mb-1">
-                          {t('x.9dbe75')}
-                        </label>
-                        <input
-                          type="text"
-                          value={cardInfo.cardCvc}
-                          onChange={(e) => setCardInfo({ ...cardInfo, cardCvc: e.target.value })}
-                          className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-xs font-mono text-[#3B2B1E] dark:text-[#F3ECDD] rounded-[2px]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
@@ -515,7 +463,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
             {step === 4 && (
               <div className="space-y-4">
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
-                  4. Review & Authorize Dispatch
+                  4. Review Order
                 </h3>
                 <p className="text-xs text-[#65513F] dark:text-[#A99A82] font-body-literary">
                   {t('co.h4')}
@@ -534,7 +482,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#65513F] dark:text-[#A99A82]">{t('co.s3')}</span>
-                    <span className="font-medium text-[#8A6238] dark:text-[#D2A560]">{paymentMethod}</span>
+                    <span className="font-medium text-[#8A6238] dark:text-[#D2A560]">{paymentMethod} ({t('co.demoLabel')})</span>
                   </div>
                 </div>
               </div>

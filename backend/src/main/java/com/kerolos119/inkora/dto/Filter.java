@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Filter {
+public class Filter {
 
     @Min(1)
     private Integer page=1;

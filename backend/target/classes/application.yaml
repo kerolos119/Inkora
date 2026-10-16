@@ -56,4 +56,9 @@ cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
 
 app:
-  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}\
+
+cloudinary:
+  cloud-name: blpgdvzw
+  api-key: 375352268943137
+  api-secret: EQmAD7vrUNqeZZCWk2hQY9Q_NWU

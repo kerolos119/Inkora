@@ -26,4 +26,5 @@ public class Post extends Auditable {
     @Builder.Default
     private long likeCount = 0;
 
+
 }

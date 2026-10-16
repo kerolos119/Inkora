@@ -206,7 +206,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                               {order.orderNumber}
                             </span>
                             <span className="text-[#65513F] dark:text-[#A99A82] ms-2">
-                              Ordered {new Date(order.createdAt).toLocaleDateString()}
+                              {order.createdAt ? `Ordered ${new Date(order.createdAt).toLocaleDateString()}` : t('co.notRecorded')}
                             </span>
                           </div>
 
@@ -484,7 +484,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
               <div>
                 <span className="text-[#65513F] dark:text-[#A99A82] block">{t('ac.date')}</span>
                 <span className="font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
-                  {new Date(selectedOrder.createdAt).toLocaleString()}
+                  {selectedOrder.createdAt ? new Date(selectedOrder.createdAt).toLocaleString() : t('co.notRecorded')}
                 </span>
               </div>
               <div>
@@ -520,7 +520,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
             </div>
 
             <div className="flex justify-between items-center text-sm font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
-              <span>{t('ac.paid')}</span>
+              <span>{t('ac.total')}</span>
               <span>${selectedOrder.totalAmount.toFixed(2)}</span>
             </div>
           </div>

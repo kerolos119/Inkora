@@ -57,4 +57,8 @@ public final class ExceptionMessage {
     public static final String OTP_EXPIRED      = "otp.expired";
     public static final String OTP_ALREADY_SENT = "otp.already.sent";
     public static final String OTP_MAX_ATTEMPTS = "otp.max.attempts";
+
+
+    // IMAGE
+    public static final String FILE_NOT_EMPTY = "file.not.empty";
 }

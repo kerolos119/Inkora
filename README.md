@@ -23,8 +23,8 @@ A full-stack online bookstore with a community layer (news and posts with likes 
 
 | Area | Technology |
 |------|-----------|
-| Backend language | Java 21 |
-| Backend framework | Spring Boot 3.4.13 |
+| Backend language | Java 25 |
+| Backend framework | Spring Boot 3.5.16 |
 | Database | MongoDB (Spring Data MongoDB) |
 | Security | Spring Security, JJWT |
 | Mapping | MapStruct 1.5.5, Lombok |
@@ -80,7 +80,7 @@ cd Inkora
 
 ### Prerequisites
 
-- JDK 21 (backend)
+- JDK 25 (backend)
 - Node.js 20+ and npm (frontend)
 - MongoDB running locally (default `mongodb://localhost:27017/Inkora`) or a remote instance
 - An SMTP account (e.g. a Gmail app password) for sending emails
@@ -144,20 +144,27 @@ cd frontend
 npm install
 ```
 
-There are two ways to run it:
+For normal frontend development, start the backend first, then run:
 
-| Command | What it does |
-|---------|--------------|
-| `npm run dev` | Starts the **mock API** (Express, in-memory data) together with Vite on `http://localhost:3000`. No backend or database needed. |
-| `npm run dev:real` | Starts Vite only on `http://localhost:3000` and proxies `/api/v1` to the real backend at `http://localhost:8080`. Start the backend first. |
+```bash
+npm run dev
+```
+
+This starts Vite on `http://localhost:3000`, uses the Spring Boot API adapter, and proxies `/api/v1` to `http://localhost:8080`. `npm run dev:real` remains available as an equivalent explicit command.
+
+The Express in-memory API is available only for development with `npm run dev:mock`. It is not used by production builds or `npm run start`.
 
 Other scripts:
 
 ```bash
 npm run build   # production build into dist/
-npm run start   # serve the production build through the mock server
+npm run start   # preview the production build
 npm run lint    # TypeScript type-check
 ```
+
+#### Frontend API URL
+
+`VITE_API_URL` is the API base URL, including the `/api/v1` prefix. It is read at build time; the default `/api/v1` uses the same origin. In production, either configure the web server/reverse proxy to forward `/api/v1` to the Spring Boot backend, or set `VITE_API_URL` to the backend's reachable URL (for example, `https://api.example.com/api/v1`) when building the frontend. Vite's development proxy is not included in production. Do not put secrets in this frontend variable.
 
 #### Mock mode notes
 

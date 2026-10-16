@@ -85,13 +85,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] shadow-xs">
           <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82] uppercase block">
-            Net Revenue
+            Order Value (not revenue)
           </span>
           <div className="font-editorial text-3xl font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
             ${data.totalRevenue.toLocaleString()}
           </div>
-          <span className="text-xs text-[#2A674A] font-mono mt-2 block">
-            +14.2% vs previous quarter
+          <span className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono mt-2 block">
+            Order totals only; payment is not tracked
           </span>
         </div>
 
@@ -103,7 +103,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
             {data.totalOrders}
           </div>
           <span className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono mt-2 block">
-            Across 14 jurisdictions
+            Orders returned by the backend
           </span>
         </div>
 
@@ -161,10 +161,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
         <div className="lg:col-span-8 p-6 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] space-y-6 shadow-xs">
           <div className="flex items-center justify-between border-b border-[#E3D6BC] dark:border-[#4A3E2E] pb-3">
             <h3 className="font-editorial text-xl text-[#3B2B1E] dark:text-[#F3ECDD]">
-              Monthly Revenue Performance
+              Order Value Summary
             </h3>
             <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82]">
-              Past 6 Months
+              Order totals, not payments
             </span>
           </div>
 
