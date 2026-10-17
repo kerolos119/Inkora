@@ -1,4 +1,5 @@
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\AppConfig.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\CloudinaryConfig.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\SecurityConfig.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\SwaggerConfig.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\constants\PublicRoutes.java
@@ -9,6 +10,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\BookController.
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CartController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CategoryController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CheckoutController.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\ImageController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\NewsCommentController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\NewsController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\NewsLikesController.java
@@ -100,6 +102,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\BookServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CartService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CategoryServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CheckoutService.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CloudinarySevice.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CustomUserDetailsService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\EmailServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\JWTFilterServices.java

@@ -7,6 +7,8 @@ import {
   Layers,
   Feather,
   MessageSquare,
+  FileText,
+  Newspaper,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -41,6 +43,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'categories', label: 'Categories & Taxonomy', icon: Layers },
     { id: 'authors', label: 'Authors in Residence', icon: Feather },
     { id: 'reviews', label: 'Reviews Moderation', icon: MessageSquare },
+    { id: 'posts', label: 'Journal Posts', icon: FileText },
+    { id: 'news', label: 'News & Announcements', icon: Newspaper },
   ];
 
   return (

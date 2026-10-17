@@ -82,6 +82,17 @@ public class GlobalExceptionHandler {
                     authentication != null && authentication.isAuthenticated(),
                     authentication == null ? java.util.List.of() : authentication.getAuthorities());
         }
+        if ("POST".equals(request.getMethod()) && "/api/v1/checkout".equals(request.getServletPath())) {
+            java.util.List<String> securityFrames = java.util.Arrays.stream(ex.getStackTrace())
+                    .filter(frame -> frame.getClassName().startsWith("org.springframework.security"))
+                    .limit(5)
+                    .map(frame -> frame.getClassName() + "." + frame.getMethodName() + ":" + frame.getLineNumber())
+                    .toList();
+            log.warn("Checkout authorization denied; authenticated={}, authorities={}, securityFrames={}",
+                    authentication != null && authentication.isAuthenticated(),
+                    authentication == null ? java.util.List.of() : authentication.getAuthorities(),
+                    securityFrames);
+        }
         return buildResponse("Access denied", HttpStatus.FORBIDDEN);
     }
 

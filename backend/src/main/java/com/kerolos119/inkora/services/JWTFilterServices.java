@@ -48,8 +48,14 @@ public class JWTFilterServices extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         boolean orderHistoryRequest = "/api/v1/order/my".equals(request.getServletPath());
+        boolean checkoutRequest = "POST".equals(request.getMethod())
+                && "/api/v1/checkout".equals(request.getServletPath());
         try {
             final String authorization = request.getHeader("Authorization");
+            if (checkoutRequest && (authorization == null || !authorization.startsWith("Bearer "))) {
+                log.warn("Checkout request has no Bearer token; authorizationHeaderPresent={}",
+                        authorization != null);
+            }
 
             if(authorization != null && authorization.startsWith("Bearer ")){
 
@@ -71,6 +77,10 @@ public class JWTFilterServices extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(tokenInfo.getUserId(), null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if (checkoutRequest) {
+                    log.info("Checkout JWT accepted; role={}, authorities={}, authenticated={}",
+                            tokenInfo.getRole(), authenticationToken.getAuthorities(), authenticationToken.isAuthenticated());
+                }
                 if (orderHistoryRequest) {
                     log.info("Order history JWT accepted; role={}, authorities={}, authenticated={}",
                             tokenInfo.getRole(), authenticationToken.getAuthorities(), authenticationToken.isAuthenticated());
@@ -82,12 +92,19 @@ public class JWTFilterServices extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         }catch (CustomException ex){
+            if (checkoutRequest) {
+                log.warn("Checkout JWT rejected before controller; status={}", ex.getStatus().value());
+            }
             if (orderHistoryRequest) {
                 log.warn("Order history JWT rejected before controller; status={}", ex.getStatus().value());
             }
             log.warn("Authentication error: {}" + ex.getMessage());
             writeErrorResponse(response, ex.getStatus().value(), "Authentication failed");
         } catch (RuntimeException ex) {
+            if (checkoutRequest) {
+                log.warn("Checkout JWT processing failed before controller; exceptionType={}",
+                        ex.getClass().getSimpleName());
+            }
             log.warn("Runtime error: {}" + ex.getMessage());
             writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Bad request");
         }catch (Exception ex){

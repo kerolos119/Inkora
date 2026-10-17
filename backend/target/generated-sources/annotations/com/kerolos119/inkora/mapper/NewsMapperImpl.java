@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-16T23:47:24+0300",
+    date = "2026-10-17T22:18:35+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component
@@ -56,6 +56,7 @@ public class NewsMapperImpl implements NewsMapper {
         newsDto.content( entity.getContent() );
         newsDto.imagePath( entity.getImagePath() );
         newsDto.likeCount( entity.getLikeCount() );
+        newsDto.createdAt( entity.getCreatedAt() );
 
         return newsDto.build();
     }

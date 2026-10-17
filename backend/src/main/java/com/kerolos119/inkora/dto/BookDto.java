@@ -50,6 +50,8 @@ public class BookDto {
     @NotBlank(message = "language is required")
     private String language;
 
+    private String imagePath;
+
     @NotBlank(message = "ISBN is required")
     @Size(max = 20, message = "ISBN must not exceed 20 characters")
     private String isbn;

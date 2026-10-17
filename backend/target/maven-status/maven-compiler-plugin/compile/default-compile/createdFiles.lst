@@ -101,6 +101,7 @@ com\kerolos119\inkora\services\PostServices.class
 com\kerolos119\inkora\Utils\OtpCache.class
 com\kerolos119\inkora\model\Auditable.class
 com\kerolos119\inkora\model\TokenInfo$TokenInfoBuilder.class
+com\kerolos119\inkora\services\CloudinarySevice.class
 com\kerolos119\inkora\document\PostLikes.class
 com\kerolos119\inkora\mapper\PostMapper.class
 com\kerolos119\inkora\controller\PostController.class
@@ -124,6 +125,7 @@ com\kerolos119\inkora\services\PostCommentServices.class
 com\kerolos119\inkora\mapper\NewsCommentMapperImpl.class
 com\kerolos119\inkora\dto\OrderDto.class
 com\kerolos119\inkora\mapper\PostCommentMapperImpl.class
+com\kerolos119\inkora\controller\ImageController.class
 com\kerolos119\inkora\repository\PostLikeRepository.class
 com\kerolos119\inkora\repository\AuthorRepository.class
 com\kerolos119\inkora\services\NewsServices.class
@@ -144,6 +146,7 @@ com\kerolos119\inkora\document\Post.class
 com\kerolos119\inkora\controller\PostLikeController.class
 com\kerolos119\inkora\services\BaseService.class
 com\kerolos119\inkora\mapper\PostCommentMapper.class
+com\kerolos119\inkora\config\CloudinaryConfig.class
 com\kerolos119\inkora\services\CartService.class
 com\kerolos119\inkora\document\Book.class
 com\kerolos119\inkora\document\News$NewsBuilder.class

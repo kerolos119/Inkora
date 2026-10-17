@@ -13,6 +13,7 @@ import {
 import { Book, Category, Author } from '../../types/index.js';
 import { api } from '../../services/api.js';
 import { useToast } from '../../context/ToastContext.js';
+import { uploadImage } from '../../services/realapi.js';
 
 export const AdminBooks: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -20,6 +21,7 @@ export const AdminBooks: React.FC = () => {
   const [authors, setAuthors] = useState<Author[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +45,7 @@ export const AdminBooks: React.FC = () => {
     discount: 0,
     stock: 20,
     publisher: 'Inkora Editions',
-    coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
+    coverImage: '',
     categoryId: [],
   });
 
@@ -83,7 +85,7 @@ export const AdminBooks: React.FC = () => {
       discount: 0,
       stock: 25,
       publisher: 'Inkora Editions',
-      coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
+      coverImage: '',
       categoryId: [categories[0]?.id || 'cat-1'],
     });
     setIsModalOpen(true);
@@ -93,6 +95,30 @@ export const AdminBooks: React.FC = () => {
     setEditingBook(b);
     setForm({ ...b });
     setIsModalOpen(true);
+  };
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    if (!file) return;
+    
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image must be under 5MB', 'error');
+      input.value = '';
+      return;
+    }
+    
+    setUploading(true);
+    try {
+      const url = await uploadImage(file, 'book');
+      setForm((f) => ({ ...f, coverImage: String(url) }));
+      showToast('Image uploaded');
+    } catch (err: any) {
+      console.error('Upload failed:', err);
+      showToast(err?.message || 'Upload failed', 'error');
+    } finally {
+      setUploading(false);
+      input.value = '';
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -127,7 +153,7 @@ export const AdminBooks: React.FC = () => {
 
   const handleInlineStockUpdate = async (b: Book, newStock: number) => {
     try {
-      const updated = await api.updateBook(b.id, { stock: Math.max(0, newStock) });
+      const updated = await api.updateBook(b.id, {...b, stock: Math.max(0, newStock) });
       setBooks(books.map((x) => (x.id === updated.id ? updated : x)));
       showToast(`Stock updated to ${updated.stock}`);
     } catch {
@@ -408,17 +434,40 @@ export const AdminBooks: React.FC = () => {
 
               <div>
                 <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
-                  Cover Image URL
-                </label>
-                <input
-                  type="url"
-                  value={form.coverImage || ''}
-                  onChange={(e) => setForm({ ...form, coverImage: e.target.value })}
-                  placeholder="https://..."
-                  required
-                  className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
-                />
+                  Cover Image
+                  </label>
+
+                  <div className="flex items-start gap-3">
+                    {form.coverImage && (
+                      <img 
+                      src={form.coverImage}
+                      alt="Cover preview"
+                      className="w-16 h-24 object-cover border border-[#E3D6BC] dark:border-[#4A3E2E] rounded-[1px]"
+                      />
+                    )}
+
+                    <div className="flex-1 space-y-2">
+                      <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploading}
+                      className="w-full text-xs text-[#3B2B1E] dark:text-[#F3ECDD]"
+                      />
+                      {uploading && <span className="text-xs text-[#8A6238]">
+                        Uploading...
+                        </span>}
+
+                        <input
+                        type="url"
+                        value={form.coverImage || ''}
+                        onChange={(e) => setForm({...form, coverImage: e.target.value })}
+                        placeholder="...or paste an image URL"
+                        className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                        />
+                    </div>
               </div>
+            </div>
 
               <div className="pt-4 border-t border-[#E3D6BC] dark:border-[#4A3E2E] flex justify-end gap-3">
                 <button
@@ -430,7 +479,8 @@ export const AdminBooks: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#8A6238] dark:bg-[#D9AE6B] text-[#FAF6EC] text-xs font-semibold uppercase tracking-wider hover:bg-[#6F4D2B] dark:hover:bg-[#CBA77B] font-mono btn-press"
+                  disabled={uploading}
+                  className="px-6 py-2 bg-[#8A6238] dark:bg-[#D9AE6B] text-[#FAF6EC] text-xs font-semibold uppercase tracking-wider hover:bg-[#6F4D2B] dark:hover:bg-[#CBA77B] font-mono btn-press disabled:opacity-50"
                 >
                   Save Inscription
                 </button>

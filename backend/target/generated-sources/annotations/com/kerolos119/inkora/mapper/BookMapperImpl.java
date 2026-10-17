@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-16T23:47:24+0300",
+    date = "2026-10-17T22:18:35+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component
@@ -63,6 +63,7 @@ public class BookMapperImpl implements BookMapper {
         bookDto.coverType( entity.getCoverType() );
         bookDto.paperType( entity.getPaperType() );
         bookDto.language( entity.getLanguage() );
+        bookDto.imagePath( entity.getImagePath() );
         bookDto.isbn( entity.getIsbn() );
         bookDto.price( entity.getPrice() );
         bookDto.stock( entity.getStock() );
@@ -90,6 +91,7 @@ public class BookMapperImpl implements BookMapper {
         book.coverType( dto.getCoverType() );
         book.paperType( dto.getPaperType() );
         book.language( dto.getLanguage() );
+        book.imagePath( dto.getImagePath() );
         book.isbn( dto.getIsbn() );
         book.price( dto.getPrice() );
         book.stock( dto.getStock() );
@@ -112,6 +114,7 @@ public class BookMapperImpl implements BookMapper {
         entity.setCoverType( dto.getCoverType() );
         entity.setPaperType( dto.getPaperType() );
         entity.setLanguage( dto.getLanguage() );
+        entity.setImagePath( dto.getImagePath() );
         entity.setIsbn( dto.getIsbn() );
         entity.setPrice( dto.getPrice() );
         entity.setStock( dto.getStock() );

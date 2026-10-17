@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 // Adapter: talks to the Spring Boot backend and converts its DTOs into the shapes the UI expects.
+import { title } from 'process';
 import type { Book, Category, Author, Cart, Order, OrderStatus, Review, Post, User, LoginResponse } from '../types/index.js';
 
 const BASE = (import.meta.env.VITE_API_URL || '/api/v1').replace(/\/+$/, '');
@@ -80,8 +81,9 @@ function refreshTokens(): Promise<RefreshResult> {
 // The backend sometimes answers with plain text ("Registration successful") or an empty body.
 async function call(path: string, init: RequestInit = {}, retry = true): Promise<any> {
   const token = localStorage.getItem(TOKEN);
+  const isForm = typeof FormData !== 'undefined' && init.body instanceof FormData;
   const headers: Record<string, string> = {
-    ...(init.body ? { 'Content-Type': 'application/json' } : {}),
+    ...(init.body && !isForm ? { 'Content-Type': 'application/json' } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
   const res = await fetch(BASE + path, { ...init, headers });
@@ -117,19 +119,62 @@ const cover = (title: string) =>
     `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="560"><rect width="400" height="560" fill="#F1E9D6"/><rect x="22" y="22" width="356" height="516" fill="none" stroke="#8A6238" stroke-width="3"/><text x="200" y="280" font-family="Georgia,serif" font-size="26" text-anchor="middle" fill="#3B2B1E">${clean(title)}</text></svg>`);
 
 const mapBook = (b: any): Book => ({
-  id: b.id, authorId: b.authorId, authorName: b.authorName || '', bookTitle: b.bookTitle || '',
-  bookDescription: b.bookDescription || '', numberOfPages: b.numberOfPages || 0, bookSize: b.bookSize || '',
-  coverType: (b.coverType || 'Hardcover') as Book['coverType'], paperType: b.paperType || '',
-  publicationYear: String(b.publicationYear || '').slice(0, 4), language: b.language || '', isbn: b.isbn || '',
-  price: Number(b.price) || 0, stock: b.stock ?? 0, coverImage: cover(b.bookTitle),
-  rating: 0, reviewCount: 0, categoryId: b.categoryId || [], categoryNames: [], publisher: '',
+  id: b.id, 
+  authorId: b.authorId, 
+  authorName: b.authorName || '', 
+  bookTitle: b.bookTitle || '',
+  bookDescription: b.bookDescription || '', 
+  numberOfPages: b.numberOfPages || 0, 
+  bookSize: b.bookSize || '',
+  coverType: (b.coverType || 'Hardcover') as Book['coverType'], 
+  paperType: b.paperType || '',
+  publicationYear: String(b.publicationYear || '').slice(0, 4), 
+  language: b.language || '', isbn: b.isbn || '',
+  price: Number(b.price) || 0, 
+  stock: b.stock ?? 0, 
+  coverImage: b.imagePath || cover(b.bookTitle),
+  rating: 0, 
+  reviewCount: 0, 
+  categoryId: b.categoryId || [], 
+  categoryNames: [], 
+  publisher: '',
 });
 
 const toBackendBook = (b: Partial<Book>) => ({
-  authorId: b.authorId, bookTitle: b.bookTitle, bookDescription: b.bookDescription, numberOfPages: b.numberOfPages,
-  bookSize: b.bookSize, coverType: b.coverType, paperType: b.paperType,
+  authorId: b.authorId, 
+  bookTitle: b.bookTitle, 
+  bookDescription: b.bookDescription, 
+  numberOfPages: b.numberOfPages,
+  bookSize: b.bookSize, 
+  coverType: b.coverType, 
+  paperType: b.paperType,
+  imagePath: b.coverImage && !b.coverImage.startsWith('data:') ? b.coverImage : undefined,
   publicationYear: b.publicationYear ? (/^\d{4}$/.test(String(b.publicationYear)) ? `${b.publicationYear}-01-01` : b.publicationYear) : undefined,
-  language: b.language, isbn: b.isbn, price: b.price, stock: b.stock, categoryId: b.categoryId,
+  language: b.language, 
+  isbn: b.isbn, 
+  price: b.price, 
+  stock: b.stock, 
+  categoryId: b.categoryId,
+});
+
+const mapPost = (p:any): Post => ({
+  id: p.id,
+  title: p.title || '',
+  content: p.content || '',
+  authorName: 'Inkora',
+  authorRole: 'Editor',
+  coverImage: p.imagePath || cover(p.title),
+  publishedAt: p.createdAt || new Date().toISOString(),
+  likesCount: p.likeCount || 0,
+  commentsCount: (p.comments || []).length,
+  tags: [],
+  isLiked:false,
+});
+
+const toBackendContent = (p: Partial<Post>) => ({
+  title: p.title,
+  content: p.content,
+  imagePath: p.coverImage && !p.coverImage.startsWith('data:') ? p.coverImage : undefined,
 });
 
 async function listBooks(): Promise<Book[]> {
@@ -157,6 +202,17 @@ const mapOrder = (o: any): Order => {
     createdAt: when, updatedAt: when,
   };
 };
+
+export type UploadType = 'book' | 'post' | 'news';
+
+
+export async function uploadImage(file: File, type: UploadType): Promise<string> {
+  const form = new FormData();
+  form.append('image', file);
+  const data = await call('/image/upload?type=${type}', { method: 'POST', body: form });
+  if (!data?.url) throw new Error('Upload failed');
+  return data.url;
+}
 
 async function toCart(dto: any): Promise<Cart> {
   const books = new Map((await listBooks()).map((b) => [b.id, b]));
@@ -296,10 +352,15 @@ export const realApi: any = {
   },
 
   // ── Posts ──
-  getPosts: async (): Promise<Post[]> => arr(await call('/post/all')).map((p: any) => ({
-    id: p.id, title: p.title, content: p.content, authorName: 'Inkora', authorRole: 'Editor',
-    coverImage: p.imagePath || cover(p.title), publishedAt: p.createdAt || new Date().toISOString(),
-    likesCount: p.likeCount || 0, commentsCount: (p.comments || []).length, tags: [], isLiked: false,
-  })),
+  getPosts: async (): Promise<Post[]> => arr(await call('/post/all')).map(mapPost),
+  createPost: async (p: Partial<Post>) => mapPost(await call('/post', { method: 'POST', body: JSON.stringify(toBackendContent(p)) })),
+  updatePost: async (id: string, p: Partial<Post>) => mapPost(await call(`/post/${id}`, { method: 'PUT', body: JSON.stringify(toBackendContent(p)) })),
+  deletePost: async (id: string) => { await call(`/post/${id}`, { method: 'DELETE' }); return { message: 'Deleted' }; },
   likePost: async (id: string) => { const r = await call(`/post-likes/${id}`, { method: 'PATCH' }); return { likesCount: r?.likeCount ?? r?.likesCount ?? 0, isLiked: r?.liked ?? r?.isLiked ?? true }; },
+
+  // ── News ──
+  getNews: async (): Promise<Post[]> => arr(await call('/news/all')).map(mapPost),
+  createNews: async (p: Partial<Post>) => mapPost(await call('/news', { method: 'POST', body: JSON.stringify(toBackendContent(p)) })),
+  updateNews: async (id: string, p: Partial<Post>) => mapPost(await call(`/news/${id}`, { method: 'PUT', body: JSON.stringify(toBackendContent(p)) })),
+  deleteNews: async (id: string) => { await call(`/news/${id}`, { method: 'DELETE' }); return { message: 'Deleted' }; },
 };

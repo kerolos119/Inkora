@@ -47,6 +47,8 @@ public class Book extends Auditable {
 
     private String language;
 
+    private String imagePath;
+
     @Indexed(unique = true)
     private String isbn;
 

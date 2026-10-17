@@ -69,7 +69,7 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
                   <span className="font-mono text-[#8A6238] dark:text-[#D9AE6B] uppercase font-semibold">{post.authorRole}</span>
                   <div className="flex items-center gap-1 font-mono">
                     <Calendar className="w-3 h-3" />
-                    <span>{post.publishedAt}</span>
+                    <span>{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : ''}</span>
                   </div>
                 </div>
 

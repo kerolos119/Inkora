@@ -61,4 +61,6 @@ public final class ExceptionMessage {
 
     // IMAGE
     public static final String FILE_NOT_EMPTY = "file.not.empty";
+    public static final String FILE_NOT_IMAGE = "file.not.image";
+    public static final String INVALID_UPLOAD_TYPE = "upload.type.invalid";
 }

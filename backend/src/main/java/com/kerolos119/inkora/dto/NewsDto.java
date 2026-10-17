@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,4 +31,7 @@ public class NewsDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<NewsCommentDto> comments;
+
+    @JsonProperty ( access = JsonProperty.Access.READ_ONLY)
+    private Instant createdAt;
 }
