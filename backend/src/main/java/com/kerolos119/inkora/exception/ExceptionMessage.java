@@ -63,4 +63,9 @@ public final class ExceptionMessage {
     public static final String FILE_NOT_EMPTY = "file.not.empty";
     public static final String FILE_NOT_IMAGE = "file.not.image";
     public static final String INVALID_UPLOAD_TYPE = "upload.type.invalid";
+
+
+    // Review
+    public static final String REVIEW_NOT_FOUND = "review.not.found";
+    public static final String REVIEW_EXISTS = "review.exists";
 }

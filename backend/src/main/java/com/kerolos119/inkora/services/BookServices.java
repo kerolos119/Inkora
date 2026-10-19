@@ -32,6 +32,7 @@ public class BookServices implements BaseService<BookDto, String, SearchRequest>
     private final MongoTemplate template;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+    private final BookReviewService reviewService;
 
     @Override
     public BookDto create(BookDto bookDto) {
@@ -96,6 +97,7 @@ public class BookServices implements BaseService<BookDto, String, SearchRequest>
     public void delete(String id) {
         readById(id);
         repo.deleteById(id);
+        reviewService.deleteByBook(id);
     }
 
     public boolean existsByAuthorId(String authorId) {
@@ -151,6 +153,8 @@ public class BookServices implements BaseService<BookDto, String, SearchRequest>
         int totalPages = (int) Math.ceil((double) total / request.getSize());
         return new PageResult<>(books, total, totalPages);
     }
+
+
 
 }
 

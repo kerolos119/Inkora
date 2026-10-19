@@ -422,8 +422,25 @@ app.delete('/api/v1/author/:id', (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 5. Shopping Cart Endpoints (/api/v1/cart)
+// 5. Shopping Cart Endpoints (/api/v1/cart) and shipping settings
 // ─────────────────────────────────────────────────────────────────────────────
+let shippingSettings = { fee: 0, freeShippingThreshold: null as number | null };
+const shippingFor = (subtotal: number) =>
+  subtotal <= 0 || (shippingSettings.freeShippingThreshold !== null && subtotal >= shippingSettings.freeShippingThreshold) ? 0 : shippingSettings.fee;
+
+app.get('/api/v1/settings/shipping', (_req, res) => res.json(shippingSettings));
+app.put('/api/v1/settings/shipping', (req, res) => {
+  const user = authenticate(req);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
+  if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Access denied' });
+  const fee = Number(req.body?.fee);
+  const raw = req.body?.freeShippingThreshold;
+  const threshold = raw === null || raw === undefined || raw === '' ? null : Number(raw);
+  if (!(fee >= 0) || (threshold !== null && !(threshold >= 0))) return res.status(400).json({ error: 'Invalid shipping settings' });
+  shippingSettings = { fee, freeShippingThreshold: threshold };
+  res.json(shippingSettings);
+});
+
 function calculateCartTotals(items: CartItem[]) {
   const subtotal = items.reduce((sum, item) => {
     const discountedPrice = item.book.discount
@@ -432,7 +449,7 @@ function calculateCartTotals(items: CartItem[]) {
     return sum + discountedPrice * item.quantity;
   }, 0);
   const discount = 0;
-  const shipping = subtotal > 50 || subtotal === 0 ? 0 : 5.00;
+  const shipping = shippingFor(subtotal);
   const total = Math.max(0, subtotal - discount + shipping);
 
   return {
@@ -441,6 +458,7 @@ function calculateCartTotals(items: CartItem[]) {
     discount,
     shipping: Number(shipping.toFixed(2)),
     total: Number(total.toFixed(2)),
+    freeShippingThreshold: shippingSettings.freeShippingThreshold,
   };
 }
 
@@ -518,7 +536,7 @@ app.post('/api/v1/checkout', (req, res) => {
 
   const subtotal = orderItems.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
   const discountAmount = discountCode === 'INKORA10' ? subtotal * 0.1 : 0;
-  const shippingFee = subtotal > 50 ? 0 : 5.00;
+  const shippingFee = shippingFor(subtotal);
   const totalAmount = Number((subtotal - discountAmount + shippingFee).toFixed(2));
 
   // Deduct stock
@@ -604,53 +622,115 @@ app.patch('/api/v1/order/:id/cancel', (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 7. Reviews Endpoints (/api/v1/book/:id/reviews & /api/v1/admin/reviews)
+// 7. Reviews (/api/v1/book-review): same wire format as the Spring backend
+//    public read · any signed-in user writes (one per book) · owner/ADMIN delete · ADMIN hides
 // ─────────────────────────────────────────────────────────────────────────────
-app.get('/api/v1/book/:id/reviews', (req, res) => {
-  const bookReviews = reviews.filter((r) => r.bookId === req.params.id && r.status === 'APPROVED');
-  res.json(bookReviews);
+type WireReview = {
+  id: string; bookId: string; bookTitle: string; userId: string; username: string;
+  rating: number; comment: string; status: 'APPROVED' | 'PENDING' | 'REJECTED'; createdAt: string;
+};
+
+let wireReviews: WireReview[] = reviews.map((r) => ({
+  id: r.id, bookId: r.bookId, bookTitle: r.bookTitle, userId: r.userId, username: r.userName,
+  rating: r.rating, comment: r.comment, status: r.status, createdAt: new Date(r.date).toISOString(),
+}));
+
+function syncBookRating(bookId: string) {
+  const book = books.find((b) => b.id === bookId);
+  if (!book) return;
+  const live = wireReviews.filter((r) => r.bookId === bookId && r.status === 'APPROVED');
+  book.reviewCount = live.length;
+  book.rating = live.length ? Math.round((live.reduce((n, r) => n + r.rating, 0) / live.length) * 10) / 10 : 0;
+}
+books.forEach((b) => syncBookRating(b.id));
+
+const approvedFor = (bookId: string) =>
+  wireReviews.filter((r) => r.bookId === bookId && r.status === 'APPROVED')
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+
+app.get('/api/v1/book-review/summary', (_req, res) => {
+  res.json(books
+    .map((b) => ({ bookId: b.id, average: b.rating, count: b.reviewCount }))
+    .filter((x) => x.count > 0));
 });
 
-app.post('/api/v1/book/:id/reviews', (req, res) => {
+app.get('/api/v1/book-review/admin/all', (req, res) => {
   const user = authenticate(req);
-  const book = books.find((b) => b.id === req.params.id);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
+  if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Access denied' });
+  res.json([...wireReviews].sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
+});
+
+app.get('/api/v1/book-review/book/:bookId/summary', (req, res) => {
+  const list = approvedFor(req.params.bookId);
+  const avg = list.length ? Math.round((list.reduce((n, r) => n + r.rating, 0) / list.length) * 10) / 10 : 0;
+  res.json({ bookId: req.params.bookId, average: avg, count: list.length });
+});
+
+app.get('/api/v1/book-review/book/:bookId', (req, res) => {
+  if (!books.find((b) => b.id === req.params.bookId)) return res.status(404).json({ error: 'Book not found' });
+  res.json(approvedFor(req.params.bookId));
+});
+
+app.post('/api/v1/book-review/book/:bookId', (req, res) => {
+  const user = authenticate(req);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
+  const book = books.find((b) => b.id === req.params.bookId);
   if (!book) return res.status(404).json({ error: 'Book not found' });
-
-  const { rating, comment, userName } = req.body;
-  const newReview: Review = {
-    id: `rev-${Date.now()}`,
-    bookId: book.id,
-    bookTitle: book.bookTitle,
-    userId: user ? user.id : 'anon',
-    userName: userName || (user ? user.username : 'Reader'),
-    rating: Number(rating) || 5,
-    comment: comment || '',
-    date: new Date().toISOString().split('T')[0],
-    status: 'APPROVED',
+  const rating = Number(req.body?.rating);
+  const comment = String(req.body?.comment || '').trim();
+  if (!(rating >= 1 && rating <= 5)) return res.status(400).json({ error: 'rating must be between 1 and 5' });
+  if (!comment) return res.status(400).json({ error: 'comment is required' });
+  if (wireReviews.some((r) => r.bookId === book.id && r.userId === user.id)) {
+    return res.status(409).json({ error: 'You have already reviewed this book' });
+  }
+  const created: WireReview = {
+    id: `rev-${Date.now()}`, bookId: book.id, bookTitle: book.bookTitle, userId: user.id, username: user.username,
+    rating: Math.round(rating), comment, status: 'APPROVED', createdAt: new Date().toISOString(),
   };
-
-  reviews.unshift(newReview);
-  book.reviewCount += 1;
-  res.status(201).json(newReview);
+  wireReviews.unshift(created);
+  syncBookRating(book.id);
+  res.status(201).json(created);
 });
 
-app.get('/api/v1/admin/reviews', (req, res) => {
+app.put('/api/v1/book-review/:id', (req, res) => {
   const user = authenticate(req);
-  if (!user || user.role !== 'ADMIN') {
-    return res.status(403).json({ error: 'Admin access required' });
-  }
-  res.json(reviews);
-});
-
-app.patch('/api/v1/admin/reviews/:id/status', (req, res) => {
-  const user = authenticate(req);
-  if (!user || user.role !== 'ADMIN') {
-    return res.status(403).json({ error: 'Admin access required' });
-  }
-  const review = reviews.find((r) => r.id === req.params.id);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
+  const review = wireReviews.find((r) => r.id === req.params.id);
   if (!review) return res.status(404).json({ error: 'Review not found' });
+  if (review.userId !== user.id) return res.status(403).json({ error: 'You do not have permission to perform this action' });
+  const rating = Number(req.body?.rating);
+  const comment = String(req.body?.comment || '').trim();
+  if (!(rating >= 1 && rating <= 5) || !comment) return res.status(400).json({ error: 'rating and comment are required' });
+  review.rating = Math.round(rating);
+  review.comment = comment;
+  syncBookRating(review.bookId);
+  res.json(review);
+});
 
-  review.status = req.body.status;
+app.delete('/api/v1/book-review/:id', (req, res) => {
+  const user = authenticate(req);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
+  const review = wireReviews.find((r) => r.id === req.params.id);
+  if (!review) return res.status(404).json({ error: 'Review not found' });
+  if (review.userId !== user.id && user.role !== 'ADMIN') {
+    return res.status(403).json({ error: 'You do not have permission to perform this action' });
+  }
+  wireReviews = wireReviews.filter((r) => r.id !== review.id);
+  syncBookRating(review.bookId);
+  res.status(204).end();
+});
+
+app.patch('/api/v1/book-review/:id/status', (req, res) => {
+  const user = authenticate(req);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
+  if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Access denied' });
+  const review = wireReviews.find((r) => r.id === req.params.id);
+  if (!review) return res.status(404).json({ error: 'Review not found' });
+  const status = String(req.query.status || '');
+  if (!['APPROVED', 'PENDING', 'REJECTED'].includes(status)) return res.status(400).json({ error: 'Invalid status' });
+  review.status = status as WireReview['status'];
+  syncBookRating(review.bookId);
   res.json(review);
 });
 
@@ -718,8 +798,11 @@ app.get('/api/v1/admin/dashboard', (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 9. Community Posts & News (/api/v1/post)
+// 9. Community Posts & News (/api/v1/post, /api/v1/news) and likes
 // ─────────────────────────────────────────────────────────────────────────────
+let news: Post[] = initialPosts.slice(0, 2).map((p, i) => ({ ...p, id: `news-${i + 1}`, likesCount: 0, commentsCount: 0 }));
+const likes = { post: new Map<string, Set<string>>(), news: new Map<string, Set<string>>() };
+
 app.get('/api/v1/post/all', (_req, res) => {
   res.json(posts);
 });
@@ -731,11 +814,86 @@ app.get('/api/v1/post/:id', (req, res) => {
 });
 
 app.patch('/api/v1/post-likes/:id', (req, res) => {
+  const user = authenticate(req);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
   const post = posts.find((p) => p.id === req.params.id);
   if (!post) return res.status(404).json({ error: 'Post not found' });
-  post.likesCount += 1;
-  res.json({ likesCount: post.likesCount, isLiked: true });
+  const likedBy = likes.post.get(post.id) ?? new Set<string>();
+  likes.post.set(post.id, likedBy);
+  if (likedBy.has(user.id)) likedBy.delete(user.id); else likedBy.add(user.id);
+  post.likesCount = likedBy.size;
+  res.json({ likesCount: post.likesCount, isLiked: likedBy.has(user.id) });
 });
+
+app.get('/api/v1/news/all', (_req, res) => {
+  res.json(news.map((n) => ({
+    id: n.id, title: n.title, content: n.content, imagePath: n.coverImage,
+    likeCount: n.likesCount, commentCount: n.commentsCount, createdAt: n.publishedAt,
+  })));
+});
+
+app.patch('/api/v1/news-likes/:id', (req, res) => {
+  const user = authenticate(req);
+  if (!user) return res.status(401).json({ error: 'Authentication failed' });
+  const item = news.find((n) => n.id === req.params.id);
+  if (!item) return res.status(404).json({ error: 'News not found' });
+  const likedBy = likes.news.get(item.id) ?? new Set<string>();
+  likes.news.set(item.id, likedBy);
+  if (likedBy.has(user.id)) likedBy.delete(user.id); else likedBy.add(user.id);
+  item.likesCount = likedBy.size;
+  res.json({ liked: likedBy.has(user.id), likeCount: item.likesCount });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 10. Comments on posts & news: public read · signed-in write · author/ADMIN delete
+// ─────────────────────────────────────────────────────────────────────────────
+type WireComment = { id: string; userId: string; username: string; content: string; createdAt: string; postId?: string; newsId?: string };
+const commentStore: Record<'post' | 'news', WireComment[]> = {
+  post: [
+    { id: 'pc-1', postId: 'post-1', userId: 'usr-demo-user', username: 'user', content: 'A lovely read. The bit about reading corners made me rearrange my shelf.', createdAt: new Date(Date.now() - 3 * 3600_000).toISOString() },
+  ],
+  news: [],
+};
+
+function mountComments(kind: 'post' | 'news', base: string, parentKey: 'postId' | 'newsId') {
+  const parents = () => (kind === 'post' ? posts : news);
+  const syncCount = (id: string) => {
+    const parent = parents().find((p) => p.id === id);
+    if (parent) parent.commentsCount = commentStore[kind].filter((c) => c[parentKey] === id).length;
+  };
+  parents().forEach((p) => syncCount(p.id));
+
+  app.get(`${base}/${kind}/:parentId`, (req, res) => {
+    if (!parents().find((p) => p.id === req.params.parentId)) return res.status(404).json({ error: `${kind === 'post' ? 'Post' : 'News'} not found` });
+    res.json(commentStore[kind].filter((c) => c[parentKey] === req.params.parentId).sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
+  });
+
+  app.post(base, (req, res) => {
+    const user = authenticate(req);
+    if (!user) return res.status(401).json({ error: 'Authentication failed' });
+    const parentId = String(req.body?.[parentKey] || '');
+    const content = String(req.body?.content || '').trim();
+    if (!parents().find((p) => p.id === parentId)) return res.status(404).json({ error: `${kind === 'post' ? 'Post' : 'News'} not found` });
+    if (!content) return res.status(400).json({ error: 'content is required' });
+    const created: WireComment = { id: `c-${Date.now()}-${Math.floor(Math.random() * 1000)}`, [parentKey]: parentId, userId: user.id, username: user.username, content, createdAt: new Date().toISOString() };
+    commentStore[kind].unshift(created);
+    syncCount(parentId);
+    res.status(201).json(created);
+  });
+
+  app.delete(`${base}/:id`, (req, res) => {
+    const user = authenticate(req);
+    if (!user) return res.status(401).json({ error: 'Authentication failed' });
+    const found = commentStore[kind].find((c) => c.id === req.params.id);
+    if (!found) return res.status(404).json({ error: 'Comment not found' });
+    if (found.userId !== user.id && user.role !== 'ADMIN') return res.status(403).json({ error: 'You do not have permission to perform this action' });
+    commentStore[kind] = commentStore[kind].filter((c) => c.id !== found.id);
+    syncCount(String(found[parentKey]));
+    res.status(204).end();
+  });
+}
+mountComments('post', '/api/v1/post-comment', 'postId');
+mountComments('news', '/api/v1/news-comments', 'newsId');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Vite Dev Server / Static Production Serving

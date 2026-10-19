@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { realApi } from "./realapi";
-import { Book, Category, Author, Cart, Order, Review, Post, User, LoginResponse, OrderStatus } from '../types/index.js';
+import { realApi, mapReview, mapComment, mapPost, type CommentKind } from "./realapi";
+import { Book, Category, Author, Cart, Order, Review, Post, PostComment, User, LoginResponse, OrderStatus } from '../types/index.js';
 
 const API_BASE = '/api/v1';
 
@@ -32,7 +32,8 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     throw new Error(errMessage);
   }
 
-  return res.json();
+  const text = await res.text();
+  return (text ? JSON.parse(text) : null) as T;
 }
 
 const mockApi = {
@@ -229,27 +230,54 @@ const mockApi = {
     });
   },
 
-  // ── Reviews ──────────────────────────────────────────────────────────
+  // ── Reviews (/book-review) ───────────────────────────────────────────
   getBookReviews: async (bookId: string): Promise<Review[]> => {
-    return request<Review[]>(`/book/${bookId}/reviews`);
+    return (await request<any[]>(`/book-review/book/${bookId}`)).map(mapReview);
   },
 
-  submitReview: async (bookId: string, review: { rating: number; comment: string; userName?: string }): Promise<Review> => {
-    return request<Review>(`/book/${bookId}/reviews`, {
+  submitReview: async (bookId: string, review: { rating: number; comment: string }): Promise<Review> => {
+    return mapReview(await request<any>(`/book-review/book/${bookId}`, {
       method: 'POST',
       body: JSON.stringify(review),
-    });
+    }));
+  },
+
+  updateReview: async (id: string, review: { rating: number; comment: string }): Promise<Review> => {
+    return mapReview(await request<any>(`/book-review/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(review),
+    }));
+  },
+
+  deleteReview: async (id: string): Promise<{ message: string }> => {
+    await request<null>(`/book-review/${id}`, { method: 'DELETE' });
+    return { message: 'Deleted' };
   },
 
   getAllReviews: async (): Promise<Review[]> => {
-    return request<Review[]>('/admin/reviews');
+    return (await request<any[]>('/book-review/admin/all')).map(mapReview);
   },
 
   updateReviewStatus: async (id: string, status: 'APPROVED' | 'PENDING' | 'REJECTED'): Promise<Review> => {
-    return request<Review>(`/admin/reviews/${id}/status`, {
-      method: 'PATCH',
-      body: JSON.stringify({ status }),
-    });
+    return mapReview(await request<any>(`/book-review/${id}/status?status=${status}`, { method: 'PATCH' }));
+  },
+
+  // ── Comments on posts & news ─────────────────────────────────────────
+  getComments: async (kind: CommentKind, id: string): Promise<PostComment[]> => {
+    const rows = await request<any[]>(kind === 'post' ? `/post-comment/post/${id}` : `/news-comments/news/${id}`);
+    return rows.map(mapComment);
+  },
+
+  addComment: async (kind: CommentKind, id: string, content: string): Promise<PostComment> => {
+    return mapComment(await request<any>(kind === 'post' ? '/post-comment' : '/news-comments', {
+      method: 'POST',
+      body: JSON.stringify(kind === 'post' ? { postId: id, content } : { newsId: id, content }),
+    }));
+  },
+
+  deleteComment: async (kind: CommentKind, id: string): Promise<{ message: string }> => {
+    await request<null>(kind === 'post' ? `/post-comment/${id}` : `/news-comments/${id}`, { method: 'DELETE' });
+    return { message: 'Deleted' };
   },
 
   // ── Admin Dashboard & Customers ──────────────────────────────────────
@@ -264,6 +292,16 @@ const mockApi = {
   // ── Posts ────────────────────────────────────────────────────────────
   getPosts: async (): Promise<Post[]> => {
     return request<Post[]>('/post/all');
+  },
+
+  getNews: async (): Promise<Post[]> => {
+    return (await request<any[]>('/news/all')).map(mapPost);
+  },
+
+  likeNews: async (id: string): Promise<{ likesCount: number; isLiked: boolean }> => {
+    // The mock server answers { liked, likeCount }, same as the Spring backend.
+    const r = await request<any>(`/news-likes/${id}`, { method: 'PATCH' });
+    return { likesCount: r?.likeCount ?? r?.likesCount ?? 0, isLiked: r?.liked ?? r?.isLiked ?? true };
   },
 
   likePost: async (id: string): Promise<{ likesCount: number; isLiked: boolean }> => {

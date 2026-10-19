@@ -9,7 +9,7 @@ import com.kerolos119.inkora.document.BookReview;
 import com.kerolos119.inkora.model.ReviewStatus;
 
 @Repository 
-public class BookReviewRepository extends BaseRepository<BookReview, String>{
+public interface BookReviewRepository extends BaseRepository<BookReview, String>{
 
     List<BookReview> findByBookIdAndStatusOrderByCreatedAt(String bookId, ReviewStatus status);
 

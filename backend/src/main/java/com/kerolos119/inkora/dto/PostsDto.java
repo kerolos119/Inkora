@@ -35,4 +35,7 @@ public class PostsDto {
     @JsonProperty ( access = JsonProperty.Access.READ_ONLY)
     private Instant createdAt;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private long commentCount;
+
 }

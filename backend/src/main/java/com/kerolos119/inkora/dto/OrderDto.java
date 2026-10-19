@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @AllArgsConstructor
@@ -41,5 +42,14 @@ public class OrderDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OrderStatus orderStatus;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private BigDecimal subtotal;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private BigDecimal shippingFee;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private BigDecimal totalAmount;
 
 }

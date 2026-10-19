@@ -46,7 +46,8 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
     }
   };
 
-  const finalShipping = cart.subtotal > 50 || cart.subtotal === 0 ? 0 : 5.00;
+  const finalShipping = cart.shipping;
+  const toFree = cart.freeShippingThreshold != null && cart.shipping > 0 ? cart.freeShippingThreshold - cart.subtotal : 0;
   const finalTotal = Math.max(0, cart.subtotal - appliedDiscount + finalShipping);
 
   return (
@@ -235,6 +236,11 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate, onQuickView }) =
                   {finalShipping === 0 ? 'Complimentary' : `$${finalShipping.toFixed(2)}`}
                 </span>
               </div>
+              {toFree > 0 && (
+                <p className="text-xs text-[#8A6238] dark:text-[#D2A560]">
+                  Add ${toFree.toFixed(2)} more for free shipping.
+                </p>
+              )}
 
               <div className="flex justify-between text-base font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] pt-3 border-t border-[#E3D6BC] dark:border-[#4A3E2E]">
                 <span>{t('x.92f3f7')}</span>

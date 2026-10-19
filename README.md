@@ -171,7 +171,7 @@ npm run lint    # TypeScript type-check
 - Demo accounts: `admin@inkora.com` (ADMIN), `user@inkora.com` (USER), `agent@inkora.com` (AGENT).
 - The mock login **does not check passwords** — it is for UI development only.
 - Data is stored in memory and resets on every restart.
-- The admin **Dashboard, Customers, and Reviews** pages use mock-only endpoints (`/admin/*`, `/book/:id/reviews`) that the Spring backend does not implement yet, so they only work in mock mode.
+- The mock server mirrors the real `/book-review`, `/post-comment` and `/news-comments` endpoints, so reviews and comments behave the same in mock and real mode (run it with `npm run dev:mock`).
 
 ## API Documentation
 
@@ -195,8 +195,9 @@ All endpoints are prefixed with `/api/v1`.
 | Authors | `/author` | Read: public · Write: `ADMIN` |
 | News | `/news` | Read: public · Write: `ADMIN` |
 | Posts | `/post` | Read: public · Write: `ADMIN` |
-| News comments / likes | `/news-comments`, `/news-likes/{newsId}` | Authenticated |
-| Post comments / likes | `/post-comment`, `/post-likes/{postId}` | Authenticated |
+| Book reviews | `/book-review` (`GET /book/{bookId}`, `GET /book/{bookId}/summary`, `GET /summary`, `POST /book/{bookId}`, `PUT/DELETE /{id}`, admin: `GET /admin/all`, `PATCH /{id}/status`) | Read: public · Write: any signed-in user (one review per book; owner edits, owner or `ADMIN` deletes) · Moderation: `ADMIN` |
+| News comments / likes | `/news-comments` (`GET /news/{newsId}` is public), `/news-likes/{newsId}` | Read: public · Write: authenticated (author edits, author or `ADMIN` deletes) |
+| Post comments / likes | `/post-comment` (`GET /post/{postId}` is public), `/post-likes/{postId}` | Read: public · Write: authenticated (author edits, author or `ADMIN` deletes) |
 | Cart | `/cart` (`POST`, `GET`, `DELETE /{bookId}`, `DELETE /clear`) | Authenticated |
 | Checkout | `/checkout` | `USER` |
 | Orders | `/order` (`/my`, `/{id}/cancel`, `/{id}/status`) | `USER` for own orders · `ADMIN` for management |

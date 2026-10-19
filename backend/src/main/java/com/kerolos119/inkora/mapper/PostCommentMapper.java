@@ -1,5 +1,7 @@
 package com.kerolos119.inkora.mapper;
 
+import com.kerolos119.inkora.document.NewsComment;
+import com.kerolos119.inkora.dto.NewsCommentDto;
 import com.kerolos119.inkora.dto.PostCommentDto;
 import com.kerolos119.inkora.document.PostComment;
 import org.mapstruct.Mapper;
@@ -25,5 +27,9 @@ public interface PostCommentMapper extends BaseMapper<PostCommentDto, PostCommen
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     void updateToEntity(PostCommentDto dto, @MappingTarget PostComment entity);
+
+    @Override
+    @Mapping(target = "username", ignore = true)
+    PostCommentDto toDto(PostComment entity);
 
 }

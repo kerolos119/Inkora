@@ -1,10 +1,7 @@
 package com.kerolos119.inkora.services;
 
 import com.kerolos119.inkora.document.Post;
-import com.kerolos119.inkora.dto.PageResult;
-import com.kerolos119.inkora.dto.PostCommentDto;
-import com.kerolos119.inkora.dto.PostsDto;
-import com.kerolos119.inkora.dto.SearchRequest;
+import com.kerolos119.inkora.dto.*;
 import com.kerolos119.inkora.exception.CustomException;
 import com.kerolos119.inkora.exception.ExceptionMessage;
 import com.kerolos119.inkora.mapper.PostCommentMapper;
@@ -31,6 +28,7 @@ public class PostServices implements BaseService<PostsDto, String, SearchRequest
     private final MongoTemplate template;
     private final PostCommentRepository commentRepo;
     private final PostCommentMapper commentMapper;
+    private final PostCommentServices commentServices;
 
     @Override
     public PostsDto create(PostsDto postsDto) {
@@ -61,25 +59,23 @@ public class PostServices implements BaseService<PostsDto, String, SearchRequest
     public void delete(String id) {
         readById(id);
         repo.deleteById(id);
+        commentServices.deleteByPostId(id);
     }
 
     @Override
     public PostsDto getById(String id) {
         PostsDto dto = mapper.toDto(readById(id));
 
-        List<PostCommentDto> comments = commentRepo.findByPostId(id)
-                .stream()
-                .map(commentMapper::toDto)
-                .toList();
-
+        List<PostCommentDto> comments = commentServices.getByPostId(id);
         dto.setComments(comments);
+        dto.setCommentCount(comments.size());
         return dto;
     }
 
     @Override
     public List<PostsDto> getAll() {
         return repo.findAll().stream()
-                .map(mapper::toDto)
+                .map(this::toDtoWithCount)
                 .toList();
     }
 
@@ -104,11 +100,17 @@ public class PostServices implements BaseService<PostsDto, String, SearchRequest
         query.with(PageRequest.of(request.getPage() - 1, request.getSize(), sort));
 
         List<PostsDto> posts = template.find(query, Post.class).stream()
-                .map(mapper::toDto)
+                .map(this::toDtoWithCount)
                 .toList();
 
         int totalPages = (int) Math.ceil((double) total/ request.getSize());
         return new PageResult<>(posts, total, totalPages);
+    }
+
+    private PostsDto toDtoWithCount(Post post) {
+        PostsDto dto = mapper.toDto(post);
+        dto.setCommentCount(commentServices.countByPostId(post.getId()));
+        return dto;
     }
 
 }

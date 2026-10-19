@@ -1,366 +1,327 @@
 /// <reference types="vite/client" />
-// Adapter: talks to the Spring Boot backend and converts its DTOs into the shapes the UI expects.
-import { title } from 'process';
-import type { Book, Category, Author, Cart, Order, OrderStatus, Review, Post, User, LoginResponse } from '../types/index.js';
+import { realApi, mapReview, mapComment, mapPost, mapShipping, type CommentKind } from "./realapi";
+import { ShippingSettings, Book, Category, Author, Cart, Order, Review, Post, PostComment, User, LoginResponse, OrderStatus } from '../types/index.js';
 
-const BASE = (import.meta.env.VITE_API_URL || '/api/v1').replace(/\/+$/, '');
-const TOKEN = 'inkora_token';
-const REFRESH = 'inkora_refresh';
-const USER = 'inkora_user';
-export const SESSION_EXPIRED_EVENT = 'inkora:session-expired';
-export const ACCESS_TOKEN_REFRESHED_EVENT = 'inkora:access-token-refreshed';
+const API_BASE = '/api/v1';
 
-type RefreshResult = 'refreshed' | 'rejected' | 'unavailable';
-
-let refreshInFlight: Promise<RefreshResult> | null = null;
-let sessionGeneration = 0;
-
-function clearStoredSession(notify = true): void {
-  const hadSession = Boolean(
-    localStorage.getItem(TOKEN) ||
-    localStorage.getItem(REFRESH) ||
-    localStorage.getItem(USER)
-  );
-  sessionGeneration += 1;
-  refreshInFlight = null;
-  localStorage.removeItem(TOKEN);
-  localStorage.removeItem(REFRESH);
-  localStorage.removeItem(USER);
-  if (notify && hadSession) window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
+function getAuthHeader(): Record<string, string> {
+  const token = localStorage.getItem('inkora_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-function refreshTokens(): Promise<RefreshResult> {
-  if (refreshInFlight) return refreshInFlight;
+async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...getAuthHeader(),
+    ...options.headers,
+  };
 
-  const refreshToken = localStorage.getItem(REFRESH);
-  if (!refreshToken) {
-    clearStoredSession();
-    return Promise.resolve('rejected');
-  }
-
-  const generation = sessionGeneration;
-  const pendingRefresh = (async (): Promise<RefreshResult> => {
-    let response: Response;
-    try {
-      response = await fetch(
-        `${BASE}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`,
-        { method: 'POST' }
-      );
-    } catch {
-      // A network failure is ambiguous: preserve credentials and do not replay the request.
-      return 'unavailable';
-    }
-
-    if (response.status === 401) {
-      if (generation === sessionGeneration) clearStoredSession();
-      return 'rejected';
-    }
-    if (!response.ok) return 'unavailable';
-
-    try {
-      const data: { accessToken?: string; refreshToken?: string } = await response.json();
-      if (!data.accessToken || !data.refreshToken) return 'unavailable';
-      if (generation !== sessionGeneration) return 'unavailable';
-
-      localStorage.setItem(TOKEN, data.accessToken);
-      localStorage.setItem(REFRESH, data.refreshToken);
-      window.dispatchEvent(new CustomEvent(ACCESS_TOKEN_REFRESHED_EVENT, { detail: data.accessToken }));
-      return 'refreshed';
-    } catch {
-      return 'unavailable';
-    }
-  })();
-
-  refreshInFlight = pendingRefresh;
-  void pendingRefresh.finally(() => {
-    if (refreshInFlight === pendingRefresh) refreshInFlight = null;
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers,
   });
-  return pendingRefresh;
-}
 
-// The backend sometimes answers with plain text ("Registration successful") or an empty body.
-async function call(path: string, init: RequestInit = {}, retry = true): Promise<any> {
-  const token = localStorage.getItem(TOKEN);
-  const isForm = typeof FormData !== 'undefined' && init.body instanceof FormData;
-  const headers: Record<string, string> = {
-    ...(init.body && !isForm ? { 'Content-Type': 'application/json' } : {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-  const res = await fetch(BASE + path, { ...init, headers });
-  if (res.status === 401 && retry && !path.startsWith('/auth/')) {
-    const refreshResult = await refreshTokens();
-    if (refreshResult === 'refreshed') return call(path, init, false);
-  }
-  const text = await res.text();
-  let data: any = text;
-  try { data = text ? JSON.parse(text) : null; } catch { /* plain text */ }
   if (!res.ok) {
-    const msg =
-  (data && typeof data === 'object' && (data.message || data.error || data.detail || Object.values(data).join(', '))) ||
-  (typeof data === 'string' && data) ||
-  res.statusText;
-    throw new Error(String(msg));
+    let errMessage = 'An error occurred';
+    try {
+      const errData = await res.json();
+      errMessage = errData.error || errData.message || res.statusText;
+    } catch {
+      errMessage = res.statusText;
+    }
+    throw new Error(errMessage);
   }
-  return data;
+
+  const text = await res.text();
+  return (text ? JSON.parse(text) : null) as T;
 }
 
-const arr = (d: any): any[] => (Array.isArray(d) ? d : Array.isArray(d?.size) ? d.size : Array.isArray(d?.content) ? d.content : []);
-// NOTE: the backend's PageResult serialises its item list under the key "size".
-
-function userFromToken(t: string): User {
-  const b64 = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-  const p = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))));
-  return { id: p._id || p.sub, username: p.username, email: p.email, role: String(p.role).replace('ROLE_', '') as User['role'] };
-}
-
-const clean = (s: string) => String(s || '').replace(/[<>&"']/g, '').slice(0, 30);
-const cover = (title: string) =>
-  'data:image/svg+xml;utf8,' + encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="560"><rect width="400" height="560" fill="#F1E9D6"/><rect x="22" y="22" width="356" height="516" fill="none" stroke="#8A6238" stroke-width="3"/><text x="200" y="280" font-family="Georgia,serif" font-size="26" text-anchor="middle" fill="#3B2B1E">${clean(title)}</text></svg>`);
-
-const mapBook = (b: any): Book => ({
-  id: b.id, 
-  authorId: b.authorId, 
-  authorName: b.authorName || '', 
-  bookTitle: b.bookTitle || '',
-  bookDescription: b.bookDescription || '', 
-  numberOfPages: b.numberOfPages || 0, 
-  bookSize: b.bookSize || '',
-  coverType: (b.coverType || 'Hardcover') as Book['coverType'], 
-  paperType: b.paperType || '',
-  publicationYear: String(b.publicationYear || '').slice(0, 4), 
-  language: b.language || '', isbn: b.isbn || '',
-  price: Number(b.price) || 0, 
-  stock: b.stock ?? 0, 
-  coverImage: b.imagePath || cover(b.bookTitle),
-  rating: 0, 
-  reviewCount: 0, 
-  categoryId: b.categoryId || [], 
-  categoryNames: [], 
-  publisher: '',
-});
-
-const toBackendBook = (b: Partial<Book>) => ({
-  authorId: b.authorId, 
-  bookTitle: b.bookTitle, 
-  bookDescription: b.bookDescription, 
-  numberOfPages: b.numberOfPages,
-  bookSize: b.bookSize, 
-  coverType: b.coverType, 
-  paperType: b.paperType,
-  imagePath: b.coverImage && !b.coverImage.startsWith('data:') ? b.coverImage : undefined,
-  publicationYear: b.publicationYear ? (/^\d{4}$/.test(String(b.publicationYear)) ? `${b.publicationYear}-01-01` : b.publicationYear) : undefined,
-  language: b.language, 
-  isbn: b.isbn, 
-  price: b.price, 
-  stock: b.stock, 
-  categoryId: b.categoryId,
-});
-
-const mapPost = (p:any): Post => ({
-  id: p.id,
-  title: p.title || '',
-  content: p.content || '',
-  authorName: 'Inkora',
-  authorRole: 'Editor',
-  coverImage: p.imagePath || cover(p.title),
-  publishedAt: p.createdAt || new Date().toISOString(),
-  likesCount: p.likeCount || 0,
-  commentsCount: (p.comments || []).length,
-  tags: [],
-  isLiked:false,
-});
-
-const toBackendContent = (p: Partial<Post>) => ({
-  title: p.title,
-  content: p.content,
-  imagePath: p.coverImage && !p.coverImage.startsWith('data:') ? p.coverImage : undefined,
-});
-
-async function listBooks(): Promise<Book[]> {
-  const books = arr(await call('/book/all')).map(mapBook);
-  // The backend has no featured/bestseller flags yet: fill the home sections from the list order.
-  return books.map((b, i) => ({ ...b, featured: i < 4, bestseller: i % 3 === 0, newArrival: i < 6 }));
-}
-
-const mapOrder = (o: any): Order => {
-  const items = (o.items || []).map((i: any) => ({
-    bookId: i.bookId, bookTitle: i.bookTitle, coverImage: cover(i.bookTitle), authorName: '',
-    price: Number(i.price) || 0, quantity: i.quantity,
-  }));
-  const subtotal = items.reduce((t: number, i: any) => t + i.price * i.quantity, 0);
-  const status = o.orderStatus as OrderStatus;
-  const pm = o.paymentMethod ? o.paymentMethod as Order['paymentMethod'] : null;
-  const when = o.createdAt || o.orderedAt || null;
-  return {
-    id: o.id, orderNumber: 'INK-' + String(o.id).slice(-6).toUpperCase(), userId: o.usersId || '',
-    customerName: '', customerEmail: '', customerPhone: o.shippingPhone || '',
-    items, subtotal, discountAmount: 0, shippingFee: 0,
-    totalAmount: o.totalAmount == null ? subtotal : Number(o.totalAmount), status, paymentMethod: pm,
-    paymentStatus: 'UNKNOWN',
-    shippingDetails: { fullName: '', email: '', phone: o.shippingPhone || '', address: o.shippingAddress || '', city: '', postalCode: '', country: '', notes: o.note || '' },
-    createdAt: when, updatedAt: when,
-  };
-};
-
-export type UploadType = 'book' | 'post' | 'news';
-
-
-export async function uploadImage(file: File, type: UploadType): Promise<string> {
-  const form = new FormData();
-  form.append('image', file);
-  const data = await call('/image/upload?type=${type}', { method: 'POST', body: form });
-  if (!data?.url) throw new Error('Upload failed');
-  return data.url;
-}
-
-async function toCart(dto: any): Promise<Cart> {
-  const books = new Map((await listBooks()).map((b) => [b.id, b]));
-  const items = (dto?.cartItems || []).map((i: any) => ({
-    bookId: i.bookId, quantity: i.quantity,
-    book: books.get(i.bookId) || mapBook({ id: i.bookId, bookTitle: i.bookTitle, price: i.price, stock: i.quantity }),
-  }));
-  const subtotal = items.reduce((t: number, i: any) => t + i.book.price * i.quantity, 0);
-  return { items, subtotal, discount: 0, shipping: 0, total: subtotal };
-}
-
-async function setCartQty(bookId: string, qty: number): Promise<Cart> {
-  const cur = await call('/cart');
-  let items = (cur?.cartItems || []).map((i: any) => ({ bookId: i.bookId, bookTitle: i.bookTitle, quantity: i.quantity, price: i.price }));
-  const idx = items.findIndex((i: any) => i.bookId === bookId);
-  if (qty <= 0) items = items.filter((i: any) => i.bookId !== bookId);
-  else if (idx > -1) items[idx].quantity = qty;
-  else { const b = await call(`/book/${bookId}`); items.push({ bookId, bookTitle: b.bookTitle, quantity: qty, price: b.price }); }
-return toCart(await call('/cart', { method: 'POST', body: JSON.stringify({ cartItems: items, cartStatus: 'ACTIVE' }) }));
-}
-
-const slug = (s: string) => String(s).toLowerCase().trim().replace(/[^a-z0-9\u0600-\u06FF]+/g, '-').replace(/^-|-$/g, '');
-const notYet = (what: string) => { throw new Error(`${what} is not available on the server yet`); };
-
-export const realApi: any = {
-  // ── Auth ──
-  login: async (c: { email?: string; username?: string; password: string }): Promise<LoginResponse> => {
-    const d = await call('/auth/login', { method: 'POST', body: JSON.stringify({ email: c.email ?? c.username, password: c.password }) });
-    localStorage.setItem(TOKEN, d.accessToken);
-    localStorage.setItem(REFRESH, d.refreshToken);
-    return { accessToken: d.accessToken, refreshToken: d.refreshToken, user: userFromToken(d.accessToken) };
-  },
-  register: async (u: any): Promise<LoginResponse> => {
-    await call('/auth/register', { method: 'POST', body: JSON.stringify(u) });
-    return realApi.login({ email: u.email, password: u.password });
-  },
-  forgotPassword: async (email: string) => ({ message: String(await call('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) })) }),
-  resetPassword: async (d: any) => ({ message: String(await call('/auth/reset-password', { method: 'POST', body: JSON.stringify(d) })) }),
-  logout: async () => {
-    const refreshToken = localStorage.getItem(REFRESH);
-    clearStoredSession(false);
-    if (refreshToken) {
-      try {
-        await fetch(`${BASE}/auth/logout?refreshToken=${encodeURIComponent(refreshToken)}`, { method: 'POST' });
-      } catch { /* Local logout remains complete if the backend is unavailable. */ }
-    }
-    return { message: 'Logged out' };
-  },
-
-  // ── Books (search/filter/sort run in the browser; the catalog is small) ──
-  getBooks: listBooks,
-  searchBooks: async (p: any): Promise<Book[]> => {
-    let r = await listBooks();
-    const q = (p.query || '').toLowerCase();
-    if (q) r = r.filter((b) => [b.bookTitle, b.authorName, b.bookDescription, b.isbn].some((x) => String(x).toLowerCase().includes(q)));
-    if (p.categoryId && p.categoryId !== 'all') r = r.filter((b) => b.categoryId.includes(p.categoryId));
-    if (p.authorId && p.authorId !== 'all') r = r.filter((b) => b.authorId === p.authorId);
-    if (p.minPrice) r = r.filter((b) => b.price >= p.minPrice);
-    if (p.maxPrice) r = r.filter((b) => b.price <= p.maxPrice);
-    if (p.availability === 'in_stock') r = r.filter((b) => b.stock > 0);
-    if (p.coverType && p.coverType !== 'all') r = r.filter((b) => b.coverType === p.coverType);
-    if (p.sortBy === 'price_asc') r = [...r].sort((a, b) => a.price - b.price);
-    if (p.sortBy === 'price_desc') r = [...r].sort((a, b) => b.price - a.price);
-    if (p.sortBy === 'title') r = [...r].sort((a, b) => a.bookTitle.localeCompare(b.bookTitle));
-    if (p.sortBy === 'newest') r = [...r].sort((a, b) => Number(b.publicationYear) - Number(a.publicationYear));
-    return r;
-  },
-  getBookById: async (id: string) => mapBook(await call(`/book/${id}`)),
-  createBook: async (b: Partial<Book>) => mapBook(await call('/book', { method: 'POST', body: JSON.stringify(toBackendBook(b)) })),
-  updateBook: async (id: string, b: Partial<Book>) => mapBook(await call(`/book/${id}`, { method: 'PUT', body: JSON.stringify(toBackendBook(b)) })),
-  deleteBook: async (id: string) => { await call(`/book/${id}`, { method: 'DELETE' }); return { message: 'Deleted' }; },
-
-  // ── Categories & authors ──
-  getCategories: async (): Promise<Category[]> => {
-    const [c, b] = await Promise.all([call('/category/all'), listBooks()]);
-    return arr(c).map((x: any) => ({ id: x.id, name: x.name, description: '', slug: slug(x.name), bookCount: b.filter((k) => k.categoryId.includes(x.id)).length }));
-  },
-  createCategory: async (c: Partial<Category>) => { const x = await call('/category', { method: 'POST', body: JSON.stringify({ name: c.name }) }); return { id: x.id, name: x.name, description: '', slug: slug(x.name), bookCount: 0 }; },
-  updateCategory: async (id: string, c: Partial<Category>) => { const x = await call(`/category/${id}`, { method: 'PUT', body: JSON.stringify({ name: c.name }) }); return { id: x.id, name: x.name, description: '', slug: slug(x.name), bookCount: 0 }; },
-  deleteCategory: async (id: string) => { await call(`/category/${id}`, { method: 'DELETE' }); return { message: 'Deleted' }; },
-  getAuthors: async (): Promise<Author[]> => {
-    const [a, b] = await Promise.all([call('/author/all'), listBooks()]);
-    return arr(a).map((x: any) => ({ id: x.id, name: x.name, bio: '', photo: '', nationality: '', booksCount: b.filter((k) => k.authorId === x.id).length, notableWork: '' }));
-  },
-  createAuthor: async (a: Partial<Author>) => { const x = await call('/author', { method: 'POST', body: JSON.stringify({ name: a.name, isActive: true }) }); return { id: x.id, name: x.name, bio: '', photo: '', nationality: '', booksCount: 0, notableWork: '' }; },
-  updateAuthor: async (id: string, a: Partial<Author>) => { const x = await call(`/author/${id}`, { method: 'PUT', body: JSON.stringify({ name: a.name, isActive: true }) }); return { id: x.id, name: x.name, bio: '', photo: '', nationality: '', booksCount: 0, notableWork: '' }; },
-  deleteAuthor: async (id: string) => { await call(`/author/${id}`, { method: 'DELETE' }); return { message: 'Deleted' }; },
-
-  // ── Cart ──
-  getCart: async () => toCart(await call('/cart')),
-  addToCart: (bookId: string, quantity = 1) => setCartQty(bookId, quantity), // same meaning as the mock: sets the quantity
-  removeFromCart: async (bookId: string) => toCart(await call(`/cart/${bookId}`, { method: 'DELETE' })),
-  clearCart: async (): Promise<Cart> => { await call('/cart/clear', { method: 'DELETE' }); return { items: [], subtotal: 0, discount: 0, shipping: 0, total: 0 }; },
-
-  // ── Checkout & orders ──
-  // The backend's /checkout takes no body: it turns the server-side cart into an order.
-  checkout: async (_payload: any): Promise<Order> => {
-    const dto = await call('/checkout', { method: 'POST' });
-    if (!dto?.id || !Array.isArray(dto.items) || !dto.orderStatus) {
-      throw new Error('Checkout response did not contain a valid order.');
-    }
-    return mapOrder(dto);
-  },
-  getMyOrders: async (): Promise<Order[]> => arr(await call('/order/my?size=100')).map((o) => mapOrder(o)),
-  getAllOrders: async (): Promise<Order[]> => arr(await call('/order?size=100')).map((o) => mapOrder(o)),
-  getOrderById: async (id: string): Promise<Order> => {
-    const all = await (localStorage.getItem(TOKEN) && userFromToken(localStorage.getItem(TOKEN)!).role === 'ADMIN' ? realApi.getAllOrders() : realApi.getMyOrders());
-    const o = all.find((x: Order) => x.id === id);
-    if (!o) throw new Error('Order not found');
-    return o;
-  },
-  updateOrderStatus: async (id: string, status: OrderStatus) => mapOrder(await call(`/order/${id}/status?status=${status}`, { method: 'PATCH' })),
-  cancelOrder: async (id: string) => ({ message: 'Order cancelled', order: mapOrder(await call(`/order/${id}/cancel`, { method: 'PATCH' })) }),
-
-  // ── Reviews: not implemented by the backend yet ──
-  getBookReviews: async (): Promise<Review[]> => [],
-  submitReview: async () => notYet('Reviews'),
-  getAllReviews: async (): Promise<Review[]> => [],
-  updateReviewStatus: async () => notYet('Reviews'),
-
-  // ── Admin: built from the endpoints that do exist ──
-  getAdminDashboard: async () => {
-    const [books, orders, users] = await Promise.all([listBooks(), realApi.getAllOrders(), call('/users/all')]);
-    const active = orders.filter((o: Order) => !['CANCELLED', 'REFUNDED', 'RETURNED'].includes(o.status));
-    const totalRevenue = active.reduce((t: number, o: Order) => t + o.totalAmount, 0);
-    const statusDistribution = orders.reduce((a: Record<string, number>, o: Order) => ({ ...a, [o.status]: (a[o.status] || 0) + 1 }), {});
-    return { totalBooks: books.length, totalCustomers: arr(users).length, totalOrders: orders.length, totalRevenue,
-      lowStockBooks: books.filter((b) => b.stock <= 5), recentOrders: orders.slice(0, 5), statusDistribution,
-      revenueTrends: [{ month: 'Total', revenue: totalRevenue }] };
-  },
-  getAdminCustomers: async () => {
-    const [users, orders] = await Promise.all([call('/users/all'), realApi.getAllOrders()]);
-    return arr(users).map((u: any) => {
-      const mine = orders.filter((o: Order) => o.userId === u.id);
-      return { id: u.id, username: u.username, email: u.email, role: u.role, ordersCount: mine.length, totalSpent: mine.reduce((t: number, o: Order) => t + o.totalAmount, 0) };
+const mockApi = {
+  // ── Auth ─────────────────────────────────────────────────────────────
+  login: async (credentials: { email?: string; username?: string; password: string }): Promise<LoginResponse> => {
+    return request<LoginResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
     });
   },
 
-  // ── Posts ──
-  getPosts: async (): Promise<Post[]> => arr(await call('/post/all')).map(mapPost),
-  createPost: async (p: Partial<Post>) => mapPost(await call('/post', { method: 'POST', body: JSON.stringify(toBackendContent(p)) })),
-  updatePost: async (id: string, p: Partial<Post>) => mapPost(await call(`/post/${id}`, { method: 'PUT', body: JSON.stringify(toBackendContent(p)) })),
-  deletePost: async (id: string) => { await call(`/post/${id}`, { method: 'DELETE' }); return { message: 'Deleted' }; },
-  likePost: async (id: string) => { const r = await call(`/post-likes/${id}`, { method: 'PATCH' }); return { likesCount: r?.likeCount ?? r?.likesCount ?? 0, isLiked: r?.liked ?? r?.isLiked ?? true }; },
+  register: async (userData: { username: string; email: string; password: string; address?: string; phoneNumber?: string }): Promise<LoginResponse> => {
+    return request<LoginResponse>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  },
 
-  // ── News ──
-  getNews: async (): Promise<Post[]> => arr(await call('/news/all')).map(mapPost),
-  createNews: async (p: Partial<Post>) => mapPost(await call('/news', { method: 'POST', body: JSON.stringify(toBackendContent(p)) })),
-  updateNews: async (id: string, p: Partial<Post>) => mapPost(await call(`/news/${id}`, { method: 'PUT', body: JSON.stringify(toBackendContent(p)) })),
-  deleteNews: async (id: string) => { await call(`/news/${id}`, { method: 'DELETE' }); return { message: 'Deleted' }; },
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    return request<{ message: string }>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  resetPassword: async (data: { email: string; otp: string; newPassword: string }): Promise<{ message: string }> => {
+    return request<{ message: string }>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  logout: async (): Promise<{ message: string }> => {
+    return request<{ message: string }>('/auth/logout', { method: 'POST' });
+  },
+
+  // ── Books ────────────────────────────────────────────────────────────
+  getBooks: async (): Promise<Book[]> => {
+    return request<Book[]>('/book/all');
+  },
+
+  searchBooks: async (params: {
+    query?: string;
+    categoryId?: string;
+    authorId?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    availability?: string;
+    sortBy?: string;
+    coverType?: string;
+  }): Promise<Book[]> => {
+    const queryParts: string[] = [];
+    if (params.query) queryParts.push(`query=${encodeURIComponent(params.query)}`);
+    if (params.categoryId && params.categoryId !== 'all') queryParts.push(`categoryId=${encodeURIComponent(params.categoryId)}`);
+    if (params.authorId && params.authorId !== 'all') queryParts.push(`authorId=${encodeURIComponent(params.authorId)}`);
+    if (params.minPrice) queryParts.push(`minPrice=${params.minPrice}`);
+    if (params.maxPrice) queryParts.push(`maxPrice=${params.maxPrice}`);
+    if (params.availability) queryParts.push(`availability=${params.availability}`);
+    if (params.sortBy) queryParts.push(`sortBy=${params.sortBy}`);
+    if (params.coverType && params.coverType !== 'all') queryParts.push(`coverType=${encodeURIComponent(params.coverType)}`);
+
+    const q = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+    return request<Book[]>(`/book/search${q}`);
+  },
+
+  getBookById: async (id: string): Promise<Book> => {
+    return request<Book>(`/book/${id}`);
+  },
+
+  createBook: async (bookData: Partial<Book>): Promise<Book> => {
+    return request<Book>('/book', {
+      method: 'POST',
+      body: JSON.stringify(bookData),
+    });
+  },
+
+  updateBook: async (id: string, bookData: Partial<Book>): Promise<Book> => {
+    return request<Book>(`/book/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(bookData),
+    });
+  },
+
+  deleteBook: async (id: string): Promise<{ message: string }> => {
+    return request<{ message: string }>(`/book/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // ── Categories & Authors ─────────────────────────────────────────────
+  getCategories: async (): Promise<Category[]> => {
+    return request<Category[]>('/category/all');
+  },
+
+  createCategory: async (category: Partial<Category>): Promise<Category> => {
+    return request<Category>('/category', {
+      method: 'POST',
+      body: JSON.stringify(category),
+    });
+  },
+
+  updateCategory: async (id: string, category: Partial<Category>): Promise<Category> => {
+    return request<Category>(`/category/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(category),
+    });
+  },
+
+  deleteCategory: async (id: string): Promise<{ message: string }> => {
+    return request<{ message: string }>(`/category/${id}`, { method: 'DELETE' });
+  },
+
+  getAuthors: async (): Promise<Author[]> => {
+    return request<Author[]>('/author/all');
+  },
+
+  createAuthor: async (author: Partial<Author>): Promise<Author> => {
+    return request<Author>('/author', {
+      method: 'POST',
+      body: JSON.stringify(author),
+    });
+  },
+
+  updateAuthor: async (id: string, author: Partial<Author>): Promise<Author> => {
+    return request<Author>(`/author/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(author),
+    });
+  },
+
+  deleteAuthor: async (id: string): Promise<{ message: string }> => {
+    return request<{ message: string }>(`/author/${id}`, { method: 'DELETE' });
+  },
+
+  // ── Cart ─────────────────────────────────────────────────────────────
+  getCart: async (): Promise<Cart> => {
+    return request<Cart>('/cart');
+  },
+
+  addToCart: async (bookId: string, quantity = 1): Promise<Cart> => {
+    return request<Cart>('/cart', {
+      method: 'POST',
+      body: JSON.stringify({ bookId, quantity }),
+    });
+  },
+
+  removeFromCart: async (bookId: string): Promise<Cart> => {
+    return request<Cart>(`/cart/${bookId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  clearCart: async (): Promise<Cart> => {
+    return request<Cart>('/cart/clear', {
+      method: 'DELETE',
+    });
+  },
+
+  // ── Checkout & Orders ────────────────────────────────────────────────
+  checkout: async (payload: {
+    items: any[];
+    shippingDetails: any;
+    paymentMethod: string;
+    discountCode?: string;
+  }): Promise<Order> => {
+    return request<Order>('/checkout', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  getMyOrders: async (): Promise<Order[]> => {
+    return request<Order[]>('/order/my');
+  },
+
+  getAllOrders: async (): Promise<Order[]> => {
+    return request<Order[]>('/order');
+  },
+
+  getOrderById: async (id: string): Promise<Order> => {
+    return request<Order>(`/order/${id}`);
+  },
+
+  updateOrderStatus: async (id: string, status: OrderStatus): Promise<Order> => {
+    return request<Order>(`/order/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
+  },
+
+  cancelOrder: async (id: string): Promise<{ message: string; order: Order }> => {
+    return request<{ message: string; order: Order }>(`/order/${id}/cancel`, {
+      method: 'PATCH',
+    });
+  },
+
+  // ── Reviews (/book-review) ───────────────────────────────────────────
+  getBookReviews: async (bookId: string): Promise<Review[]> => {
+    return (await request<any[]>(`/book-review/book/${bookId}`)).map(mapReview);
+  },
+
+  submitReview: async (bookId: string, review: { rating: number; comment: string }): Promise<Review> => {
+    return mapReview(await request<any>(`/book-review/book/${bookId}`, {
+      method: 'POST',
+      body: JSON.stringify(review),
+    }));
+  },
+
+  updateReview: async (id: string, review: { rating: number; comment: string }): Promise<Review> => {
+    return mapReview(await request<any>(`/book-review/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(review),
+    }));
+  },
+
+  deleteReview: async (id: string): Promise<{ message: string }> => {
+    await request<null>(`/book-review/${id}`, { method: 'DELETE' });
+    return { message: 'Deleted' };
+  },
+
+  getAllReviews: async (): Promise<Review[]> => {
+    return (await request<any[]>('/book-review/admin/all')).map(mapReview);
+  },
+
+  updateReviewStatus: async (id: string, status: 'APPROVED' | 'PENDING' | 'REJECTED'): Promise<Review> => {
+    return mapReview(await request<any>(`/book-review/${id}/status?status=${status}`, { method: 'PATCH' }));
+  },
+
+  // ── Comments on posts & news ─────────────────────────────────────────
+  getComments: async (kind: CommentKind, id: string): Promise<PostComment[]> => {
+    const rows = await request<any[]>(kind === 'post' ? `/post-comment/post/${id}` : `/news-comments/news/${id}`);
+    return rows.map(mapComment);
+  },
+
+  addComment: async (kind: CommentKind, id: string, content: string): Promise<PostComment> => {
+    return mapComment(await request<any>(kind === 'post' ? '/post-comment' : '/news-comments', {
+      method: 'POST',
+      body: JSON.stringify(kind === 'post' ? { postId: id, content } : { newsId: id, content }),
+    }));
+  },
+
+  deleteComment: async (kind: CommentKind, id: string): Promise<{ message: string }> => {
+    await request<null>(kind === 'post' ? `/post-comment/${id}` : `/news-comments/${id}`, { method: 'DELETE' });
+    return { message: 'Deleted' };
+  },
+
+  // ── Shipping settings ────────────────────────────────────────────────
+  getShippingSettings: async (): Promise<ShippingSettings> => {
+    return mapShipping(await request<any>('/settings/shipping'));
+  },
+
+  updateShippingSettings: async (s: ShippingSettings): Promise<ShippingSettings> => {
+    return mapShipping(await request<any>('/settings/shipping', {
+      method: 'PUT',
+      body: JSON.stringify({ fee: s.fee, freeShippingThreshold: s.freeShippingThreshold }),
+    }));
+  },
+
+  // ── Admin Dashboard & Customers ──────────────────────────────────────
+  getAdminDashboard: async (): Promise<any> => {
+    return request<any>('/admin/dashboard');
+  },
+
+  getAdminCustomers: async (): Promise<any[]> => {
+    return request<any[]>('/admin/customers');
+  },
+
+  // ── Posts ────────────────────────────────────────────────────────────
+  getPosts: async (): Promise<Post[]> => {
+    return request<Post[]>('/post/all');
+  },
+
+  getNews: async (): Promise<Post[]> => {
+    return (await request<any[]>('/news/all')).map(mapPost);
+  },
+
+  likeNews: async (id: string): Promise<{ likesCount: number; isLiked: boolean }> => {
+    // The mock server answers { liked, likeCount }, same as the Spring backend.
+    const r = await request<any>(`/news-likes/${id}`, { method: 'PATCH' });
+    return { likesCount: r?.likeCount ?? r?.likesCount ?? 0, isLiked: r?.liked ?? r?.isLiked ?? true };
+  },
+
+  likePost: async (id: string): Promise<{ likesCount: number; isLiked: boolean }> => {
+    return request<{ likesCount: number; isLiked: boolean }>(`/post-likes/${id}`, {
+      method: 'PATCH',
+    });
+  },
 };
+
+// Mock-compatible requests are selected only by the dedicated mock development server.
+export const api: typeof mockApi = import.meta.env.MODE === 'mock' ? mockApi : (realApi as typeof mockApi);

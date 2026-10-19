@@ -1,8 +1,10 @@
 package com.kerolos119.inkora.services;
 
+import com.kerolos119.inkora.Utils.SecurityUtils;
+import com.kerolos119.inkora.Utils.UserNameResolver;
 import com.kerolos119.inkora.document.PostComment;
-import com.kerolos119.inkora.dto.PageResult;
 import com.kerolos119.inkora.dto.PostCommentDto;
+import com.kerolos119.inkora.dto.PageResult;
 import com.kerolos119.inkora.dto.SearchRequest;
 import com.kerolos119.inkora.exception.CustomException;
 import com.kerolos119.inkora.exception.ExceptionMessage;
@@ -16,11 +18,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,53 +35,56 @@ public class PostCommentServices implements BaseService<PostCommentDto, String, 
     private final PostCommentMapper mapper;
     private final MongoTemplate template;
     private final PostRepository postRepository;
+    private final UserNameResolver names;
 
-    @Override
-    public PostCommentDto create(PostCommentDto postCommentDto) {
-
-        if (!postRepository.existsById(postCommentDto.getPostId())){
-            throw new CustomException(ExceptionMessage.POST_NOT_FOUND);
+    public List<PostCommentDto> getByPostId(String postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new CustomException(ExceptionMessage.POST_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
-
-        PostComment comment = mapper.toEntity(postCommentDto);
-        // Always source userId from the authenticated principal — never trust the request body
-        comment.setUserId(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-
-        PostComment savedComment = repo.save(comment);
-        return mapper.toDto(savedComment);
+        return withNames(repo.findByPostId(postId).stream()
+                .sorted(Comparator.comparing(PostComment::getCreatedAt,
+                        Comparator.nullsLast(Comparator.<Instant>reverseOrder())))
+                .toList());
     }
 
-    private PostComment readById(String id){
-        return repo.findById(id)
-                .orElseThrow(()->new CustomException(ExceptionMessage.POST_COMMENT_NOT_FOUND));
+    public long countByPostId(String postId) {
+        return repo.countByPostId(postId);
+    }
+
+    public void deleteByPostId(String postId) {
+        repo.deleteByPostId(postId);
     }
 
     @Override
-    public PostCommentDto update(String id, PostCommentDto postCommentDto) {
-        PostComment existingComment = readById(id);
+    public PostCommentDto create(PostCommentDto dto) {
+        if (!postRepository.existsById(dto.getPostId())) {
+            throw new CustomException(ExceptionMessage.POST_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+        PostComment comment = mapper.toEntity(dto);
+        comment.setUserId(SecurityUtils.currentUserId());
+        comment.setContent(dto.getContent().trim());
+        return withNames(List.of(repo.save(comment))).get(0);
+    }
 
-        String currentUserId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    private PostComment readById(String id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new CustomException(ExceptionMessage.POST_COMMENT_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
 
-        if (!existingComment.getUserId().equals(currentUserId)){
+    @Override
+    public PostCommentDto update(String id, PostCommentDto dto) {
+        PostComment existing = readById(id);
+        if (!existing.getUserId().equals(SecurityUtils.currentUserId())) {
             throw new CustomException(ExceptionMessage.FORBIDDEN, HttpStatus.FORBIDDEN);
         }
-
-        if (!postRepository.existsById(postCommentDto.getPostId())){
-            throw new CustomException(ExceptionMessage.POST_NOT_FOUND);
-        }
-
-        mapper.updateToEntity(postCommentDto, existingComment);
-        PostComment updatedComment = repo.save(existingComment);
-        return mapper.toDto(updatedComment);
+        existing.setContent(dto.getContent().trim());
+        return withNames(List.of(repo.save(existing))).get(0);
     }
 
     @Override
     public void delete(String id) {
-        PostComment existingComment = readById(id);
-
-        String currentUserId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-
-        if (!existingComment.getUserId().equals(currentUserId)){
+        PostComment existing = readById(id);
+        if (!existing.getUserId().equals(SecurityUtils.currentUserId()) && !SecurityUtils.isAdmin()) {
             throw new CustomException(ExceptionMessage.FORBIDDEN, HttpStatus.FORBIDDEN);
         }
         repo.deleteById(id);
@@ -84,47 +92,37 @@ public class PostCommentServices implements BaseService<PostCommentDto, String, 
 
     @Override
     public PostCommentDto getById(String id) {
-
-        return mapper.toDto(readById(id));
+        return withNames(List.of(readById(id))).get(0);
     }
 
     @Override
     public List<PostCommentDto> getAll() {
-
-        return repo.findAll().stream()
-                .map(mapper::toDto)
-                .toList();
+        return withNames(repo.findAll());
     }
 
     @Override
     public PageResult<PostCommentDto> search(SearchRequest request) {
-
         Query query = new Query();
-
-        if (request.getKeyword() != null && !request.getKeyword().isBlank()){
-            query.addCriteria(new Criteria().orOperator(
-                    Criteria.where("postId").regex(Pattern.quote(request.getKeyword()),"i")
-            ));
+        if (request.getKeyword() != null && !request.getKeyword().isBlank()) {
+            query.addCriteria(Criteria.where("postId").regex(Pattern.quote(request.getKeyword()), "i"));
         }
-        if (request.getIsActive() == null || request.getIsActive()){
-            query.addCriteria(Criteria.where("isActive").is(true));
-        }
-
         long total = template.count(query, PostComment.class);
 
-        Sort sort = Sort.by(request.getSortDirection(),request.getSortBy());
-
+        Sort sort = Sort.by(request.getSortDirection(), request.getSortBy());
         query.with(PageRequest.of(request.getPage() - 1, request.getSize(), sort));
 
-        List<PostCommentDto> postComments = template.find(query, PostComment.class)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-
+        List<PostCommentDto> items = withNames(template.find(query, PostComment.class));
         int totalPages = (int) Math.ceil((double) total / request.getSize());
-
-        return new PageResult<>(postComments, total, totalPages);
-
+        return new PageResult<>(items, total, totalPages);
     }
 
+    private List<PostCommentDto> withNames(List<PostComment> comments) {
+        Map<String, String> userNames = names.namesOf(
+                comments.stream().map(PostComment::getUserId).collect(Collectors.toSet()));
+        return comments.stream().map(c -> {
+            PostCommentDto dto = mapper.toDto(c);
+            dto.setUsername(userNames.getOrDefault(c.getUserId(), UserNameResolver.UNKNOWN));
+            return dto;
+        }).toList();
+    }
 }

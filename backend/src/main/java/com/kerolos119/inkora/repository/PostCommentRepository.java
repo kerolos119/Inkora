@@ -10,4 +10,7 @@ public interface PostCommentRepository extends BaseRepository<PostComment, Strin
 
     List<PostComment> findByPostId(String postId);
 
+    long countByPostId(String postId);
+
+    void deleteByPostId(String postId);
 }

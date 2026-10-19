@@ -8,17 +8,17 @@ import {
   ArrowLeft,
   Plus,
   Minus,
-  MessageSquare,
   ShieldCheck,
   Package,
   BookOpen,
 } from 'lucide-react';
-import { Book, Review } from '../types/index.js';
+import { Book } from '../types/index.js';
 import { api } from '../services/api.js';
 import { useCart } from '../context/CartContext.js';
 import { useWishlist } from '../context/WishlistContext.js';
 import { useToast } from '../context/ToastContext.js';
 import { BookCard } from '../components/books/BookCard.js';
+import { ReviewSection } from '../components/community/ReviewSection.js';
 
 interface BookDetailPageProps {
   bookId: string;
@@ -32,16 +32,9 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
   onQuickView,
 }) => {
   const [book, setBook] = useState<Book | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-
-  // Review Form state
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewComment, setReviewComment] = useState('');
-  const [reviewName, setReviewName] = useState('');
-  const [submittingReview, setSubmittingReview] = useState(false);
 
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
@@ -53,13 +46,9 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
       .getBookById(bookId)
       .then((data) => {
         setBook(data);
-        return Promise.all([
-          api.getBookReviews(bookId),
-          api.getBooks(),
-        ]);
+        return api.getBooks();
       })
-      .then(([revs, allBooks]) => {
-        setReviews(revs);
+      .then((allBooks) => {
         const related = allBooks.filter((b) => b.id !== bookId).slice(0, 4);
         setRelatedBooks(related);
       })
@@ -96,27 +85,6 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
   const discountedPrice = book.discount
     ? book.price * (1 - book.discount / 100)
     : book.price;
-
-  const handleReviewSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reviewComment.trim()) return;
-    setSubmittingReview(true);
-    try {
-      const created = await api.submitReview(book.id, {
-        rating: reviewRating,
-        comment: reviewComment,
-        userName: reviewName || 'Patron Reader',
-      });
-      setReviews([created, ...reviews]);
-      setReviewComment('');
-      setReviewName('');
-      showToast(t('book.reviewOk'));
-    } catch (err: any) {
-      showToast(err.message || 'Could not post review', 'error');
-    } finally {
-      setSubmittingReview(false);
-    }
-  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -204,7 +172,9 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
                 <span className="font-semibold text-xs text-[#3B2B1E] dark:text-[#F3ECDD]">
                   {book.rating.toFixed(1)}
                 </span>
-                <span className="text-xs">({book.reviewCount} patron reviews)</span>
+                <span key={book.reviewCount} className="text-xs animate-number-tick">
+                  ({book.reviewCount === 1 ? t('rv.count1') : t('rv.count', { n: book.reviewCount })})
+                </span>
               </div>
             </div>
 
@@ -341,145 +311,14 @@ export const BookDetailPage: React.FC<BookDetailPageProps> = ({
         </div>
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────────
-          2. Patron Reviews & Submission Form
-         ───────────────────────────────────────────────────────────────── */}
-      <section className="pt-10 border-t border-[#E3D6BC] dark:border-[#4A3E2E] space-y-8">
-        <div className="flex items-end justify-between">
-          <div>
-            <span className="text-xs tracking-[0.25em] uppercase text-[#8A6238] dark:text-[#D2A560] font-semibold font-mono">
-              {t('x.e9d21c')}
-            </span>
-            <h2 className="font-editorial text-3xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
-              {t('x.bfb970')}
-            </h2>
-          </div>
-          <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82]">
-            {reviews.length} Verified Entries
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Reviews List */}
-          <div className="lg:col-span-7 space-y-4">
-            {reviews.length === 0 ? (
-              <div className="p-8 border border-[#E3D6BC] dark:border-[#4A3E2E] text-center bg-[#FFFFFF] dark:bg-[#2A231B] rounded-[2px]">
-                <MessageSquare className="w-8 h-8 text-[#65513F]/40 mx-auto mb-2" />
-                <p className="font-editorial text-xl text-[#3B2B1E] dark:text-[#F3ECDD]">
-                  {t('x.fe01c3')}
-                </p>
-              </div>
-            ) : (
-              reviews.map((rev) => (
-                <div
-                  key={rev.id}
-                  className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] space-y-2 rounded-[2px] shadow-2xs"
-                >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
-                      {rev.userName}
-                    </span>
-                    <span className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono">
-                      {rev.date}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-3 h-3 ${
-                          i < rev.rating
-                            ? 'fill-[#C27835] text-[#C27835]'
-                            : 'text-[#E3D6BC] dark:text-[#4A3E2E]'
-                        }`}
-                      />
-                    ))}
-                  </div>
-
-                  <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed pt-1 font-body-literary">
-                    {rev.comment}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Submit Review Form */}
-          <div className="lg:col-span-5 p-6 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] rounded-[2px] shadow-2xs">
-            <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mb-2">
-              {t('x.504244')}
-            </h3>
-            <p className="text-xs text-[#65513F] dark:text-[#A99A82] mb-4">
-              {t('x.a301f9')}
-            </p>
-
-            <form onSubmit={handleReviewSubmit} className="space-y-4">
-              <div>
-                <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
-                  {t('x.6437b7')}
-                </label>
-                <div className="flex items-center gap-1.5">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      type="button"
-                      key={star}
-                      onClick={() => setReviewRating(star)}
-                      className="p-1 hover:scale-110 transition-transform btn-press"
-                    >
-                      <Star
-                        className={`w-5 h-5 ${
-                          star <= reviewRating
-                            ? 'fill-[#C27835] text-[#C27835]'
-                            : 'text-[#E3D6BC] dark:text-[#4A3E2E]'
-                        }`}
-                      />
-                    </button>
-                  ))}
-                  <span className="text-xs font-mono ms-2 text-[#65513F] dark:text-[#A99A82]">
-                    {reviewRating} of 5 Stars
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
-                  {t('x.6cfd44')}
-                </label>
-                <input
-                  type="text"
-                  value={reviewName}
-                  onChange={(e) => setReviewName(e.target.value)}
-                  placeholder={t('x.c1316a')}
-                  className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-xs text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden rounded-[2px]"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs uppercase tracking-wider font-semibold font-mono text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
-                  {t('x.fdce7b')}
-                </label>
-                <textarea
-                  value={reviewComment}
-                  onChange={(e) => setReviewComment(e.target.value)}
-                  rows={4}
-                  required
-                  placeholder={t('x.b1eb6c')}
-                  className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-xs text-[#3B2B1E] dark:text-[#F3ECDD] focus:outline-hidden rounded-[2px]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={submittingReview}
-                className="w-full py-2.5 bg-[#3B2B1E] dark:bg-[#8A6238] text-[#FAF6EC] hover:bg-[#8A6238] dark:hover:bg-[#604626] text-xs font-semibold uppercase tracking-widest transition-colors cursor-pointer font-mono btn-press rounded-[2px]"
-              >
-                {submittingReview ? 'Recording...' : 'Submit Review'}
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
+      {/* 2. Reader reviews (live from the backend) */}
+      <ReviewSection
+        bookId={book.id}
+        onNavigate={onNavigate}
+        onSummaryChange={(rating, reviewCount) =>
+          setBook((b) => (b && (b.rating !== rating || b.reviewCount !== reviewCount) ? { ...b, rating, reviewCount } : b))
+        }
+      />
 
       {/* ─────────────────────────────────────────────────────────────────
           3. Related Editions Recommendations

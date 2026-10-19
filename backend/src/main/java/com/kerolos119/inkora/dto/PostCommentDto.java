@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.Instant;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,5 +26,11 @@ public class PostCommentDto {
     @NotBlank(message = "content is required")
     @Size(max = 5000, message = "content must not exceed 5000 characters")
     private String content;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String username;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Instant createdAt;
 
 }

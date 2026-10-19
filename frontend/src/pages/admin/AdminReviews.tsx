@@ -21,8 +21,19 @@ export const AdminReviews: React.FC = () => {
       const updated = await api.updateReviewStatus(id, status);
       setReviews(reviews.map((r) => (r.id === id ? updated : r)));
       showToast(`Review status updated to ${status}`);
-    } catch {
-      showToast('Error updating status', 'error');
+    } catch (err: any) {
+      showToast(err?.message || 'Error updating status', 'error');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Delete this review permanently?')) return;
+    try {
+      await api.deleteReview(id);
+      setReviews((list) => list.filter((r) => r.id !== id));
+      showToast('Review deleted');
+    } catch (err: any) {
+      showToast(err?.message || 'Could not delete review', 'error');
     }
   };
 
@@ -51,6 +62,9 @@ export const AdminReviews: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E3D6BC]/60 dark:divide-[#4A3E2E]/60">
+            {reviews.length === 0 && (
+              <tr><td colSpan={7} className="p-8 text-center text-[#65513F] dark:text-[#A99A82]">No reviews yet.</td></tr>
+            )}
             {reviews.map((rev) => (
               <tr key={rev.id} className="hover:bg-[#F1E9D6]/40 dark:hover:bg-[#2F261B]/40 transition-colors">
                 <td className="p-3 font-editorial text-sm font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
@@ -74,7 +88,9 @@ export const AdminReviews: React.FC = () => {
                 <td className="p-3 max-w-xs text-xs text-[#65513F] dark:text-[#A99A82] line-clamp-2 font-body-literary">
                   {rev.comment}
                 </td>
-                <td className="p-3 text-xs font-mono text-[#65513F] dark:text-[#A99A82]">{rev.date}</td>
+                <td className="p-3 text-xs font-mono text-[#65513F] dark:text-[#A99A82]">
+                  {rev.date ? new Date(rev.date).toLocaleDateString() : ''}
+                </td>
                 <td className="p-3">
                   <span
                     className={`px-1.5 py-0.5 border text-xs font-mono uppercase font-semibold ${
@@ -94,7 +110,7 @@ export const AdminReviews: React.FC = () => {
                       <button
                         onClick={() => handleUpdateStatus(rev.id, 'APPROVED')}
                         className="p-1 text-[#2A674A] hover:bg-[#2A674A]/10 transition-colors btn-press"
-                        title="Approve review"
+                        title="Make visible"
                       >
                         <CheckCircle className="w-4 h-4" />
                       </button>
@@ -103,11 +119,18 @@ export const AdminReviews: React.FC = () => {
                       <button
                         onClick={() => handleUpdateStatus(rev.id, 'REJECTED')}
                         className="p-1 text-[#8E1F1F] hover:bg-[#8E1F1F]/10 transition-colors btn-press"
-                        title="Reject review"
+                        title="Hide from public"
                       >
                         <XCircle className="w-4 h-4" />
                       </button>
                     )}
+                    <button
+                      onClick={() => handleDelete(rev.id)}
+                      className="p-1 text-[#65513F] dark:text-[#A99A82] hover:text-[#8E1F1F] hover:bg-[#8E1F1F]/10 transition-colors btn-press"
+                      title="Delete review"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </td>
               </tr>

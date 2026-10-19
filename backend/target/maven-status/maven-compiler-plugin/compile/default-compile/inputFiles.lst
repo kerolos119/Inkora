@@ -7,6 +7,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\AuthController.
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\AuthorController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\BaseController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\BookController.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\BookReviewController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CartController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CategoryController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CheckoutController.java
@@ -21,6 +22,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\PostLikeControl
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\UsersController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Author.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Book.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\BookReview.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Cart.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Category.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\News.java
@@ -34,6 +36,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\RefreshToken.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Users.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\AuthorDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\BookDto.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\BookReviewDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\CartDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\CategoryDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\Credentials.java
@@ -51,6 +54,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\PostCommentDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\PostLikeDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\PostsDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\ResetPasswordRequest.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\ReviewSummaryDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\SearchRequest.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\UsersDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\exception\CustomException.java
@@ -78,12 +82,14 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\EmailTemplate.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\OrderItem.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\OrderStatus.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\PaymentMethod.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\ReviewStatus.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\Role.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\ShippingDetails.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\model\TokenInfo.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\AuthorRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\BaseRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\BookRepository.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\BookReviewRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\CartRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\CategoryRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\NewsCommentRepository.java
@@ -98,6 +104,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\UserRepository.
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\AuthorServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\AuthServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\BaseService.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\BookReviewService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\BookServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CartService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CategoryServices.java
@@ -116,3 +123,5 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\PostServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\UsersServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\Utils\JWTUtils.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\Utils\OtpCache.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\Utils\SecurityUtils.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\Utils\UserNameResolver.java

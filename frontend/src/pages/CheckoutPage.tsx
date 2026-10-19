@@ -207,6 +207,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
                   <span>{t('co.statusC')}</span>
                   <span className="font-medium text-[#2A674A]">{createdOrder.status}</span>
                 </div>
+                {createdOrder.shippingFee > 0 && (
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span>${createdOrder.shippingFee.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] pt-2 border-t border-[#E3D6BC] dark:border-[#4A3E2E]">
                   <span>{t('co.totalC')}</span>
                   <span>${createdOrder.totalAmount.toFixed(2)}</span>

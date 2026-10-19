@@ -9,27 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-17T22:18:35+0300",
+    date = "2026-10-19T13:43:25+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component
 public class NewsCommentMapperImpl implements NewsCommentMapper {
-
-    @Override
-    public NewsCommentDto toDto(NewsComment entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        NewsCommentDto.NewsCommentDtoBuilder newsCommentDto = NewsCommentDto.builder();
-
-        newsCommentDto.id( entity.getId() );
-        newsCommentDto.newsId( entity.getNewsId() );
-        newsCommentDto.userId( entity.getUserId() );
-        newsCommentDto.content( entity.getContent() );
-
-        return newsCommentDto.build();
-    }
 
     @Override
     public List<NewsCommentDto> toDtoList(List<NewsComment> entities) {
@@ -84,5 +68,22 @@ public class NewsCommentMapperImpl implements NewsCommentMapper {
         entity.setUserId( dto.getUserId() );
         entity.setNewsId( dto.getNewsId() );
         entity.setContent( dto.getContent() );
+    }
+
+    @Override
+    public NewsCommentDto toDto(NewsComment entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        NewsCommentDto.NewsCommentDtoBuilder newsCommentDto = NewsCommentDto.builder();
+
+        newsCommentDto.id( entity.getId() );
+        newsCommentDto.newsId( entity.getNewsId() );
+        newsCommentDto.userId( entity.getUserId() );
+        newsCommentDto.content( entity.getContent() );
+        newsCommentDto.createdAt( entity.getCreatedAt() );
+
+        return newsCommentDto.build();
     }
 }

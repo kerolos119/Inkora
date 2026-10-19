@@ -15,6 +15,9 @@ public interface OrderMapper extends BaseMapper<OrderDto, Order> {
     @Mapping(target = "orderStatus",     source = "status")
     @Mapping(target = "usersId",         source = "userId")
     @Mapping(target = "items",           source = "orderItems")
+    @Mapping(target = "subtotal", ignore = true)
+    @Mapping(target = "shippingFee", ignore = true)
+    @Mapping(target = "totalAmount", ignore = true)
     OrderDto toDto(Order entity);
 
     @Override

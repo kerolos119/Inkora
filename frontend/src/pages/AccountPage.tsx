@@ -519,6 +519,12 @@ export const AccountPage: React.FC<AccountPageProps> = ({
               ))}
             </div>
 
+            {selectedOrder.shippingFee > 0 && (
+              <div className="flex justify-between items-center text-sm text-[#65513F] dark:text-[#A99A82] font-mono">
+                <span>Shipping</span>
+                <span>${selectedOrder.shippingFee.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between items-center text-sm font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
               <span>{t('ac.total')}</span>
               <span>${selectedOrder.totalAmount.toFixed(2)}</span>

@@ -5,6 +5,8 @@ import com.kerolos119.inkora.dto.PostCommentDto;
 import com.kerolos119.inkora.dto.SearchRequest;
 import com.kerolos119.inkora.services.PostCommentServices;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +47,11 @@ public class PostCommentController implements BaseController<PostCommentDto, Str
     @Override
     public PageResult<PostCommentDto> search(SearchRequest request) {
         return services.search(request);
+    }
+
+    @GetMapping("/post/{postId}")
+    public List<PostCommentDto> getByPost(@PathVariable String postId) {
+        return services.getByPostId(postId);
     }
 
 }

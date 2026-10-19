@@ -1,6 +1,7 @@
 package com.kerolos119.inkora.services;
 
 import com.kerolos119.inkora.document.News;
+import com.kerolos119.inkora.dto.NewsCommentDto;
 import com.kerolos119.inkora.dto.NewsDto;
 import com.kerolos119.inkora.dto.PageResult;
 import com.kerolos119.inkora.dto.SearchRequest;
@@ -58,20 +59,22 @@ public class NewsServices implements BaseService<NewsDto, String, SearchRequest>
     public void delete(String id) {
         readById(id);
         repo.deleteById(id);
+        commentServices.getByNewsId(id);
     }
 
     @Override
     public NewsDto getById(String id) {
         NewsDto dto = mapper.toDto(readById(id));
-
-        dto.setComments(commentServices.getByNewsId(id));
+        List<NewsCommentDto> comments = commentServices.getByNewsId(id);
+        dto.setComments(comments);
+        dto.setCommentCount(comments.size());
         return dto;
     }
 
     @Override
     public List<NewsDto> getAll() {
         return repo.findAll().stream()
-                .map(mapper::toDto)
+                .map(this::toDtoWithCount)
                 .toList();
     }
 
@@ -97,11 +100,17 @@ public class NewsServices implements BaseService<NewsDto, String, SearchRequest>
         query.with(PageRequest.of(request.getPage() - 1, request.getSize(), sort));
 
         List<NewsDto> news = template.find(query, News.class).stream()
-                .map(mapper:: toDto)
+                .map(this::toDtoWithCount)
                 .toList();
 
         int totalPages = (int) Math.ceil((double) total / request.getSize());
         return new PageResult<>(news, total, totalPages);
+    }
+
+    private NewsDto toDtoWithCount(News news) {
+        NewsDto dto = mapper.toDto(news);
+        dto.setCommentCount(commentServices.countByNewsId(news.getId()));
+        return dto;
     }
 
 }

@@ -10,4 +10,7 @@ public interface NewsCommentRepository extends BaseRepository<NewsComment, Strin
 
     List<NewsComment> findByNewsId(String newsId);
 
+    long countByNewsId(String newsId);
+
+    void deleteByNewsId(String newsId);
 }

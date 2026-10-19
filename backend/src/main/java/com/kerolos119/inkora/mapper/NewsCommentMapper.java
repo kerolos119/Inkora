@@ -26,4 +26,8 @@ public interface NewsCommentMapper extends BaseMapper<NewsCommentDto, NewsCommen
     @Mapping(target = "updatedBy", ignore = true)
     void updateToEntity(NewsCommentDto dto, @MappingTarget NewsComment entity);
 
+    @Override
+    @Mapping(target = "username", ignore = true)
+    NewsCommentDto toDto(NewsComment entity);
+
 }

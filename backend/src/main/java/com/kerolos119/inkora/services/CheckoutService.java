@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class CheckoutService {
     private final UserRepository userRepo;
     private final BookRepository bookRepo;
     private final MongoTemplate template;
+    private final ShippingSettingService shippingSettingService;
 
     public OrderDto checkout() {
         String userId = getUserId();
@@ -148,9 +150,14 @@ public class CheckoutService {
                         .price(i.getPrice())
                         .build())
                 .toList());
+
         order.setStatus(OrderStatus.PENDING);
         order.setOrderedAt(Instant.now());
-        order.setTotalAmount(cart.calculateTotalPrice());
+        BigDecimal subtotal = cart.calculateTotalPrice();
+        BigDecimal shippingFee = shippingSettingService.feeFor(subtotal);
+        order.setSubtotal(subtotal);
+        order.setShippingFee(shippingFee);
+        order.setTotalAmount(subtotal.add(shippingFee));
         return order;
     }
 

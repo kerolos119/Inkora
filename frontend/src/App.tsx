@@ -22,6 +22,7 @@ import { AdminReviews } from './pages/admin/AdminReviews.js';
 import { Book } from './types/index.js';
 import { useAuth } from './context/AuthContext.js';
 import { AdminContent } from './pages/admin/AdminContent.js';
+import { AdminShipping } from './pages/admin/AdminShipping.js';
 
 // Pages that need a signed-in account
 const needsLogin = (page: string) =>
@@ -95,6 +96,7 @@ export const App: React.FC = () => {
           {adminTab === 'reviews' && <AdminReviews />}
           {adminTab === 'posts' && <AdminContent key="post" kind="post"/>}
           {adminTab === 'news' && <AdminContent key="news" kind="news"/>}
+          {adminTab === 'shipping' && <AdminShipping />}
         </AdminLayout>
       );
     }

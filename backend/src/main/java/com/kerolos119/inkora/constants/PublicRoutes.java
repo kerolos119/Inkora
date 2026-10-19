@@ -45,5 +45,20 @@ public final class PublicRoutes {
             "/api/v1/post/{id}",
             "/api/v1/post/all",
             "/api/v1/post/search",
+
+
+            // ── Book reviews (public read) ──
+            "/api/v1/book-review/book/{bookId}",
+            "/api/v1/book-review/book/{bookId}/summary",
+            "/api/v1/book-review/summary",
+
+
+            // ── Comments (public read) ──
+            "/api/v1/news-comments/news/{newsId}",
+            "/api/v1/post-comment/post/{postId}",
+
+            // ── Shipping fee (public read; PUT is ADMIN-only via @PreAuthorize) ──
+            "/api/v1/settings/shipping",
+
     };
 }

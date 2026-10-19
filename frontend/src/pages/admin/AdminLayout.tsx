@@ -18,6 +18,7 @@ import {
 import { ThemeToggle } from '../../components/common/ThemeToggle.js';
 import { LanguageToggle } from '../../components/common/LanguageToggle';
 import { t } from '../../i18n';
+import { Truck } from 'lucide-react';
 
 interface AdminLayoutProps {
   currentTab: string;
@@ -45,6 +46,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'reviews', label: 'Reviews Moderation', icon: MessageSquare },
     { id: 'posts', label: 'Journal Posts', icon: FileText },
     { id: 'news', label: 'News & Announcements', icon: Newspaper },
+    { id: 'shipping', label: 'Shipping Fee', icon: Truck}
   ];
 
   return (

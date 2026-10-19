@@ -45,4 +45,8 @@ public class Order extends Auditable {
 
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    private BigDecimal subtotal;
+
+    private BigDecimal shippingFee;
 }

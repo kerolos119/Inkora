@@ -1,5 +1,6 @@
 import { extra2En, extra2Ar } from './i18n.extra2';
 import { extraEn, extraAr } from './i18n.extra';
+import { communityEn, communityAr } from './i18n.community';
 export type Lang = 'en' | 'ar';
 const dict: Record<Lang, Record<string, string>> = {
   en: {

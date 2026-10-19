@@ -68,6 +68,7 @@ export interface Cart {
   discount: number;
   shipping: number;
   total: number;
+  freeShippingThreshold?: number | null;
 }
 
 export type OrderStatus =
@@ -162,4 +163,9 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   user: User;
+}
+
+export interface ShippingSetting {
+  fee: number;
+  freeShippingThreshold: number | null;
 }

@@ -46,4 +46,10 @@ public class NewsCommentController implements BaseController<NewsCommentDto, Str
         return services.search(request);
     }
 
+
+    @GetMapping("/news/{id}")
+    public List<NewsCommentDto> getByNews(@PathVariable String newsId) {
+        return services.getByNewsId(newsId);
+    }
+
 }

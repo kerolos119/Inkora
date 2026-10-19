@@ -9,27 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-17T22:18:35+0300",
+    date = "2026-10-19T13:43:25+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component
 public class PostCommentMapperImpl implements PostCommentMapper {
-
-    @Override
-    public PostCommentDto toDto(PostComment entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        PostCommentDto.PostCommentDtoBuilder postCommentDto = PostCommentDto.builder();
-
-        postCommentDto.id( entity.getId() );
-        postCommentDto.postId( entity.getPostId() );
-        postCommentDto.userId( entity.getUserId() );
-        postCommentDto.content( entity.getContent() );
-
-        return postCommentDto.build();
-    }
 
     @Override
     public List<PostCommentDto> toDtoList(List<PostComment> entities) {
@@ -84,5 +68,22 @@ public class PostCommentMapperImpl implements PostCommentMapper {
         entity.setUserId( dto.getUserId() );
         entity.setPostId( dto.getPostId() );
         entity.setContent( dto.getContent() );
+    }
+
+    @Override
+    public PostCommentDto toDto(PostComment entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        PostCommentDto.PostCommentDtoBuilder postCommentDto = PostCommentDto.builder();
+
+        postCommentDto.id( entity.getId() );
+        postCommentDto.postId( entity.getPostId() );
+        postCommentDto.userId( entity.getUserId() );
+        postCommentDto.content( entity.getContent() );
+        postCommentDto.createdAt( entity.getCreatedAt() );
+
+        return postCommentDto.build();
     }
 }

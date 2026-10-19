@@ -1,31 +1,55 @@
 import { t } from '../i18n';
 import React, { useState, useEffect } from 'react';
-import { Heart, MessageSquare, Tag, ArrowRight, Feather, Calendar } from 'lucide-react';
+import { Heart, MessageSquare, Calendar } from 'lucide-react';
 import { Post } from '../types/index.js';
 import { api } from '../services/api.js';
 import { useToast } from '../context/ToastContext.js';
+import { useAuth } from '../context/AuthContext.js';
+import { CommentThread } from '../components/community/CommentThread.js';
+import type { CommentKind } from '../services/realapi.js';
 
 interface EditorialPageProps {
   onNavigate: (page: string) => void;
 }
 
 export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [tab, setTab] = useState<CommentKind>('post');
+  const [lists, setLists] = useState<Record<CommentKind, Post[]>>({ post: [], news: [] });
+  const [loaded, setLoaded] = useState<Record<CommentKind, boolean>>({ post: false, news: false });
+  const [openComments, setOpenComments] = useState<string | null>(null);
+  const [burstId, setBurstId] = useState<string | null>(null);
   const { showToast } = useToast();
+  const { user } = useAuth();
+
+  const posts = lists[tab];
 
   useEffect(() => {
-    api.getPosts().then(setPosts).catch(console.error);
-  }, []);
+    if (loaded[tab]) return;
+    const load = tab === 'post' ? api.getPosts() : api.getNews();
+    load
+      .then((rows) => setLists((l) => ({ ...l, [tab]: rows })))
+      .catch(console.error)
+      .finally(() => setLoaded((l) => ({ ...l, [tab]: true })));
+  }, [tab, loaded]);
+
+  const patch = (id: string, change: Partial<Post>) =>
+    setLists((l) => ({ ...l, [tab]: l[tab].map((p) => (p.id === id ? { ...p, ...change } : p)) }));
 
   const handleLike = async (id: string) => {
+    if (!user) {
+      showToast(t('cm.likeLogin'), 'info');
+      onNavigate('auth');
+      return;
+    }
     try {
-      const res = await api.likePost(id);
-      setPosts(
-        posts.map((p) => (p.id === id ? { ...p, likesCount: res.likesCount, isLiked: true } : p))
-      );
-      showToast('Appreciation recorded in reader registry');
-    } catch {
-      // fallback
+      const res = tab === 'post' ? await api.likePost(id) : await api.likeNews(id);
+      patch(id, { likesCount: res.likesCount, isLiked: res.isLiked });
+      if (res.isLiked) {
+        setBurstId(id);
+        window.setTimeout(() => setBurstId((b) => (b === id ? null : b)), 520);
+      }
+    } catch (err: any) {
+      showToast(err?.message || t('cm.fail'), 'error');
     }
   };
 
@@ -49,11 +73,36 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {posts.map((post) => (
+      <div role="tablist" className="flex gap-2 -mt-6">
+        {(['post', 'news'] as CommentKind[]).map((k) => (
+          <button
+            key={k}
+            role="tab"
+            aria-selected={tab === k}
+            onClick={() => { setTab(k); setOpenComments(null); }}
+            className={`px-5 py-2 border transition-all duration-200 cursor-pointer btn-press rounded-[2px] ${
+              tab === k
+                ? 'bg-[#3B2B1E] dark:bg-[#8A6238] text-[#FAF6EC] border-transparent'
+                : 'border-[#E3D6BC] dark:border-[#4A3E2E] text-[#65513F] dark:text-[#A99A82] hover:border-[#8A6238]'
+            }`}
+          >
+            {k === 'post' ? t('cm.posts') : t('cm.news')}
+          </button>
+        ))}
+      </div>
+
+      {loaded[tab] && posts.length === 0 && (
+        <p className="text-center py-16 text-[#65513F] dark:text-[#A99A82] animate-entry-in">
+          {tab === 'post' ? t('cm.noPosts') : t('cm.noNews')}
+        </p>
+      )}
+
+      <div key={tab} className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+        {posts.map((post, idx) => (
           <article
             key={post.id}
-            className="book-lift border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] flex flex-col justify-between shadow-xs"
+            style={{ animationDelay: `${Math.min(idx, 6) * 70}ms` }}
+            className="animate-entry-in book-lift border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] flex flex-col justify-between shadow-xs"
           >
             <div>
               <div className="book-cover-sheen aspect-16/9 overflow-hidden bg-[#F1E9D6] dark:bg-[#2E251A]">
@@ -83,9 +132,9 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1.5 pt-2">
-                  {post.tags.map((tag, idx) => (
+                  {post.tags.map((tag, i) => (
                     <span
-                      key={idx}
+                      key={i}
                       className="text-xs uppercase font-mono px-2 py-0.5 bg-[#F1E9D6] dark:bg-[#2E251A] text-[#3B2B1E] dark:text-[#F3ECDD] border border-[#E3D6BC]/50 dark:border-[#4A3E2E]/50"
                     >
                       #{tag}
@@ -107,16 +156,34 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
                     post.isLiked ? 'text-[#8E1F1F]' : 'text-[#65513F] hover:text-[#8E1F1F] dark:hover:text-[#E25858]'
                   }`}
                 >
-                  <Heart className={`w-3.5 h-3.5 ${post.isLiked ? 'fill-[#8E1F1F]' : ''}`} />
-                  <span className="font-mono text-xs">{post.likesCount}</span>
+                  <Heart className={`w-4 h-4 ${post.isLiked ? 'fill-[#8E1F1F]' : ''} ${burstId === post.id ? 'animate-heart-burst' : ''}`} />
+                  <span key={post.likesCount} className="font-mono text-xs animate-number-tick">{post.likesCount}</span>
                 </button>
 
-                <div className="flex items-center gap-1 text-[#65513F] dark:text-[#A99A82]">
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  <span className="font-mono text-xs">{post.commentsCount}</span>
-                </div>
+                <button
+                  onClick={() => setOpenComments((c) => (c === post.id ? null : post.id))}
+                  aria-expanded={openComments === post.id}
+                  aria-label={openComments === post.id ? t('cm.hide') : t('cm.show')}
+                  className={`flex items-center gap-1.5 transition-colors btn-press cursor-pointer ${
+                    openComments === post.id ? 'text-[#8A6238] dark:text-[#D2A560]' : 'text-[#65513F] dark:text-[#A99A82] hover:text-[#8A6238]'
+                  }`}
+                >
+                  <MessageSquare className={`w-4 h-4 ${openComments === post.id ? 'fill-[#8A6238]/20' : ''}`} />
+                  <span key={post.commentsCount} className="font-mono text-xs animate-number-tick">{post.commentsCount}</span>
+                </button>
               </div>
             </div>
+
+            {openComments === post.id && (
+              <div className="px-6 pb-6 border-t border-[#E3D6BC]/60 dark:border-[#4A3E2E]/60">
+                <CommentThread
+                  kind={tab}
+                  parentId={post.id}
+                  onNavigate={onNavigate}
+                  onCountChange={(n) => patch(post.id, { commentsCount: n })}
+                />
+              </div>
+            )}
           </article>
         ))}
       </div>
