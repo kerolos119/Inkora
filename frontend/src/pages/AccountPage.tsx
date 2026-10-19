@@ -13,6 +13,8 @@ import {
   XCircle,
   ChevronRight,
   Trash2,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { useWishlist } from '../context/WishlistContext.js';
@@ -41,6 +43,8 @@ export const AccountPage: React.FC<AccountPageProps> = ({
   const [orders, setOrders] = useState<Order[]>([]);
   const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showAccountNewPassword, setShowAccountNewPassword] = useState(false);
 
   // Address edit state
   const [addressState, setAddressState] = useState({
@@ -425,22 +429,46 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                   <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     {t('f.curPass')}
                   </label>
-                  <input
-                    type="password"
-                    defaultValue="••••••••"
-                    className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
-                  />
+                  <div className="relative password-field">
+                    <input
+                      type={showCurrentPassword ? 'text' : 'password'}
+                      defaultValue="••••••••"
+                      autoComplete="current-password"
+                      className="w-full pe-11 ps-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] password-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword((visible) => !visible)}
+                      className="password-toggle"
+                      aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'}
+                      title={showCurrentPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showCurrentPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                    </button>
+                  </div>
                 </div>
 
                 <div>
                   <label className="text-xs uppercase tracking-wider font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] block mb-1">
                     {t('f.newPass')}
                   </label>
-                  <input
-                    type="password"
-                    placeholder={t('ph.pass')}
-                    className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
-                  />
+                  <div className="relative password-field">
+                    <input
+                      type={showAccountNewPassword ? 'text' : 'password'}
+                      placeholder={t('ph.pass')}
+                      autoComplete="new-password"
+                      className="w-full pe-11 ps-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD] password-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowAccountNewPassword((visible) => !visible)}
+                      className="password-toggle"
+                      aria-label={showAccountNewPassword ? 'Hide new password' : 'Show new password'}
+                      title={showAccountNewPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showAccountNewPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                    </button>
+                  </div>
                 </div>
 
                 <button

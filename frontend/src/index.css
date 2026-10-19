@@ -944,3 +944,212 @@ button:disabled,
     transform: none;
   }
 }
+
+
+/* Password visibility control — quiet, accessible, and theme-aware. */
+.password-field .password-input {
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+.password-field .password-input:focus {
+  border-color: var(--accent, #8A6238);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #8A6238) 13%, transparent);
+}
+.password-toggle {
+  position: absolute;
+  inset-inline-end: 0.65rem;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--text-secondary, #65513F);
+  background: transparent;
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+.password-toggle:hover {
+  color: var(--accent, #8A6238);
+  background: color-mix(in srgb, var(--accent, #8A6238) 9%, transparent);
+}
+.password-toggle:focus-visible {
+  outline: 2px solid var(--focus-ring, #8A6238);
+  outline-offset: 2px;
+}
+.password-toggle:active {
+  transform: translateY(-50%) scale(.94);
+}
+.password-toggle svg {
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .password-field .password-input,
+  .password-toggle,
+  .password-toggle svg {
+    transition: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Inkora Premium Motion — subtle, site-wide motion without changing app logic
+   -------------------------------------------------------------------------- */
+:root {
+  --inkora-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --inkora-motion-fast: 160ms;
+  --inkora-motion-base: 240ms;
+  --inkora-motion-slow: 420ms;
+}
+
+/* A gentle entrance for the active route; content and data fetching are untouched. */
+.app-shell main > div.animate-ink-fade {
+  animation: inkoraPageEnter var(--inkora-motion-slow) var(--inkora-motion-ease) both;
+  transform-origin: 50% 12%;
+  will-change: opacity, transform;
+}
+
+@keyframes inkoraPageEnter {
+  from { opacity: 0; transform: translate3d(0, 9px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Premium book/editorial cards: small lift, no exaggerated zoom. */
+.book-card,
+.editorial-card,
+.book-lift {
+  transition:
+    transform var(--inkora-motion-base) var(--inkora-motion-ease),
+    box-shadow var(--inkora-motion-base) ease,
+    border-color var(--inkora-motion-base) ease,
+    background-color var(--inkora-motion-base) ease;
+  backface-visibility: hidden;
+}
+
+.book-card:hover,
+.editorial-card:hover,
+.book-lift:hover {
+  transform: translate3d(0, -3px, 0);
+  box-shadow: 0 12px 28px rgb(49 35 20 / 7%);
+}
+
+.dark .book-card:hover,
+.dark .editorial-card:hover,
+.dark .book-lift:hover {
+  box-shadow: 0 12px 28px rgb(0 0 0 / 18%);
+}
+
+.book-card img,
+.editorial-card img {
+  transition: transform 420ms var(--inkora-motion-ease), filter 240ms ease;
+}
+
+.book-card:hover img,
+.editorial-card:hover img {
+  transform: scale(1.018);
+}
+
+/* Stagger cards only inside repeated content grids; keep the delay short. */
+.app-shell main .grid > .book-card,
+.app-shell main .grid > .editorial-card,
+.app-shell main .grid > article.book-card,
+.app-shell main .grid > article.editorial-card {
+  animation: inkoraCardEnter 420ms var(--inkora-motion-ease) both;
+}
+.app-shell main .grid > :nth-child(2) { animation-delay: 35ms; }
+.app-shell main .grid > :nth-child(3) { animation-delay: 70ms; }
+.app-shell main .grid > :nth-child(4) { animation-delay: 105ms; }
+.app-shell main .grid > :nth-child(5) { animation-delay: 140ms; }
+.app-shell main .grid > :nth-child(6) { animation-delay: 175ms; }
+
+@keyframes inkoraCardEnter {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Buttons and interactive controls get feedback without affecting click behavior. */
+.app-shell button,
+.app-shell a,
+.app-shell [role="button"],
+.admin-shell button,
+.admin-shell a,
+.admin-shell [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+.app-shell button:not(:disabled),
+.app-shell [role="button"],
+.admin-shell button:not(:disabled),
+.admin-shell [role="button"] {
+  transition:
+    color var(--inkora-motion-fast) ease,
+    background-color var(--inkora-motion-fast) ease,
+    border-color var(--inkora-motion-fast) ease,
+    box-shadow var(--inkora-motion-fast) ease,
+    transform var(--inkora-motion-fast) var(--inkora-motion-ease);
+}
+.app-shell button:not(:disabled):active,
+.app-shell [role="button"]:active,
+.admin-shell button:not(:disabled):active,
+.admin-shell [role="button"]:active {
+  transform: scale(0.985);
+}
+
+/* Overlay surfaces already use the existing dialog semantics. */
+[role="dialog"],
+[role="alertdialog"] {
+  transform-origin: center;
+}
+
+/* Focus rings stay visible and are not replaced by animation. */
+.app-shell :is(a, button, input, select, textarea, [tabindex]):focus-visible,
+.admin-shell :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  scroll-margin-block: 1rem;
+}
+
+@media (hover: none) {
+  .book-card:hover,
+  .editorial-card:hover,
+  .book-lift:hover,
+  .book-card:hover img,
+  .editorial-card:hover img {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell main > div.animate-ink-fade,
+  .app-shell main .grid > .book-card,
+  .app-shell main .grid > .editorial-card,
+  .app-shell main .grid > article.book-card,
+  .app-shell main .grid > article.editorial-card {
+    animation: none !important;
+    will-change: auto;
+  }
+  .book-card,
+  .editorial-card,
+  .book-lift,
+  .book-card img,
+  .editorial-card img,
+  .app-shell button,
+  .app-shell a,
+  .app-shell [role="button"],
+  .admin-shell button,
+  .admin-shell a,
+  .admin-shell [role="button"] {
+    transition: none !important;
+  }
+  .book-card:hover,
+  .editorial-card:hover,
+  .book-lift:hover,
+  .book-card:hover img,
+  .editorial-card:hover img,
+  .app-shell button:not(:disabled):active,
+  .app-shell [role="button"]:active,
+  .admin-shell button:not(:disabled):active,
+  .admin-shell [role="button"]:active {
+    transform: none !important;
+  }
+}
