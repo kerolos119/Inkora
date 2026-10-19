@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, [itemCount]);
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FAF6EC]/95 dark:bg-[#120F0B]/95 backdrop-blur-md border-b border-[#E3D6BC] dark:border-[#4A3E2E]">
+    <header className="site-header sticky top-0 z-40 bg-[#FAF6EC]/95 dark:bg-[#120F0B]/95 backdrop-blur-md border-b border-[#E3D6BC] dark:border-[#4A3E2E]">
       {/* Editorial Announcement Bar */}
 
         {/* <div className="max-w-7xl mx-auto flex items-center justify-between"> */}

@@ -6,6 +6,7 @@ const dict: Record<Lang, Record<string, string>> = {
   en: {
     ...extraEn,
     ...extra2En,
+    ...communityEn,
     'lang.other': 'العربية',
     'auth.signIn': 'Sign in', 'auth.signingIn': 'Signing in…',
     'auth.create': 'Create account', 'auth.creating': 'Creating account…',
@@ -20,6 +21,8 @@ const dict: Record<Lang, Record<string, string>> = {
     'cart.added': 'Added "{title}" to your bag', 'cart.removed': 'Item removed from your bag',
     'cart.empty': 'Your bag is empty', 'cart.emptyHint': 'Browse the catalog and add a book to get started.',
     'cart.loading': 'Loading your bag…', 'cart.loadFail': 'Your bag could not be loaded. Please try again.',
+    'catalog.loadFail': "We couldn't load the catalog. Please try again.",
+    'catalog.retry': 'Try again',
     'cart.explore': 'Browse the catalog', 'cart.checkout': 'Proceed to checkout',
     'cart.add': 'Add to bag', 'cart.soldOut': 'Sold out',
     'cart.couponOk': 'Demo estimate only: {code} displays 10% off; it is not applied to an order.',
@@ -45,6 +48,7 @@ const dict: Record<Lang, Record<string, string>> = {
   ar: {
     ...extraAr,
     ...extra2Ar,
+    ...communityAr,
     'lang.other': 'English',
     'auth.signIn': 'تسجيل الدخول', 'auth.signingIn': 'جارٍ تسجيل الدخول…',
     'auth.create': 'إنشاء حساب', 'auth.creating': 'جارٍ إنشاء الحساب…',
@@ -59,6 +63,8 @@ const dict: Record<Lang, Record<string, string>> = {
     'cart.added': 'تمت إضافة "{title}" إلى حقيبتك', 'cart.removed': 'تم حذف العنصر من حقيبتك',
     'cart.empty': 'حقيبتك فارغة', 'cart.emptyHint': 'تصفّح الكتالوج وأضف كتابًا لتبدأ.',
     'cart.loading': 'جارٍ تحميل حقيبتك…', 'cart.loadFail': 'تعذّر تحميل حقيبتك. يرجى المحاولة مرة أخرى.',
+    'catalog.loadFail': 'تعذّر تحميل الكتالوج. يرجى المحاولة مرة أخرى.',
+    'catalog.retry': 'حاول مرة أخرى',
     'cart.explore': 'تصفّح الكتالوج', 'cart.checkout': 'إتمام الشراء',
     'cart.add': 'أضف إلى الحقيبة', 'cart.soldOut': 'نفدت الكمية',
     'cart.couponOk': 'تقدير تجريبي فقط: يعرض الكود {code} خصمًا بنسبة 10%، ولا يُطبق على الطلب.',

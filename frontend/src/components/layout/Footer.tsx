@@ -20,7 +20,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   };
 
   return (
-    <footer className="border-t border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] pt-16 pb-12 transition-colors">
+    <footer className="site-footer border-t border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] pt-16 pb-12 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Literary Quote Header */}
         <div className="pb-12 border-b border-[#E3D6BC] dark:border-[#4A3E2E] flex flex-col md:flex-row md:items-end justify-between gap-6">

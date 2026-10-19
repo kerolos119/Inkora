@@ -45,7 +45,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   if (layout === 'list') {
     return (
-      <div className="book-lift group flex flex-col sm:flex-row gap-5 p-4 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] hover:border-[#8A6238] dark:hover:border-[#D9AE6B] transition-all shadow-xs">
+      <div className="book-card book-lift group flex flex-col sm:flex-row gap-5 p-4 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] hover:border-[#8A6238] dark:hover:border-[#D9AE6B] transition-all shadow-xs">
         {/* Cover */}
         <div
           onClick={() => onNavigate(`book:${book.id}`)}
@@ -152,7 +152,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   // Grid Layout
   return (
-    <div className="book-lift group relative flex flex-col justify-between transition-all duration-300 p-2 border border-transparent hover:border-[#E3D6BC]/60 dark:hover:border-[#4A3E2E]/60 bg-transparent hover:bg-[#FFFFFF]/70 dark:hover:bg-[#2A231B]/70">
+    <div className="book-card book-lift group relative flex flex-col justify-between transition-all duration-300 p-2 border border-transparent hover:border-[#E3D6BC]/60 dark:hover:border-[#4A3E2E]/60 bg-transparent hover:bg-[#FFFFFF]/70 dark:hover:bg-[#2A231B]/70">
       {/* Book Cover Container with Authentic Spine Shadow */}
       <div className="book-cover-sheen relative aspect-3/4 w-full overflow-hidden bg-[#F1E9D6] dark:bg-[#2E251A] mb-3 shadow-xs rounded-[1px]">
         <img

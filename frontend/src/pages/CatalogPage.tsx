@@ -29,6 +29,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const [categories, setCategories] = useState<Category[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   // Filter States
   const [query, setQuery] = useState(searchQuery);
@@ -59,6 +60,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
   const fetchFilteredBooks = () => {
     setLoading(true);
+    setLoadError(false);
     api
       .searchBooks({
         query,
@@ -74,7 +76,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         setBooks(res);
         setCurrentPage(1);
       })
-      .catch(console.error)
+      .catch((error: unknown) => {
+        console.error('Failed to load catalog', error);
+        setLoadError(true);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -380,6 +385,21 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                   <div className="h-3 bg-[#E2DAC9]/40 dark:bg-[#4A3E2E]/40 w-1/2 rounded-xs" />
                 </div>
               ))}
+            </div>
+          ) : loadError ? (
+            <div
+              role="alert"
+              className="border border-[#E3D6BC] dark:border-[#4A3E2E] p-12 text-center bg-[#FFFFFF] dark:bg-[#2A231B] rounded-[2px]"
+            >
+              <p className="text-sm text-[#65513F] dark:text-[#A99A82] mb-6 font-body-literary">
+                {t('catalog.loadFail')}
+              </p>
+              <button
+                onClick={fetchFilteredBooks}
+                className="px-6 py-2.5 bg-[#3B2B1E] dark:bg-[#8A6238] text-[#FAF6EC] text-xs font-semibold tracking-wider uppercase hover:bg-[#8A6238] dark:hover:bg-[#604626] transition-colors font-mono btn-press rounded-[2px]"
+              >
+                {t('catalog.retry')}
+              </button>
             </div>
           ) : paginatedBooks.length === 0 ? (
             <div className="border border-[#E3D6BC] dark:border-[#4A3E2E] p-12 text-center bg-[#FFFFFF] dark:bg-[#2A231B] rounded-[2px]">

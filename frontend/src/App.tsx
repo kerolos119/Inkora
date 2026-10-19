@@ -163,7 +163,7 @@ export const App: React.FC = () => {
   const isAdminView = isAdmin && effectivePage.startsWith('admin');
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F3E8] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] transition-colors selection:bg-[#8A6238]/20 selection:text-[#8A6238]">
+    <div className="app-shell min-h-screen flex flex-col bg-[#F8F3E8] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] transition-colors selection:bg-[#8A6238]/20 selection:text-[#8A6238]">
       {!isAdminView && (
         <Navbar
           currentPage={effectivePage}

@@ -50,7 +50,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF6EC] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] flex flex-col">
+    <div className="admin-shell min-h-screen bg-[#FAF6EC] dark:bg-[#120F0B] text-[#3B2B1E] dark:text-[#F3ECDD] flex flex-col">
       {/* Top Admin Bar */}
       <header className="h-20 border-b border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#2A231B] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">

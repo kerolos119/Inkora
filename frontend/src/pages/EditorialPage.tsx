@@ -102,7 +102,7 @@ export const EditorialPage: React.FC<EditorialPageProps> = ({ onNavigate }) => {
           <article
             key={post.id}
             style={{ animationDelay: `${Math.min(idx, 6) * 70}ms` }}
-            className="animate-entry-in book-lift border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] flex flex-col justify-between shadow-xs"
+            className="editorial-card animate-entry-in book-lift border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] flex flex-col justify-between shadow-xs"
           >
             <div>
               <div className="book-cover-sheen aspect-16/9 overflow-hidden bg-[#F1E9D6] dark:bg-[#2E251A]">

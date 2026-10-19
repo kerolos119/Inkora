@@ -19,6 +19,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\OrderController
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\PostCommentController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\PostController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\PostLikeController.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\ShippingSettingController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\UsersController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Author.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Book.java
@@ -33,6 +34,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Post.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\PostComment.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\PostLikes.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\RefreshToken.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\ShippingSetting.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Users.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\AuthorDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\BookDto.java
@@ -56,6 +58,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\PostsDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\ResetPasswordRequest.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\ReviewSummaryDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\SearchRequest.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\ShippingSettingDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\UsersDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\exception\CustomException.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\exception\ExceptionMessage.java
@@ -100,6 +103,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\PostCommentRepo
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\PostLikeRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\PostRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\RefreshTokenRepository.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\ShippingSettingRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\repository\UserRepository.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\AuthorServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\AuthServices.java
@@ -120,6 +124,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\OrderServices.jav
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\PostCommentServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\PostLikeServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\PostServices.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\ShippingSettingService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\UsersServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\Utils\JWTUtils.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\Utils\OtpCache.java

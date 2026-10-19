@@ -65,6 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(res.user);
       setToken(res.accessToken);
       localStorage.setItem('inkora_token', res.accessToken);
+      localStorage.setItem('inkora_refresh', res.refreshToken);
       localStorage.setItem('inkora_user', JSON.stringify(res.user));
       showToast(t('auth.welcome', { name: res.user.username }));
       return res.user;
@@ -80,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(res.user);
       setToken(res.accessToken);
       localStorage.setItem('inkora_token', res.accessToken);
+      localStorage.setItem('inkora_refresh', res.refreshToken);
       localStorage.setItem('inkora_user', JSON.stringify(res.user));
       showToast(t('auth.registered'));
       return res.user;

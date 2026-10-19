@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { realApi, mapReview, mapComment, mapPost, type CommentKind } from "./realapi";
-import { Book, Category, Author, Cart, Order, Review, Post, PostComment, User, LoginResponse, OrderStatus } from '../types/index.js';
+import { realApi, mapReview, mapComment, mapPost, mapShipping, type CommentKind } from "./realapi";
+import { Book, Category, Author, Cart, Order, Review, Post, PostComment, User, LoginResponse, OrderStatus, ShippingSetting } from '../types/index.js';
 
 const API_BASE = '/api/v1';
 
@@ -280,6 +280,17 @@ const mockApi = {
     return { message: 'Deleted' };
   },
 
+  getShippingSettings: async (): Promise<ShippingSetting> => {
+    return mapShipping(await request<Record<string, unknown>>('/setting/shipping'));
+  },
+
+  updateShippingSettings: async (settings: ShippingSetting): Promise<ShippingSetting> => {
+    return mapShipping(await request<Record<string, unknown>>('/setting/shipping', {
+      method: 'PUT',
+      body: JSON.stringify(settings),
+    }));
+  },
+
   // ── Admin Dashboard & Customers ──────────────────────────────────────
   getAdminDashboard: async (): Promise<any> => {
     return request<any>('/admin/dashboard');
@@ -291,7 +302,7 @@ const mockApi = {
 
   // ── Posts ────────────────────────────────────────────────────────────
   getPosts: async (): Promise<Post[]> => {
-    return request<Post[]>('/post/all');
+    return (await request<Record<string, unknown>[]>('/post/all')).map(mapPost);
   },
 
   getNews: async (): Promise<Post[]> => {
