@@ -15,9 +15,6 @@ public interface OrderMapper extends BaseMapper<OrderDto, Order> {
     @Mapping(target = "orderStatus",     source = "status")
     @Mapping(target = "usersId",         source = "userId")
     @Mapping(target = "items",           source = "orderItems")
-    @Mapping(target = "subtotal", ignore = true)
-    @Mapping(target = "shippingFee", ignore = true)
-    @Mapping(target = "totalAmount", ignore = true)
     OrderDto toDto(Order entity);
 
     @Override
@@ -29,11 +26,14 @@ public interface OrderMapper extends BaseMapper<OrderDto, Order> {
     @Mapping(target = "paymentMethod",
             expression = "java(dto.getPaymentMethod() == null ? null :" +
                     "com.kerolos119.inkora.model.PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()))")
-    @Mapping(target = "version",   ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "subtotal", ignore = true)
+    @Mapping(target = "shippingFee", ignore = true)
+    @Mapping(target = "totalAmount", ignore = true)
+    @Mapping(target = "version",   ignore = true)
     Order toEntity(OrderDto dto);
 
     @Override
@@ -43,11 +43,14 @@ public interface OrderMapper extends BaseMapper<OrderDto, Order> {
     @Mapping(target = "status",      source = "orderStatus")
     @Mapping(target = "userId",      source = "usersId")
     @Mapping(target = "orderItems",  source = "items")
-    @Mapping(target = "version",   ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "subtotal", ignore = true)
+    @Mapping(target = "shippingFee", ignore = true)
+    @Mapping(target = "totalAmount", ignore = true)
+    @Mapping(target = "version",   ignore = true)
     void updateToEntity(OrderDto dto, @MappingTarget Order entity);
 
 }

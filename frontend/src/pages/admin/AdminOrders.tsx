@@ -228,6 +228,13 @@ export const AdminOrders: React.FC = () => {
                 </div>
               ))}
             </div>
+            
+            {selectedOrder.shippingFee > 0 && (
+              <div className="flex justify-between items-center text-sm text-[#65513F] dark:text-[#A99A82] font-mono">
+                <span>Shipping</span>
+                <span>${selectedOrder.shippingFee.toFixed(2)}</span>
+              </div>
+            )}
 
             <div className="flex justify-between items-center text-sm font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] pt-2 border-t border-[#E3D6BC] dark:border-[#4A3E2E] font-mono">
               <span>Order Total</span>
