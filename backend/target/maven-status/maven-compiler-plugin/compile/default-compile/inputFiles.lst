@@ -1,5 +1,6 @@
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\AppConfig.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\CloudinaryConfig.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\OrderNumberBackfill.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\SecurityConfig.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\config\SwaggerConfig.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\constants\PublicRoutes.java
@@ -11,6 +12,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\BookReviewContr
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CartController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CategoryController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\CheckoutController.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\DashboardController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\ImageController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\NewsCommentController.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\controller\NewsController.java
@@ -26,6 +28,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Book.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\BookReview.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Cart.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Category.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\Counter.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\News.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\NewsComment.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\document\NewsLikes.java
@@ -42,6 +45,8 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\BookReviewDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\CartDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\CategoryDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\Credentials.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\CustomerDto.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\DashboardDto.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\ErrorResponse.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\Filter.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\dto\ForgetPasswordRequest.java
@@ -115,6 +120,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CategoryServices.
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CheckoutService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CloudinarySevice.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\CustomUserDetailsService.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\DashboardServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\EmailServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\JWTFilterServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\NewsCommentServices.java
@@ -124,6 +130,7 @@ D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\OrderServices.jav
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\PostCommentServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\PostLikeServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\PostServices.java
+D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\SequenceService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\ShippingSettingService.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\services\UsersServices.java
 D:\Inkora\backend\src\main\java\com\kerolos119\inkora\Utils\JWTUtils.java

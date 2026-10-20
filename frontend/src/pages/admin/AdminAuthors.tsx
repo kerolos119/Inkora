@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Edit2, Trash2, X } from 'lucide-react';
 import { Author } from '../../types/index.js';
 import { api } from '../../services/api.js';
@@ -72,19 +73,19 @@ export const AdminAuthors: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7 text-[15px]">
       <div className="border-b border-[#E3D6BC] dark:border-[#4A3E2E] pb-4 flex items-end justify-between">
         <div>
-          <span className="text-xs uppercase font-mono tracking-widest text-[#8A6238] dark:text-[#D9AE6B] font-semibold">
+          <span className="text-sm sm:text-base uppercase font-mono tracking-widest text-[#8A6238] dark:text-[#D9AE6B] font-semibold">
             Literary Fellowship
           </span>
-          <h1 className="font-editorial text-3xl sm:text-4xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
+          <h1 className="font-editorial text-3xl sm:text-4xl leading-tight text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
             Authors in Residence
           </h1>
         </div>
         <button
           onClick={openAdd}
-          className="px-4 py-2 bg-[#8A6238] dark:bg-[#D9AE6B] text-[#FAF6EC] text-xs font-semibold uppercase tracking-wider hover:bg-[#6F4D2B] dark:hover:bg-[#CBA77B] transition-colors flex items-center gap-1.5 font-mono btn-press shadow-xs"
+          className="px-4 py-2 bg-[#8A6238] dark:bg-[#D9AE6B] text-[#FAF6EC] text-sm font-semibold uppercase tracking-wider hover:bg-[#6F4D2B] dark:hover:bg-[#CBA77B] transition-colors flex items-center gap-1.5 font-mono btn-press shadow-xs"
         >
           <Plus className="w-4 h-4" />
           <span>Register Author</span>
@@ -95,23 +96,23 @@ export const AdminAuthors: React.FC = () => {
         {authors.map((a) => (
           <div
             key={a.id}
-            className="p-5 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] flex flex-col justify-between shadow-xs book-lift"
+            className="p-5 sm:p-6 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FFFFFF] dark:bg-[#2A231B] flex flex-col justify-between shadow-xs book-lift"
           >
             <div>
               <div className="w-14 h-14 overflow-hidden mb-3 border border-[#E3D6BC] dark:border-[#4A3E2E] rounded-[1px]">
                 <img src={a.photo} alt={a.name} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300" />
               </div>
-              <span className="text-xs font-mono uppercase text-[#8A6238] dark:text-[#D9AE6B] font-semibold">
+              <span className="text-sm font-mono uppercase tracking-wide text-[#75451F] dark:text-[#E7C58D] dark:text-[#D9AE6B] font-semibold">
                 {a.nationality} · {a.booksCount} Works
               </span>
-              <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-0.5 mb-2">
+              <h3 className="font-editorial text-2xl sm:text-[1.7rem] leading-snug text-[#3B2B1E] dark:text-[#F3ECDD] mt-1 mb-3">
                 {a.name}
               </h3>
-              <p className="text-xs text-[#65513F] dark:text-[#A99A82] leading-relaxed line-clamp-3 mb-2 font-body-literary">
+              <p className="text-sm leading-6 text-[#514131] dark:text-[#D0C3AD] line-clamp-3 mb-2 font-body-literary">
                 {a.bio}
               </p>
               {a.notableWork && (
-                <p className="text-xs text-[#3B2B1E] dark:text-[#F3ECDD] font-editorial italic">
+                <p className="text-sm leading-6 text-[#3B2B1E] dark:text-[#F3ECDD] font-editorial italic">
                   “{a.notableWork}”
                 </p>
               )}
@@ -135,12 +136,12 @@ export const AdminAuthors: React.FC = () => {
         ))}
       </div>
 
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {modalOpen && createPortal((
+        <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto overscroll-contain p-3 sm:items-center sm:p-6">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setModalOpen(false)} />
-          <div className="relative bg-[#FFFFFF] dark:bg-[#2A231B] border border-[#E3D6BC] dark:border-[#4A3E2E] p-6 max-w-md w-full space-y-4 z-10 animate-in fade-in shadow-xl">
+          <div role="dialog" aria-modal="true" aria-labelledby="author-modal-title" className="relative my-auto w-full max-w-xl shrink-0 space-y-5 rounded-sm border border-[#D8C6AE] bg-[#FFFEFC] p-5 shadow-2xl dark:border-[#4A3E2E] dark:bg-[#2A231B] sm:p-7 z-10">
             <div className="flex items-center justify-between border-b border-[#E3D6BC] dark:border-[#4A3E2E] pb-2">
-              <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
+              <h3 id="author-modal-title" className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD]">
                 {editingAuthor ? 'Edit Author' : 'Inscribe Author'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="p-1 text-[#65513F] hover:text-[#3B2B1E]">
@@ -148,9 +149,9 @@ export const AdminAuthors: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-4 text-xs font-mono">
+            <form onSubmit={handleSave} className="space-y-5 text-sm font-mono">
               <div>
-                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-sm uppercase tracking-wide font-semibold block mb-2 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Author Name
                 </label>
                 <input
@@ -159,12 +160,12 @@ export const AdminAuthors: React.FC = () => {
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   required
                   placeholder="e.g. Elena Rostova"
-                  className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                  className="w-full min-h-12 px-4 py-3 text-base border border-[#D8C6AE] dark:border-[#66533D] bg-white/70 dark:bg-[#211B15] text-[#302319] dark:text-[#F7F0E4] placeholder:text-[#8A7A69] dark:placeholder:text-[#B6A58D] outline-none transition-colors focus:border-[#A85F4B] focus:ring-2 focus:ring-[#A85F4B]/20"
                 />
               </div>
 
               <div>
-                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-sm uppercase tracking-wide font-semibold block mb-2 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Nationality / Origin
                 </label>
                 <input
@@ -172,12 +173,12 @@ export const AdminAuthors: React.FC = () => {
                   value={form.nationality || ''}
                   onChange={(e) => setForm({ ...form, nationality: e.target.value })}
                   placeholder="Austria / Spain"
-                  className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                  className="w-full min-h-12 px-4 py-3 text-base border border-[#D8C6AE] dark:border-[#66533D] bg-white/70 dark:bg-[#211B15] text-[#302319] dark:text-[#F7F0E4] placeholder:text-[#8A7A69] dark:placeholder:text-[#B6A58D] outline-none transition-colors focus:border-[#A85F4B] focus:ring-2 focus:ring-[#A85F4B]/20"
                 />
               </div>
 
               <div>
-                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-sm uppercase tracking-wide font-semibold block mb-2 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Notable Masterwork
                 </label>
                 <input
@@ -185,20 +186,20 @@ export const AdminAuthors: React.FC = () => {
                   value={form.notableWork || ''}
                   onChange={(e) => setForm({ ...form, notableWork: e.target.value })}
                   placeholder="The Architecture of Solitude"
-                  className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                  className="w-full min-h-12 px-4 py-3 text-base border border-[#D8C6AE] dark:border-[#66533D] bg-white/70 dark:bg-[#211B15] text-[#302319] dark:text-[#F7F0E4] placeholder:text-[#8A7A69] dark:placeholder:text-[#B6A58D] outline-none transition-colors focus:border-[#A85F4B] focus:ring-2 focus:ring-[#A85F4B]/20"
                 />
               </div>
 
               <div>
-                <label className="text-xs uppercase tracking-wider font-semibold block mb-1 text-[#3B2B1E] dark:text-[#F3ECDD]">
+                <label className="text-sm uppercase tracking-wide font-semibold block mb-2 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Biography & Literary Style
                 </label>
                 <textarea
                   value={form.bio || ''}
                   onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                  rows={3}
+                  rows={4}
                   required
-                  className="w-full px-3 py-2 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-transparent text-[#3B2B1E] dark:text-[#F3ECDD]"
+                  className="w-full px-4 py-3 text-base leading-6 border border-[#D8C6AE] dark:border-[#66533D] bg-white/70 dark:bg-[#211B15] text-[#302319] dark:text-[#F7F0E4] placeholder:text-[#8A7A69] dark:placeholder:text-[#B6A58D] outline-none transition-colors focus:border-[#A85F4B] focus:ring-2 focus:ring-[#A85F4B]/20 resize-y"
                 />
               </div>
 
@@ -206,13 +207,13 @@ export const AdminAuthors: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-3 py-1.5 border border-[#E3D6BC] dark:border-[#4A3E2E] text-xs btn-press"
+                  className="px-4 py-2.5 border border-[#D8C6AE] dark:border-[#66533D] text-sm btn-press"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-[#8A6238] dark:bg-[#D9AE6B] text-[#FAF6EC] text-xs font-semibold uppercase tracking-wider font-mono btn-press"
+                  className="px-5 py-2.5 bg-[#A85F4B] dark:bg-[#D9AE6B] text-white dark:text-[#241B12] text-sm font-semibold uppercase tracking-wider font-mono btn-press"
                 >
                   Save Author
                 </button>
@@ -220,7 +221,7 @@ export const AdminAuthors: React.FC = () => {
             </form>
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   );
 };

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-19T16:28:19+0300",
+    date = "2026-10-20T16:05:24+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component
@@ -63,6 +63,7 @@ public class OrderMapperImpl implements OrderMapper {
             orderDto.items( new ArrayList<OrderItem>( list ) );
         }
         orderDto.id( entity.getId() );
+        orderDto.orderNumber( entity.getOrderNumber() );
         orderDto.note( entity.getNote() );
         if ( entity.getPaymentMethod() != null ) {
             orderDto.paymentMethod( entity.getPaymentMethod().name() );
