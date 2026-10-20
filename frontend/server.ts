@@ -393,7 +393,6 @@ app.post('/api/v1/author', (req, res) => {
     name: req.body.name,
     bio: req.body.bio || '',
     photo: req.body.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-    nationality: req.body.nationality || 'International',
     booksCount: 1,
     notableWork: req.body.notableWork || '',
   };

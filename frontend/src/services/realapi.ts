@@ -13,6 +13,20 @@ import type {
   ShippingSetting,
   User,
 } from '../types/index.js';
+import type {
+  BackendAuthorDto,
+  BackendBookDto,
+  BackendBookReviewDto,
+  BackendCategoryDto,
+  BackendCustomerDto,
+  BackendDashboardDto,
+  BackendLikeResponse,
+  BackendNewsCommentDto,
+  BackendNewsDto,
+  BackendOrderDto,
+  BackendPostCommentDto,
+  BackendPostDto,
+} from '../types/backend.js';
 
 export type CommentKind = 'post' | 'news';
 type ShippingSettings = ShippingSetting;
@@ -30,7 +44,7 @@ function getCollection(value: unknown): ApiRecord[] {
   throw new Error('The server returned an invalid collection response');
 }
 
-function mapBook(value: ApiRecord): Book {
+function mapBook(value: BackendBookDto | ApiRecord): Book {
   return {
     id: String(value.id ?? ''),
     authorId: String(value.authorId ?? ''),
@@ -39,7 +53,7 @@ function mapBook(value: ApiRecord): Book {
     bookDescription: String(value.bookDescription ?? ''),
     numberOfPages: Number(value.numberOfPages ?? 0),
     bookSize: String(value.bookSize ?? ''),
-    coverType: (value.coverType ?? 'Paperback') as Book['coverType'],
+    coverType: String(value.coverType ?? 'Paperback') as Book['coverType'],
     paperType: String(value.paperType ?? ''),
     publicationYear: String(value.publicationYear ?? ''),
     language: String(value.language ?? ''),
@@ -55,6 +69,30 @@ function mapBook(value: ApiRecord): Book {
     featured: Boolean(value.featured),
     bestseller: Boolean(value.bestseller),
     newArrival: Boolean(value.newArrival),
+  };
+}
+
+function mapCategory(value: BackendCategoryDto | ApiRecord): Category {
+  const name = String(value.name ?? '');
+  return {
+    id: String(value.id ?? ''),
+    name,
+    parentCategoryId: typeof value.parentCategoryId === 'string' ? value.parentCategoryId : null,
+    description: '',
+    slug: name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+    bookCount: 0,
+  };
+}
+
+function mapAuthor(value: BackendAuthorDto | ApiRecord): Author {
+  return {
+    id: String(value.id ?? ''),
+    name: String(value.name ?? ''),
+    bio: '',
+    photo: '',
+    booksCount: 0,
+    notableWork: '',
+    isActive: typeof value.isActive === 'boolean' ? value.isActive : null,
   };
 }
 
@@ -105,11 +143,8 @@ function mapUser(value: ApiRecord): User {
   };
 }
 
-function mapOrder(value: ApiRecord): Order {
+function mapOrder(value: BackendOrderDto | ApiRecord): Order {
   const id = String(value.id ?? '');
-  const rawShipping = value.shippingDetails && typeof value.shippingDetails === 'object'
-    ? value.shippingDetails as ApiRecord
-    : {};
   const status = value.orderStatus ?? value.status;
   if (typeof status !== 'string') {
     throw new Error('The server returned an order without a status');
@@ -119,9 +154,9 @@ function mapOrder(value: ApiRecord): Order {
     id,
     orderNumber: String(value.orderNumber ?? id),
     userId: String(value.usersId ?? value.userId ?? ''),
-    customerName: String(rawShipping.name ?? value.customerName ?? ''),
+    customerName: String(value.customerName ?? ''),
     customerEmail: String(value.customerEmail ?? ''),
-    customerPhone: String(value.shippingPhone ?? rawShipping.phoneNumber ?? ''),
+    customerPhone: String(value.shippingPhone ?? ''),
     items: getCollection(value.items).map((item) => ({
       bookId: String(item.bookId ?? ''),
       bookTitle: String(item.bookTitle ?? ''),
@@ -140,19 +175,18 @@ function mapOrder(value: ApiRecord): Order {
       : null,
     paymentStatus: 'UNKNOWN',
     shippingDetails: {
-      fullName: String(rawShipping.name ?? ''),
+      fullName: String(value.customerName ?? ''),
       email: '',
-      phone: String(value.shippingPhone ?? rawShipping.phoneNumber ?? ''),
-      address: String(value.shippingAddress ?? rawShipping.address ?? ''),
-      city: String(rawShipping.city ?? ''),
+      phone: String(value.shippingPhone ?? ''),
+      address: String(value.shippingAddress ?? ''),
+      city: '',
       postalCode: '',
       country: '',
       notes: String(value.note ?? ''),
     },
-    createdAt: value.orderedAt == null && value.createdAt == null
-      ? null
-      : String(value.orderedAt ?? value.createdAt),
-    updatedAt: value.updatedAt == null ? null : String(value.updatedAt),
+    // OrderDto does not expose timestamps; those fields exist only on the Mongo document.
+    createdAt: null,
+    updatedAt: null,
   };
 }
 
@@ -416,7 +450,7 @@ const mockApi = {
 
   // ── Books ────────────────────────────────────────────────────────────
   getBooks: async (): Promise<Book[]> => {
-    return getCollection(await request<unknown>('/book/all')).map(mapBook);
+    return (await request<BackendBookDto[]>('/book/all')).map(mapBook);
   },
 
   searchBooks: async (params: {
@@ -446,7 +480,7 @@ const mockApi = {
     return filtered.sort((a, b) => {
       switch (params.sortBy) {
         case 'newest':
-          return Number(b.publicationYear) - Number(a.publicationYear);
+          return b.publicationYear.localeCompare(a.publicationYear);
         case 'rating':
           return b.rating - a.rating;
         case 'price_asc':
@@ -463,18 +497,18 @@ const mockApi = {
   },
 
   getBookById: async (id: string): Promise<Book> => {
-    return mapBook(await request<ApiRecord>(`/book/${id}`));
+    return mapBook(await request<BackendBookDto>(`/book/${id}`));
   },
 
   createBook: async (bookData: Partial<Book>): Promise<Book> => {
-    return mapBook(await request<ApiRecord>('/book', {
+    return mapBook(await request<BackendBookDto>('/book', {
       method: 'POST',
       body: JSON.stringify(bookPayload(bookData)),
     }));
   },
 
   updateBook: async (id: string, bookData: Partial<Book>): Promise<Book> => {
-    return mapBook(await request<ApiRecord>(`/book/${id}`, {
+    return mapBook(await request<BackendBookDto>(`/book/${id}`, {
       method: 'PUT',
       body: JSON.stringify(bookPayload(bookData)),
     }));
@@ -488,21 +522,23 @@ const mockApi = {
 
   // ── Categories & Authors ─────────────────────────────────────────────
   getCategories: async (): Promise<Category[]> => {
-    return request<Category[]>('/category/all');
+    return (await request<BackendCategoryDto[]>('/category/all')).map(mapCategory);
   },
 
   createCategory: async (category: Partial<Category>): Promise<Category> => {
-    return request<Category>('/category', {
+    const response = await request<BackendCategoryDto>('/category', {
       method: 'POST',
-      body: JSON.stringify(category),
+       body: JSON.stringify({ name: category.name, parentCategoryId: null }),
     });
+    return mapCategory(response);
   },
 
   updateCategory: async (id: string, category: Partial<Category>): Promise<Category> => {
-    return request<Category>(`/category/${id}`, {
+    const response = await request<BackendCategoryDto>(`/category/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(category),
+      body: JSON.stringify({ name: category.name, parentCategoryId: null }),
     });
+    return mapCategory(response);
   },
 
   deleteCategory: async (id: string): Promise<{ message: string }> => {
@@ -510,21 +546,23 @@ const mockApi = {
   },
 
   getAuthors: async (): Promise<Author[]> => {
-    return request<Author[]>('/author/all');
+    return (await request<BackendAuthorDto[]>('/author/all')).map(mapAuthor);
   },
 
   createAuthor: async (author: Partial<Author>): Promise<Author> => {
-    return request<Author>('/author', {
+    const response = await request<BackendAuthorDto>('/author', {
       method: 'POST',
-      body: JSON.stringify(author),
+      body: JSON.stringify({ name: author.name, isActive: true }),
     });
+    return mapAuthor(response);
   },
 
   updateAuthor: async (id: string, author: Partial<Author>): Promise<Author> => {
-    return request<Author>(`/author/${id}`, {
+    const response = await request<BackendAuthorDto>(`/author/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(author),
+      body: JSON.stringify({ name: author.name, isActive: true }),
     });
+    return mapAuthor(response);
   },
 
   deleteAuthor: async (id: string): Promise<{ message: string }> => {
@@ -575,14 +613,8 @@ const mockApi = {
   },
 
   // ── Checkout & Orders ────────────────────────────────────────────────
-  checkout: async (payload: {
-    items: any[];
-    shippingDetails: any;
-    paymentMethod: string;
-    discountCode?: string;
-  }): Promise<Order> => {
-    void payload;
-    return mapOrder(await request<ApiRecord>('/checkout', {
+  checkout: async (): Promise<Order> => {
+    return mapOrder(await request<BackendOrderDto>('/checkout', {
       method: 'POST',
     }));
   },
@@ -596,7 +628,10 @@ const mockApi = {
   },
 
   getOrderById: async (id: string): Promise<Order> => {
-    return request<Order>(`/order/${id}`);
+    const orders = await mockApi.getMyOrders();
+    const order = orders.find((item) => item.id === id);
+    if (!order) throw new Error('Order not found in the current user order history');
+    return order;
   },
 
   updateOrderStatus: async (id: string, status: OrderStatus): Promise<Order> => {
@@ -614,18 +649,18 @@ const mockApi = {
 
   // ── Reviews (/book-review) ───────────────────────────────────────────
   getBookReviews: async (bookId: string): Promise<Review[]> => {
-    return (await request<any[]>(`/book-review/book/${bookId}`)).map(mapReview);
+    return (await request<BackendBookReviewDto[]>(`/book-review/book/${bookId}`)).map(mapReview);
   },
 
   submitReview: async (bookId: string, review: { rating: number; comment: string }): Promise<Review> => {
-    return mapReview(await request<any>(`/book-review/book/${bookId}`, {
+    return mapReview(await request<BackendBookReviewDto>(`/book-review/book/${bookId}`, {
       method: 'POST',
       body: JSON.stringify(review),
     }));
   },
 
   updateReview: async (id: string, review: { rating: number; comment: string }): Promise<Review> => {
-    return mapReview(await request<any>(`/book-review/${id}`, {
+    return mapReview(await request<BackendBookReviewDto>(`/book-review/${id}`, {
       method: 'PUT',
       body: JSON.stringify(review),
     }));
@@ -637,16 +672,18 @@ const mockApi = {
   },
 
   getAllReviews: async (): Promise<Review[]> => {
-    return (await request<any[]>('/book-review/admin/all')).map(mapReview);
+    return (await request<BackendBookReviewDto[]>('/book-review/admin/all')).map(mapReview);
   },
 
   updateReviewStatus: async (id: string, status: 'APPROVED' | 'PENDING' | 'REJECTED'): Promise<Review> => {
-    return mapReview(await request<any>(`/book-review/${id}/status?status=${status}`, { method: 'PATCH' }));
+    return mapReview(await request<BackendBookReviewDto>(`/book-review/${id}/status?status=${status}`, { method: 'PATCH' }));
   },
 
   // ── Comments on posts & news ─────────────────────────────────────────
   getComments: async (kind: CommentKind, id: string): Promise<PostComment[]> => {
-    const rows = await request<any[]>(kind === 'post' ? `/post-comment/post/${id}` : `/news-comments/news/${id}`);
+    const rows = kind === 'post'
+      ? await request<BackendPostCommentDto[]>(`/post-comment/post/${id}`)
+      : await request<BackendNewsCommentDto[]>(`/news-comments/news/${id}`);
     return rows.map(mapComment);
   },
 
@@ -675,28 +712,28 @@ const mockApi = {
   },
 
   // ── Admin Dashboard & Customers ──────────────────────────────────────
-  getAdminDashboard: async (): Promise<any> => {
-    return request<any>('/admin/dashboard');
+  getAdminDashboard: async (): Promise<BackendDashboardDto> => {
+    return request<BackendDashboardDto>('/admin/dashboard');
   },
 
-  getAdminCustomers: async (): Promise<any[]> => {
-    return request<any[]>('/admin/customers');
+  getAdminCustomers: async (): Promise<BackendCustomerDto[]> => {
+    return request<BackendCustomerDto[]>('/admin/customers');
   },
 
   // ── Posts ────────────────────────────────────────────────────────────
   getPosts: async (): Promise<Post[]> => {
-    return (await request<ApiRecord[]>('/post/all')).map(mapPost);
+    return (await request<BackendPostDto[]>('/post/all')).map(mapPost);
   },
 
   createPost: async (post: Partial<Post>): Promise<Post> => {
-    return mapPost(await request<ApiRecord>('/post', {
+    return mapPost(await request<BackendPostDto>('/post', {
       method: 'POST',
       body: JSON.stringify({ title: post.title, content: post.content, imagePath: post.coverImage }),
     }));
   },
 
   updatePost: async (id: string, post: Partial<Post>): Promise<Post> => {
-    return mapPost(await request<ApiRecord>(`/post/${id}`, {
+    return mapPost(await request<BackendPostDto>(`/post/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ title: post.title, content: post.content, imagePath: post.coverImage }),
     }));
@@ -708,14 +745,14 @@ const mockApi = {
   },
 
   createNews: async (news: Partial<Post>): Promise<Post> => {
-    return mapPost(await request<ApiRecord>('/news', {
+    return mapPost(await request<BackendNewsDto>('/news', {
       method: 'POST',
       body: JSON.stringify({ title: news.title, content: news.content, imagePath: news.coverImage }),
     }));
   },
 
   updateNews: async (id: string, news: Partial<Post>): Promise<Post> => {
-    return mapPost(await request<ApiRecord>(`/news/${id}`, {
+    return mapPost(await request<BackendNewsDto>(`/news/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ title: news.title, content: news.content, imagePath: news.coverImage }),
     }));
@@ -727,20 +764,19 @@ const mockApi = {
   },
 
   getNews: async (): Promise<Post[]> => {
-    return (await request<any[]>('/news/all')).map(mapPost);
+    return (await request<BackendNewsDto[]>('/news/all')).map(mapPost);
   },
 
   likeNews: async (id: string): Promise<{ likesCount: number; isLiked: boolean }> => {
-    // The mock server answers { liked, likeCount }, same as the Spring backend.
-    const r = await request<any>(`/news-likes/${id}`, { method: 'PATCH' });
-    return { likesCount: r?.likeCount ?? r?.likesCount ?? 0, isLiked: r?.liked ?? r?.isLiked ?? true };
+    const r = await request<BackendLikeResponse>(`/news-likes/${id}`, { method: 'PATCH' });
+    return { likesCount: Number(r.likeCount), isLiked: Boolean(r.liked) };
   },
 
   likePost: async (id: string): Promise<{ likesCount: number; isLiked: boolean }> => {
-    const response = await request<ApiRecord>(`/post-likes/${id}`, { method: 'PATCH' });
+    const response = await request<BackendLikeResponse>(`/post-likes/${id}`, { method: 'PATCH' });
     return {
-      likesCount: Number(response.likeCount ?? response.likesCount ?? 0),
-      isLiked: Boolean(response.liked ?? response.isLiked),
+      likesCount: Number(response.likeCount),
+      isLiked: Boolean(response.liked),
     };
   },
 };

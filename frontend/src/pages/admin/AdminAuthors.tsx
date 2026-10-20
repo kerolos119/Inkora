@@ -12,7 +12,6 @@ export const AdminAuthors: React.FC = () => {
   const [form, setForm] = useState<Partial<Author>>({
     name: '',
     bio: '',
-    nationality: '',
     notableWork: '',
     photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
   });
@@ -32,7 +31,6 @@ export const AdminAuthors: React.FC = () => {
     setForm({
       name: '',
       bio: '',
-      nationality: 'International',
       notableWork: '',
       photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
     });
@@ -103,7 +101,7 @@ export const AdminAuthors: React.FC = () => {
                 <img src={a.photo} alt={a.name} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300" />
               </div>
               <span className="text-sm font-mono uppercase tracking-wide text-[#75451F] dark:text-[#E7C58D] dark:text-[#D9AE6B] font-semibold">
-                {a.nationality} · {a.booksCount} Works
+                {a.booksCount} Works
               </span>
               <h3 className="font-editorial text-2xl sm:text-[1.7rem] leading-snug text-[#3B2B1E] dark:text-[#F3ECDD] mt-1 mb-3">
                 {a.name}
@@ -164,7 +162,7 @@ export const AdminAuthors: React.FC = () => {
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <label className="text-sm uppercase tracking-wide font-semibold block mb-2 text-[#3B2B1E] dark:text-[#F3ECDD]">
                   Nationality / Origin
                 </label>
@@ -175,7 +173,7 @@ export const AdminAuthors: React.FC = () => {
                   placeholder="Austria / Spain"
                   className="w-full min-h-12 px-4 py-3 text-base border border-[#D8C6AE] dark:border-[#66533D] bg-white/70 dark:bg-[#211B15] text-[#302319] dark:text-[#F7F0E4] placeholder:text-[#8A7A69] dark:placeholder:text-[#B6A58D] outline-none transition-colors focus:border-[#A85F4B] focus:ring-2 focus:ring-[#A85F4B]/20"
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label className="text-sm uppercase tracking-wide font-semibold block mb-2 text-[#3B2B1E] dark:text-[#F3ECDD]">

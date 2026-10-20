@@ -457,7 +457,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onQuickView }) =
                   />
                 </div>
                 <span className="text-xs font-mono uppercase tracking-wider text-[#8A6238] dark:text-[#D9AE6B] font-semibold">
-                  {author.nationality} · {author.booksCount} Works
+                  {author.booksCount} Works
                 </span>
                 <h3 className="font-editorial text-2xl text-[#3B2B1E] dark:text-[#F3ECDD] mt-1 mb-2">
                   {author.name}

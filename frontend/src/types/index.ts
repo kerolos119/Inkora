@@ -44,6 +44,7 @@ export interface Category {
   slug: string;
   bookCount: number;
   image?: string;
+  parentCategoryId?: string | null;
 }
 
 export interface Author {
@@ -51,9 +52,9 @@ export interface Author {
   name: string;
   bio: string;
   photo: string;
-  nationality: string;
   booksCount: number;
   notableWork: string;
+  isActive?: boolean | null;
 }
 
 export interface CartItem {
