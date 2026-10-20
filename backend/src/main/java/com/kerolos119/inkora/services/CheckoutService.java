@@ -47,6 +47,7 @@ public class CheckoutService {
     private final BookRepository bookRepo;
     private final MongoTemplate template;
     private final ShippingSettingService shippingSettingService;
+    private final SequenceService sequenceService;
 
     public OrderDto checkout() {
         String userId = getUserId();
@@ -153,6 +154,7 @@ public class CheckoutService {
 
         order.setStatus(OrderStatus.PENDING);
         order.setOrderedAt(Instant.now());
+        order.setOrderNumber(sequenceService.nextOrderNumber());
         BigDecimal subtotal = cart.calculateTotalPrice();
         BigDecimal shippingFee = shippingSettingService.feeFor(subtotal);
         order.setSubtotal(subtotal);
@@ -161,10 +163,6 @@ public class CheckoutService {
         return order;
     }
 
-    /**
-     * Re-increment stock for every item that was already decremented before a failure,
-     * restoring the inventory to its pre-checkout state.
-     */
     private void rollbackStock(List<CartItem> decremented) {
         for (CartItem item : decremented) {
             template.updateFirst(

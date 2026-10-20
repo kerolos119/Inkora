@@ -20,6 +20,9 @@ public class OrderDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String id;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String orderNumber;
+
     @NotBlank(message = "shipping address is required")
     private String shippingAddress;
 

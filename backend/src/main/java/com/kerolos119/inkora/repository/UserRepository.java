@@ -1,6 +1,7 @@
 package com.kerolos119.inkora.repository;
 
 import com.kerolos119.inkora.document.Users;
+import com.kerolos119.inkora.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,5 +28,7 @@ public interface UserRepository extends BaseRepository<Users, String> {
     boolean existsByUsername(@NotBlank(message = "username is required") String username);
 
     boolean existsByUsernameAndIdNot(String username, String id);
+
+    long countByRole(Role role);
 
 }

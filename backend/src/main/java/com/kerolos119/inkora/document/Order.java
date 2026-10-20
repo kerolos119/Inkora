@@ -6,6 +6,8 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -23,12 +25,16 @@ public class Order extends Auditable {
     @Id
     private String id;
 
+    @Indexed(unique = true, sparse = true)
+    private String orderNumber;
+
     @Indexed
     private String userId;
 
     @Indexed
     private OrderStatus status;
 
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal totalAmount;
 
     private ShippingDetails shippingDetails;
@@ -46,7 +52,9 @@ public class Order extends Auditable {
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal subtotal;
 
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal shippingFee;
 }

@@ -18,17 +18,38 @@ interface AdminDashboardProps {
   onNavigateTab: (tab: string) => void;
 }
 
+const ORDER_STATUSES: OrderStatus[] = [
+  'PENDING',
+  'CONFIRMED',
+  'PROCESSING',
+  'SHIPPING',
+  'OUT_FOR_DELIVERY',
+  'DELIVERED',
+  'CANCELLED',
+  'REFUNDED',
+  'RETURNED',
+];
+
+// Real order numbers look like INK-000123; fall back to a short ID for legacy/unnumbered orders.
+const formatOrderNumber = (n: string) =>
+  String(n).length > 12 ? `#${String(n).slice(-6).toUpperCase()}` : String(n);
+
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
 
   const fetchStats = () => {
     setLoading(true);
+    setError(null);
     api
       .getAdminDashboard()
       .then(setData)
-      .catch(console.error)
+      .catch((err: any) => {
+        console.error(err);
+        setError(err?.message || 'Failed to load dashboard');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -46,6 +67,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
     }
   };
 
+  if (error && !data) {
+    return (
+      <div className="p-6 border border-[#8E1F1F]/40 bg-[#8E1F1F]/5 space-y-3">
+        <p className="text-sm text-[#8E1F1F] dark:text-[#E25858] font-mono">{error}</p>
+        <button
+          onClick={fetchStats}
+          className="text-xs text-[#8A6238] dark:text-[#D9AE6B] font-semibold hover:underline font-mono btn-press"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   if (loading || !data) {
     return (
       <div className="space-y-6 animate-pulse">
@@ -59,7 +94,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
     );
   }
 
-  const maxRevenue = Math.max(...data.revenueTrends.map((t: any) => t.revenue));
+  // Math.max(1, ...) avoids NaN% bar heights when every month is 0.
+  const maxRevenue = Math.max(1, ...data.revenueTrends.map((t: any) => Number(t.revenue ?? 0)));
 
   return (
     <div className="space-y-10">
@@ -88,7 +124,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
             Order Value (not revenue)
           </span>
           <div className="font-editorial text-3xl font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] mt-1">
-            ${data.totalRevenue.toLocaleString()}
+            ${Number(data.totalRevenue ?? 0).toLocaleString()}
           </div>
           <span className="text-xs text-[#65513F] dark:text-[#A99A82] font-mono mt-2 block">
             Order totals only; payment is not tracked
@@ -171,7 +207,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
           {/* Bar Chart Representation */}
           <div className="h-52 flex items-end gap-6 pt-6 px-2">
             {data.revenueTrends.map((t: any, idx: number) => {
-              const heightPercent = Math.round((t.revenue / maxRevenue) * 100);
+              const heightPercent = Math.round((Number(t.revenue ?? 0) / maxRevenue) * 100);
               return (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
                   <span className="text-xs font-mono text-[#65513F] dark:text-[#A99A82]">
@@ -243,7 +279,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
               {data.recentOrders.map((order: Order) => (
                 <tr key={order.id} className="hover:bg-[#F1E9D6]/40 dark:hover:bg-[#2F261B]/40 transition-colors">
                   <td className="py-3 font-mono font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
-                    {order.orderNumber}
+                    {formatOrderNumber(order.orderNumber)}
                   </td>
                   <td className="py-3">
                     <span className="block font-medium text-[#3B2B1E] dark:text-[#F3ECDD]">
@@ -252,7 +288,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
                     <span className="text-xs text-[#65513F] dark:text-[#A99A82]">{order.customerEmail}</span>
                   </td>
                   <td className="py-3 font-semibold text-[#3B2B1E] dark:text-[#F3ECDD]">
-                    ${order.totalAmount.toFixed(2)}
+                    ${Number(order.totalAmount ?? 0).toFixed(2)}
                   </td>
                   <td className="py-3">
                     <span className="px-2 py-0.5 border border-[#E3D6BC] dark:border-[#4A3E2E] text-xs font-mono uppercase font-semibold">
@@ -267,11 +303,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab })
                       }
                       className="px-2 py-1 border border-[#E3D6BC] dark:border-[#4A3E2E] bg-[#FAF6EC] dark:bg-[#2A231B] text-[#3B2B1E] dark:text-[#F3ECDD] text-xs font-mono cursor-pointer"
                     >
-                      <option value="CONFIRMED">CONFIRMED</option>
-                      <option value="PROCESSING">PROCESSING</option>
-                      <option value="SHIPPING">SHIPPING</option>
-                      <option value="DELIVERED">DELIVERED</option>
-                      <option value="CANCELLED">CANCELLED</option>
+                      {ORDER_STATUSES.map((st) => (
+                        <option key={st} value={st}>{st}</option>
+                      ))}
                     </select>
                   </td>
                 </tr>

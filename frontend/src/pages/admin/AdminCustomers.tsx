@@ -73,7 +73,7 @@ export const AdminCustomers: React.FC = () => {
                 </td>
                 <td className="p-3 font-mono">{c.ordersCount} orders</td>
                 <td className="p-3 font-semibold text-[#3B2B1E] dark:text-[#F3ECDD] font-mono">
-                  ${c.totalSpent.toFixed(2)}
+                  ${Number(c.totalSpent ?? 0).toFixed(2)}
                 </td>
                 <td className="p-3 text-xs font-mono text-[#2A674A]">
                   ACTIVE

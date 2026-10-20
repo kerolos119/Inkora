@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BookRepository extends BaseRepository<Book, String> {
 
@@ -19,5 +21,7 @@ public interface BookRepository extends BaseRepository<Book, String> {
     boolean existsByAuthor_Id(String authorId);
 
     boolean existsByCategories_Id(String categoryId);
+
+    List<Book> findByStockLessThan(Integer stock);
 
 }
